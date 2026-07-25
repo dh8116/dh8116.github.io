@@ -31,15 +31,15 @@ export default function PersonalDetailsCard() {
           </dd>
         </div>
         <div className="flex justify-between gap-4">
-          <dt className="text-zinc-500">LinkedIn</dt>
+          <dt className="text-zinc-500">X</dt>
           <dd className="text-right">
             <a
-              href={site.linkedin}
+              href={site.x}
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand-blue-light hover:underline"
             >
-              Connect
+              @RicaV42
             </a>
           </dd>
         </div>

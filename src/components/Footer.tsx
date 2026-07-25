@@ -17,12 +17,12 @@ export default function Footer() {
             GitHub
           </a>
           <a
-            href={site.linkedin}
+            href={site.x}
             target="_blank"
             rel="noopener noreferrer"
             className="transition-colors hover:text-brand-yellow"
           >
-            LinkedIn
+            X
           </a>
         </div>
       </div>

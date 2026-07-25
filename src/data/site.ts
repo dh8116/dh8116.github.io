@@ -7,7 +7,7 @@ export const site = {
   location: "Auckland, New Zealand",
   bio: "Year 11 student building AI companion and simulation projects, with a background in mathematical modelling competitions and AI-assisted development.",
   github: "https://github.com/dh8116/",
-  linkedin: "https://www.linkedin.com/in/taoduoer-huang-581693413/",
+  x: "https://x.com/RicaV42",
   avatar: "/avatar.jpeg",
 };
 
