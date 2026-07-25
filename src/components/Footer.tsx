@@ -7,14 +7,24 @@ export default function Footer() {
         <p>
           &copy; {new Date().getFullYear()} {site.name}
         </p>
-        <a
-          href={site.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="transition-colors hover:text-brand-yellow"
-        >
-          github.com/dh8116
-        </a>
+        <div className="flex gap-4">
+          <a
+            href={site.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-brand-yellow"
+          >
+            GitHub
+          </a>
+          <a
+            href={site.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-brand-yellow"
+          >
+            LinkedIn
+          </a>
+        </div>
       </div>
     </footer>
   );

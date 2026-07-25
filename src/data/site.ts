@@ -2,6 +2,7 @@ export const site = {
   name: "Doria Huang",
   tagline: "AI favourist",
   github: "https://github.com/dh8116/",
+  linkedin: "https://www.linkedin.com/in/taoduoer-huang-581693413/",
 };
 
 export type Project = {
