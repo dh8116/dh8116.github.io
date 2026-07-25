@@ -57,8 +57,8 @@ export const aboutCards: AboutCard[] = [
       "Studying while building AI products on the side, regularly producing structured mathematical and analytical reports for coursework.",
   },
   {
-    period: "HiMCM & IMMC · Honorable Mention",
-    title: "Mathematical Modelling Research",
+    period: "Honorable Mention",
+    title: "Mathematical Modelling",
     description:
       "Co-authored mathematical modelling papers analyzing real-world problems under competition deadlines — research, assumptions, models, and written findings, refined with a team.",
   },
