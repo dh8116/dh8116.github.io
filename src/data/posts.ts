@@ -9,13 +9,12 @@ export type Post = {
 export const posts: Post[] = [
   {
     slug: "hello-world",
-    title: "Introduction",
+    title: "Hello, world",
     date: "2026-07-25",
-    excerpt:
-      "An opening note on the purpose of this site and the writing that will appear here.",
+    excerpt: "Starting this site as a place to put my projects and writing.",
     paragraphs: [
-      "This site serves as a record of ongoing work, chiefly the development of Soulor AI, and as a venue for writing that documents design decisions, open problems, and findings as they arise, rather than leaving them undocumented.",
-      "Future entries will follow this same aim: to state a problem clearly, describe the reasoning applied to it, and report what was learned.",
+      "Hi, I'm Doria — this is a spot for me to put what I'm working on and write down thoughts as I go, instead of letting them stay scattered across notes and half-finished docs.",
+      "Expect a mix of things here: math modelling, AI tools, whatever project I'm currently deep in, and probably some tangents too.",
     ],
   },
   {
