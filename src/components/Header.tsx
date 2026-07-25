@@ -4,36 +4,21 @@ import { site } from "@/data/site";
 export default function Header() {
   return (
     <header className="border-b border-white/10">
-      <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
         <Link
           href="/"
           className="text-lg font-semibold tracking-tight text-foreground"
         >
-          {site.name}
+          <span className="text-brand-blue-light">{site.firstName}</span>
+          {site.lastName}
         </Link>
-        <nav className="flex items-center gap-6 text-sm font-medium text-zinc-400">
-          <Link href="/#projects" className="transition-colors hover:text-brand-blue-light">
-            Projects
-          </Link>
-          <Link href="/blog" className="transition-colors hover:text-brand-blue-light">
+        <nav className="flex items-center gap-3 text-sm font-medium lg:hidden">
+          <Link
+            href="/blog"
+            className="rounded-full border border-white/10 bg-card px-4 py-1.5 text-zinc-300 transition-colors hover:text-brand-blue-light"
+          >
             Blog
           </Link>
-          <a
-            href={site.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-brand-yellow"
-          >
-            GitHub
-          </a>
-          <a
-            href={site.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-brand-yellow"
-          >
-            LinkedIn
-          </a>
         </nav>
       </div>
     </header>
