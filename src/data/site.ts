@@ -3,7 +3,7 @@ export const site = {
   firstName: "Doria",
   lastName: "Huang",
   tagline: "AI favourist",
-  status: "Year 11 Student in New Zealand",
+  status: "Year 11 Student",
   location: "Auckland, New Zealand",
   bio: "Year 11 student building AI companion and simulation projects, with a background in mathematical modelling competitions and AI-assisted development.",
   github: "https://github.com/dh8116/",
