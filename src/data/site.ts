@@ -57,7 +57,7 @@ export const aboutCards: AboutCard[] = [
       "Studying while building AI products on the side, regularly producing structured mathematical and analytical reports for coursework.",
   },
   {
-    period: "Honorable Mention",
+    period: "Competition",
     title: "Mathematical Modelling",
     description:
       "Co-authored mathematical modelling papers analyzing real-world problems under competition deadlines — research, assumptions, models, and written findings, refined with a team.",
