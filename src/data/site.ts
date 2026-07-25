@@ -1,6 +1,6 @@
 export const site = {
-  name: "Doria Huang",
-  firstName: "Doria",
+  name: "Richael Huang",
+  firstName: "Richael",
   lastName: "Huang",
   tagline: "AI favourist",
   status: "Year 11 Student",

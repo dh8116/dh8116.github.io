@@ -13,7 +13,7 @@ export const posts: Post[] = [
     date: "2026-07-25",
     excerpt: "Starting this site as a place to put my projects and writing.",
     paragraphs: [
-      "Hi, I'm Doria — this is a spot for me to put what I'm working on and write down thoughts as I go, instead of letting them stay scattered across notes and half-finished docs.",
+      "Hi, I'm Richael — this is a spot for me to put what I'm working on and write down thoughts as I go, instead of letting them stay scattered across notes and half-finished docs.",
       "Expect a mix of things here: math modelling, AI tools, whatever project I'm currently deep in, and probably some tangents too.",
     ],
   },
