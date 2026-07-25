@@ -51,7 +51,7 @@ export type AboutCard = {
 
 export const aboutCards: AboutCard[] = [
   {
-    period: "2024 – 2028 · Auckland",
+    period: "2026 – 2028 · Auckland",
     title: "Year 11 at St Cuthbert's College",
     description:
       "Studying while building AI products on the side, regularly producing structured mathematical and analytical reports for coursework.",
