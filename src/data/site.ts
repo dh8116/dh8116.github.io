@@ -2,7 +2,7 @@ export const site = {
   name: "Doria H",
   firstName: "Doria",
   lastName: "H",
-  tagline: "AI favourist",
+  tagline: "Building AI that remembers",
   status: "Year 11 Student",
   location: "Auckland, New Zealand",
   bio: "Year 11 student building AI companion and simulation projects, with a background in mathematical modelling competitions and AI-assisted development.",
