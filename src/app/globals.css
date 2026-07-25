@@ -16,6 +16,8 @@
   --color-brand-yellow: var(--color-brand-yellow);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --animate-drift-a: drift-a 22s ease-in-out infinite;
+  --animate-drift-b: drift-b 28s ease-in-out infinite;
 }
 
 body {
@@ -26,4 +28,37 @@ body {
 ::selection {
   background: var(--color-brand-yellow);
   color: #050505;
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(245, 245, 240, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 245, 240, 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, black, transparent);
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 55% at 50% 0%,
+    black,
+    transparent
+  );
+}
+
+@keyframes drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3rem, 2rem) scale(1.08);
+  }
+}
+
+@keyframes drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-2.5rem, -3rem) scale(1.1);
+  }
 }

@@ -26,6 +26,14 @@ export default function Header() {
           >
             GitHub
           </a>
+          <a
+            href={site.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-brand-yellow"
+          >
+            LinkedIn
+          </a>
         </nav>
       </div>
     </header>

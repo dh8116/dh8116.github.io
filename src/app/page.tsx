@@ -32,6 +32,14 @@ export default function Home() {
           >
             GitHub
           </a>
+          <a
+            href={site.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-zinc-200 transition-colors hover:border-brand-blue-light hover:text-brand-blue-light"
+          >
+            LinkedIn
+          </a>
         </div>
       </section>
 
