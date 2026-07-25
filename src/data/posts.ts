@@ -22,11 +22,12 @@ export const posts: Post[] = [
     title: "What Is Soulor AI",
     date: "2026-07-25",
     excerpt:
-      "An overview of Soulor AI as an AI companion and simulation system, and the design tension at its core.",
+      "Soulor AI is a companion platform built around one idea: an AI that actually remembers you.",
     paragraphs: [
-      "Soulor AI is a project concerned with AI companionship and simulation: providing an AI presence that persists and develops across repeated interactions, in contrast to a stateless conversational session that resets each time.",
-      "The two components — companion and simulation — pose distinct requirements that must nonetheless be satisfied jointly. The companion component requires local consistency: responses must be coherent and appropriately responsive within a given exchange. The simulation component requires global continuity: the system must maintain state and an underlying model of the world the companion is understood to inhabit. Satisfying both requirements simultaneously is the central design problem, and is the current focus of development.",
-      "A working version is available at soulor-ai.vercel.app. Subsequent posts will report on specific aspects of this problem as the project progresses.",
+      "Soulor AI is a companion platform built around one idea: an AI that actually remembers you — your name, your mood, the running jokes, the people in your life — and brings it up naturally, unprompted.",
+      "Each companion you create has its own personality, vibe, and avatar, and the relationship evolves over time — affection, trust, and intimacy scores move you through five stages, from Stranger to Soulmate. Facts from your conversations get extracted automatically and woven back into future chats, so continuity is the default, not something you have to re-explain.",
+      "Beyond text, it supports live voice/video calls with an animated companion face, a Simulate mode for custom-character roleplay, a Storytelling mode that reacts to one situation from 7 AI perspectives at once, and a Support mode tuned for emotional check-ins. A lighter wellness layer — journaling, habit streaks, guided breathing — rounds it out as something meant for daily use, not a one-off novelty.",
+      "A working version is available at soulor-ai.vercel.app.",
     ],
   },
 ];
