@@ -22,11 +22,11 @@ export const posts: Post[] = [
     title: "What Is Soulor AI",
     date: "2026-07-25",
     excerpt:
-      "Soulor AI is a companion platform built around one idea: an AI that actually remembers you.",
+      "Soulor AI is a companion and social simulation platform — not just a chat buddy, but a space to build relationships and rehearse them.",
     paragraphs: [
-      "Soulor AI is a companion platform built around one idea: an AI that actually remembers you — your name, your mood, the running jokes, the people in your life — and brings it up naturally, unprompted.",
-      "Each companion you create has its own personality, vibe, and avatar, and the relationship evolves over time — affection, trust, and intimacy scores move you through five stages, from Stranger to Soulmate. Facts from your conversations get extracted automatically and woven back into future chats, so continuity is the default, not something you have to re-explain.",
-      "Beyond text, it supports live voice/video calls with an animated companion face, a Simulate mode for custom-character roleplay, a Storytelling mode that reacts to one situation from 7 AI perspectives at once, and a Support mode tuned for emotional check-ins. A lighter wellness layer — journaling, habit streaks, guided breathing — rounds it out as something meant for daily use, not a one-off novelty.",
+      "Soulor AI is a companion and social simulation platform — not just a chat buddy, but a space to build relationships and rehearse them.",
+      "The companion side remembers you: your name, your mood, running jokes, the people in your life — surfaced naturally, unprompted. Each companion has its own personality and avatar, and the relationship evolves through five stages, from Stranger to Soulmate, as affection, trust, and intimacy build over time.",
+      "The simulation side is further useful: Simulate mode lets you roleplay with fully custom agents (name, personality, backstory), and Storytelling mode takes one real situation and runs it through 7 different AI perspectives simultaneously — useful for rehearsing a hard conversation or just seeing an angle you missed. Voice/video calls with a live animated face, a Support mode for emotional check-ins, and a wellness layer (journaling, habits, guided breathing) round it into something built for daily use, not a one-off gimmick.",
       "A working version is available at soulor-ai.vercel.app.",
     ],
   },
