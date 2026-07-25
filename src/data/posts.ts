@@ -9,24 +9,25 @@ export type Post = {
 export const posts: Post[] = [
   {
     slug: "hello-world",
-    title: "Hello, world",
+    title: "Introduction",
     date: "2026-07-25",
-    excerpt: "Starting this site as a place to put my projects and writing.",
+    excerpt:
+      "An opening note on the purpose of this site and the writing that will appear here.",
     paragraphs: [
-      "This is the first post on this site. I built it as a home base for what I'm working on — mainly Soulor AI right now — and a place to write down thoughts as I go, instead of letting them stay scattered.",
-      "More to come as there's more to say.",
+      "This site serves as a record of ongoing work, chiefly the development of Soulor AI, and as a venue for writing that documents design decisions, open problems, and findings as they arise, rather than leaving them undocumented.",
+      "Future entries will follow this same aim: to state a problem clearly, describe the reasoning applied to it, and report what was learned.",
     ],
   },
   {
     slug: "what-is-soulor-ai",
-    title: "What is Soulor AI",
+    title: "What Is Soulor AI",
     date: "2026-07-25",
     excerpt:
-      "Soulor AI is an AI companion and simulation project — a quick look at what that means.",
+      "An overview of Soulor AI as an AI companion and simulation system, and the design tension at its core.",
     paragraphs: [
-      "Soulor AI is a project I'm building around AI companionship and simulation: giving people an AI presence they can interact with over time, rather than a one-off chat that resets every session.",
-      "Companion and simulation are two different problems that end up tangled together. A companion has to feel consistent and responsive in the moment. A simulation has to hold state, continuity, and some notion of a world the companion exists in. Getting both right at once is the hard part, and it's the part I'm spending most of my time on.",
-      "You can try the live version at soulor-ai.vercel.app — I'll write more here as the project moves forward.",
+      "Soulor AI is a project concerned with AI companionship and simulation: providing an AI presence that persists and develops across repeated interactions, in contrast to a stateless conversational session that resets each time.",
+      "The two components — companion and simulation — pose distinct requirements that must nonetheless be satisfied jointly. The companion component requires local consistency: responses must be coherent and appropriately responsive within a given exchange. The simulation component requires global continuity: the system must maintain state and an underlying model of the world the companion is understood to inhabit. Satisfying both requirements simultaneously is the central design problem, and is the current focus of development.",
+      "A working version is available at soulor-ai.vercel.app. Subsequent posts will report on specific aspects of this problem as the project progresses.",
     ],
   },
 ];

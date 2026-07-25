@@ -3,7 +3,7 @@ export const site = {
   firstName: "Doria",
   lastName: "Huang",
   tagline: "AI favourist",
-  status: "Year 11 @ St Cuthbert's College",
+  status: "Year 11 Student in New Zealand",
   location: "Auckland, New Zealand",
   bio: "Year 11 student building AI companion and simulation projects, with a background in mathematical modelling competitions and AI-assisted development.",
   github: "https://github.com/dh8116/",
@@ -52,7 +52,7 @@ export type AboutCard = {
 export const aboutCards: AboutCard[] = [
   {
     period: "2026 – 2028 · Auckland",
-    title: "Year 11 at St Cuthbert's College",
+    title: "Year 11 Student",
     description:
       "Studying while building AI products on the side, regularly producing structured mathematical and analytical reports for coursework.",
   },
