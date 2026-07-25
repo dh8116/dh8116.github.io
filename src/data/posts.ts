@@ -11,20 +11,22 @@ export const posts: Post[] = [
     slug: "hello-world",
     title: "Hello, world",
     date: "2026-07-25",
-    excerpt:
-      "Kicking off this blog — a placeholder post to get the layout in place.",
+    excerpt: "Starting this site as a place to put my projects and writing.",
     paragraphs: [
-      "This is a placeholder first post. Replace the content in src/data/posts.ts with your own writing.",
-      "Each post is just an entry in that file — a slug, a title, a date, and a list of paragraphs. No CMS, no database, just data you edit directly.",
+      "This is the first post on this site. I built it as a home base for what I'm working on — mainly Soulor AI right now — and a place to write down thoughts as I go, instead of letting them stay scattered.",
+      "More to come as there's more to say.",
     ],
   },
   {
-    slug: "building-soulor-ai",
-    title: "Building Soulor AI",
+    slug: "what-is-soulor-ai",
+    title: "What is Soulor AI",
     date: "2026-07-25",
-    excerpt: "Notes on building an AI product from idea to deployment.",
+    excerpt:
+      "Soulor AI is an AI companion and simulation project — a quick look at what that means.",
     paragraphs: [
-      "This is a placeholder second post. Swap this in for real notes on building Soulor AI, lessons learned, and what's next.",
+      "Soulor AI is a project I'm building around AI companionship and simulation: giving people an AI presence they can interact with over time, rather than a one-off chat that resets every session.",
+      "Companion and simulation are two different problems that end up tangled together. A companion has to feel consistent and responsive in the moment. A simulation has to hold state, continuity, and some notion of a world the companion exists in. Getting both right at once is the hard part, and it's the part I'm spending most of my time on.",
+      "You can try the live version at soulor-ai.vercel.app — I'll write more here as the project moves forward.",
     ],
   },
 ];
