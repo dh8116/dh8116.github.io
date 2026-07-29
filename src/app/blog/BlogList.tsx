@@ -1,0 +1,48 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import type { Post } from "@/data/posts";
+
+type SortOrder = "desc" | "asc";
+
+export default function BlogList({ posts }: { posts: Post[] }) {
+  const [order, setOrder] = useState<SortOrder>("desc");
+
+  const sortedPosts = useMemo(() => {
+    const sorted = [...posts].sort((a, b) => b.date.localeCompare(a.date));
+    return order === "desc" ? sorted : sorted.reverse();
+  }, [posts, order]);
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-3xl font-bold tracking-tight">Blog</h1>
+        <button
+          type="button"
+          onClick={() => setOrder((o) => (o === "desc" ? "asc" : "desc"))}
+          className="shrink-0 rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-zinc-300 transition-colors hover:border-brand-blue-light hover:text-brand-blue-light"
+        >
+          {order === "desc" ? "Latest → Earliest" : "Earliest → Latest"}
+        </button>
+      </div>
+      <div className="mt-10 flex flex-col gap-6">
+        {sortedPosts.map((post) => (
+          <Link
+            key={post.slug}
+            href={`/blog/${post.slug}`}
+            className="group block rounded-2xl border border-white/10 p-6 transition-colors hover:border-brand-yellow/50"
+          >
+            <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
+              {post.date}
+            </p>
+            <h2 className="mt-2 text-xl font-semibold group-hover:text-brand-yellow">
+              {post.title}
+            </h2>
+            <p className="mt-2 text-zinc-400">{post.excerpt}</p>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
