@@ -46,6 +46,21 @@ const unsortedPosts: Post[] = [
     imageAlt:
       "Line chart comparing Triton and PyTorch throughput (GB/s) across vector sizes from 10^4 to 10^8 elements, showing the two lines closely overlapping and plateauing around 240 GB/s.",
   },
+  {
+    slug: "fused-softmax-kernel",
+    title: "Fused Softmax in Triton",
+    date: "2026-07-29",
+    excerpt:
+      "Naive softmax needs 3 passes over memory — fusing them into one pass takes it from ~55 GB/s to ~230 GB/s, a 4x jump, and holds a tighter line than PyTorch's own kernel.",
+    paragraphs: [
+      "Mid-week 2nd kernel: fused softmax. Naive softmax needs 3 passes over memory (max, exp+sum, divide) — fusing into one pass takes it from ~55 GB/s to ~230 GB/s, a 4x jump.",
+      "Triton's line is also tighter and more consistent than PyTorch's across block sizes.",
+      "Next: flash attention.",
+    ],
+    image: "/blog/triton-softmax-benchmark.png",
+    imageAlt:
+      "Line chart comparing Triton, PyTorch, and naive softmax throughput (GB/s) across row widths from ~250 to ~12,500 columns. Triton holds a tight band around 225-230 GB/s, Torch fluctuates between 210-245 GB/s with several dips, and naive softmax stays flat around 50-60 GB/s.",
+  },
 ];
 
 // unsortedPosts is declared in the order each post was written, so on a
