@@ -48,6 +48,13 @@ const unsortedPosts: Post[] = [
   },
 ];
 
-export const posts: Post[] = [...unsortedPosts].sort((a, b) =>
-  b.date.localeCompare(a.date)
-);
+// unsortedPosts is declared in the order each post was written, so on a
+// same-date tie the later-declared post (written later that day) should
+// still sort as more recent.
+export const posts: Post[] = unsortedPosts
+  .map((post, writeOrder) => ({ post, writeOrder }))
+  .sort(
+    (a, b) =>
+      b.post.date.localeCompare(a.post.date) || b.writeOrder - a.writeOrder
+  )
+  .map(({ post }) => post);
