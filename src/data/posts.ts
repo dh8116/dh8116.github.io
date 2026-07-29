@@ -8,7 +8,7 @@ export type Post = {
   imageAlt?: string;
 };
 
-export const posts: Post[] = [
+const unsortedPosts: Post[] = [
   {
     slug: "hello-world",
     title: "Hello, world",
@@ -47,3 +47,7 @@ export const posts: Post[] = [
       "Line chart comparing Triton and PyTorch throughput (GB/s) across vector sizes from 10^4 to 10^8 elements, showing the two lines closely overlapping and plateauing around 240 GB/s.",
   },
 ];
+
+export const posts: Post[] = [...unsortedPosts].sort((a, b) =>
+  b.date.localeCompare(a.date)
+);
