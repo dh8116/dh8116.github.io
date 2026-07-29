@@ -4,6 +4,8 @@ export type Post = {
   date: string;
   excerpt: string;
   paragraphs: string[];
+  image?: string;
+  imageAlt?: string;
 };
 
 export const posts: Post[] = [
@@ -29,5 +31,19 @@ export const posts: Post[] = [
       "The simulation side is further useful: Simulate mode lets you roleplay with fully custom agents (name, personality, backstory), and Storytelling mode takes one real situation and runs it through 7 different AI perspectives simultaneously — useful for rehearsing a hard conversation or just seeing an angle you missed. Voice/video calls with a live animated face, a Support mode for emotional check-ins, and a wellness layer (journaling, habits, guided breathing) round it into something built for daily use, not a one-off gimmick.",
       "A working version is available at soulor-ai.vercel.app.",
     ],
+  },
+  {
+    slug: "writing-my-first-gpu-kernel",
+    title: "Writing My First GPU Kernel",
+    date: "2026-07-26",
+    excerpt:
+      "Built my first Triton kernel today (vector add), following the official tutorial. Correctness confirmed, and it matches PyTorch's throughput almost exactly on a T4 GPU.",
+    paragraphs: [
+      "Built my first Triton kernel today (vector add), following the official tutorial. Correctness confirmed (max diff = 0.0 vs PyTorch), and it matches PyTorch's throughput almost exactly on a T4 GPU.",
+      "Next: a kernel where there's actual room to beat the baseline (softmax).",
+    ],
+    image: "/blog/triton-vector-add-benchmark.png",
+    imageAlt:
+      "Line chart comparing Triton and PyTorch throughput (GB/s) across vector sizes from 10^4 to 10^8 elements, showing the two lines closely overlapping and plateauing around 240 GB/s.",
   },
 ];
