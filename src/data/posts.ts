@@ -61,6 +61,20 @@ const unsortedPosts: Post[] = [
     imageAlt:
       "Line chart comparing Triton, PyTorch, and naive softmax throughput (GB/s) across row widths from ~250 to ~12,500 columns. Triton holds a tight band around 225-230 GB/s, Torch fluctuates between 210-245 GB/s with several dips, and naive softmax stays flat around 50-60 GB/s.",
   },
+  {
+    slug: "flash-attention-kernel",
+    title: "Flash Attention: Correct, but Not Fast",
+    date: "2026-08-03",
+    excerpt:
+      "Correctness is solid, but it's ~25x slower than PyTorch on my T4 — turns out the T4 just lacks the pipelining hardware flash attention needs.",
+    paragraphs: [
+      "3rd kernel: flash attention. Correctness is solid (max diff 0.000122 vs PyTorch), but it's ~25x slower on my T4.",
+      "Tried the exp2 trick thinking it was compute-bound - no change. T4 (Turing) lacks the pipelining hardware flash attention needs. Hardware limit, not a bug.",
+    ],
+    image: "/blog/triton-flash-attention-benchmark.png",
+    imageAlt:
+      "Line chart comparing Triton and Torch SDPA throughput (TFLOPs/s) across sequence lengths from 512 to 8192. Torch SDPA climbs quickly to 13-14 TFLOPs/s, while Triton stays flat around 0.5 TFLOPs/s across all sequence lengths.",
+  },
 ];
 
 // unsortedPosts is declared in the order each post was written, so on a
