@@ -134,14 +134,16 @@ export default function Home() {
                     Visit site &rarr;
                   </a>
                 )}
-                <a
-                  href={project.repo}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-brand-yellow hover:underline"
-                >
-                  Source &rarr;
-                </a>
+                {project.repo && (
+                  <a
+                    href={project.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-yellow hover:underline"
+                  >
+                    Source &rarr;
+                  </a>
+                )}
               </div>
             </div>
           ))}
