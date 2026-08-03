@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -57,6 +58,17 @@ export default async function BlogPost({
           <p key={i}>{paragraph}</p>
         ))}
       </div>
+      {post.image && (
+        <div className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-card">
+          <Image
+            src={post.image}
+            alt={post.imageAlt ?? ""}
+            width={1200}
+            height={900}
+            className="h-auto w-full"
+          />
+        </div>
+      )}
     </div>
   );
 }
