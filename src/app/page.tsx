@@ -48,13 +48,13 @@ export default function Home() {
             </a>
           </div>
         </div>
-        <div className="relative h-56 w-56 overflow-hidden rounded-3xl border border-white/10 bg-card sm:h-64 sm:w-64">
+        <div className="group relative h-56 w-56 overflow-hidden rounded-3xl border border-white/10 bg-card transition-all duration-200 hover:-translate-y-1 hover:border-brand-blue/50 hover:shadow-xl hover:shadow-brand-blue/10 sm:h-64 sm:w-64">
           <Image
             src={site.avatar}
             alt={site.name}
             fill
             sizes="256px"
-            className="object-cover"
+            className="object-cover transition-transform duration-200 group-hover:scale-105"
             priority
           />
         </div>
