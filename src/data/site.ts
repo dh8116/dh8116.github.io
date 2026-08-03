@@ -5,7 +5,7 @@ export const site = {
   tagline: "Building AI that remembers",
   status: "Year 11 Student",
   location: "Auckland, New Zealand",
-  bio: "Year 11 student building AI companion and simulation projects, with a background in mathematical modelling competitions and AI-assisted development.",
+  bio: "Year 11 student building AI companion apps, full-stack web platforms, and GPU kernels, with a background in mathematical modelling competitions and AI-assisted development.",
   github: "https://github.com/dh8116/",
   x: "https://x.com/RicaV42",
   avatar: "/avatar.jpeg",
