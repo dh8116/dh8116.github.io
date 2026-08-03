@@ -3,6 +3,7 @@ import Link from "next/link";
 import { site, projects, aboutCards, skills } from "@/data/site";
 import { posts } from "@/data/posts";
 import PersonalDetailsCard from "@/components/PersonalDetailsCard";
+import FadeInSection from "@/components/FadeInSection";
 
 export default function Home() {
   const latestPosts = posts.slice(0, 2);
@@ -59,127 +60,135 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="scroll-mt-24 py-16">
-        <SectionHeading eyebrow="My" title="About" />
-        <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
-          <div className="grid gap-6 sm:grid-cols-2">
-            {aboutCards.map((card) => (
-              <div
-                key={card.title}
-                className="rounded-2xl border border-white/10 bg-card p-6"
+      <FadeInSection>
+        <section id="about" className="scroll-mt-24 py-16">
+          <SectionHeading eyebrow="My" title="About" />
+          <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
+            <div className="grid gap-6 sm:grid-cols-2">
+              {aboutCards.map((card) => (
+                <div
+                  key={card.title}
+                  className="rounded-2xl border border-white/10 bg-card p-6"
+                >
+                  <p className="text-xs font-medium uppercase tracking-widest text-brand-blue-light">
+                    {card.period}
+                  </p>
+                  <h3 className="mt-2 font-semibold">{card.title}</h3>
+                  <p className="mt-2 text-sm text-zinc-400">
+                    {card.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <PersonalDetailsCard />
+          </div>
+        </section>
+      </FadeInSection>
+
+      <FadeInSection>
+        <section id="skills" className="scroll-mt-24 py-16">
+          <SectionHeading eyebrow="My" title="Skills" />
+          <div className="mt-8 flex flex-wrap gap-3">
+            {skills.map((skill) => (
+              <span
+                key={skill}
+                className="rounded-full border border-white/10 bg-card px-4 py-2 text-sm text-zinc-300"
               >
-                <p className="text-xs font-medium uppercase tracking-widest text-brand-blue-light">
-                  {card.period}
+                {skill}
+              </span>
+            ))}
+          </div>
+        </section>
+      </FadeInSection>
+
+      <FadeInSection>
+        <section id="projects" className="scroll-mt-24 py-16">
+          <SectionHeading eyebrow="My" title="Projects" />
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            {projects.map((project) => (
+              <div
+                key={project.slug}
+                className="flex flex-col rounded-2xl border border-white/10 bg-card p-6 transition-colors hover:border-brand-blue/50"
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-semibold">{project.name}</h3>
+                  {project.status && (
+                    <span className="rounded-full border border-brand-yellow/40 px-2.5 py-1 text-xs font-medium text-brand-yellow">
+                      {project.status}
+                    </span>
+                  )}
+                </div>
+                <p className="mt-3 flex-1 text-sm text-zinc-400">
+                  {project.description}
                 </p>
-                <h3 className="mt-2 font-semibold">{card.title}</h3>
-                <p className="mt-2 text-sm text-zinc-400">
-                  {card.description}
-                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-brand-blue/10 px-2.5 py-1 text-xs text-brand-blue-light"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-5 flex gap-4 text-sm font-medium">
+                  {project.url && (
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-brand-blue-light hover:underline"
+                    >
+                      Visit site &rarr;
+                    </a>
+                  )}
+                  {project.repo && (
+                    <a
+                      href={project.repo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-brand-yellow hover:underline"
+                    >
+                      Source &rarr;
+                    </a>
+                  )}
+                </div>
               </div>
             ))}
           </div>
-          <PersonalDetailsCard />
-        </div>
-      </section>
+        </section>
+      </FadeInSection>
 
-      <section id="skills" className="scroll-mt-24 py-16">
-        <SectionHeading eyebrow="My" title="Skills" />
-        <div className="mt-8 flex flex-wrap gap-3">
-          {skills.map((skill) => (
-            <span
-              key={skill}
-              className="rounded-full border border-white/10 bg-card px-4 py-2 text-sm text-zinc-300"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <section id="projects" className="scroll-mt-24 py-16">
-        <SectionHeading eyebrow="My" title="Projects" />
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {projects.map((project) => (
-            <div
-              key={project.slug}
-              className="flex flex-col rounded-2xl border border-white/10 bg-card p-6 transition-colors hover:border-brand-blue/50"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold">{project.name}</h3>
-                {project.status && (
-                  <span className="rounded-full border border-brand-yellow/40 px-2.5 py-1 text-xs font-medium text-brand-yellow">
-                    {project.status}
-                  </span>
-                )}
-              </div>
-              <p className="mt-3 flex-1 text-sm text-zinc-400">
-                {project.description}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-brand-blue/10 px-2.5 py-1 text-xs text-brand-blue-light"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <div className="mt-5 flex gap-4 text-sm font-medium">
-                {project.url && (
-                  <a
-                    href={project.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-brand-blue-light hover:underline"
-                  >
-                    Visit site &rarr;
-                  </a>
-                )}
-                {project.repo && (
-                  <a
-                    href={project.repo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-brand-yellow hover:underline"
-                  >
-                    Source &rarr;
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="py-16">
-        <div className="flex items-baseline justify-between">
-          <SectionHeading eyebrow="Latest" title="Writing" />
-          <Link
-            href="/blog"
-            className="text-sm font-medium text-brand-blue-light hover:underline"
-          >
-            All posts &rarr;
-          </Link>
-        </div>
-        <div className="mt-8 flex flex-col gap-6">
-          {latestPosts.map((post) => (
+      <FadeInSection>
+        <section className="py-16">
+          <div className="flex items-baseline justify-between">
+            <SectionHeading eyebrow="Latest" title="Writing" />
             <Link
-              key={post.slug}
-              href={`/blog/${post.slug}`}
-              className="group block rounded-2xl border border-white/10 bg-card p-6 transition-colors hover:border-brand-yellow/50"
+              href="/blog"
+              className="text-sm font-medium text-brand-blue-light hover:underline"
             >
-              <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
-                {post.date}
-              </p>
-              <h3 className="mt-2 text-lg font-semibold group-hover:text-brand-yellow">
-                {post.title}
-              </h3>
-              <p className="mt-2 text-zinc-400">{post.excerpt}</p>
+              All posts &rarr;
             </Link>
-          ))}
-        </div>
-      </section>
+          </div>
+          <div className="mt-8 flex flex-col gap-6">
+            {latestPosts.map((post) => (
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="group block rounded-2xl border border-white/10 bg-card p-6 transition-colors hover:border-brand-yellow/50"
+              >
+                <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
+                  {post.date}
+                </p>
+                <h3 className="mt-2 text-lg font-semibold group-hover:text-brand-yellow">
+                  {post.title}
+                </h3>
+                <p className="mt-2 text-zinc-400">{post.excerpt}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      </FadeInSection>
     </div>
   );
 }
