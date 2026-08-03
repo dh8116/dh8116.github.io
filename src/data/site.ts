@@ -14,7 +14,7 @@ export const site = {
 export type Project = {
   slug: string;
   name: string;
-  status: "Live" | "In development";
+  status?: "Live" | "In development";
   description: string;
   tags: string[];
   url?: string;
@@ -25,7 +25,6 @@ export const projects: Project[] = [
   {
     slug: "soulor-ai",
     name: "Soulor AI",
-    status: "In development",
     description:
       "An AI companion and social simulation application. Exploring LLM orchestration, fallback routing, and real-time narrative response design, with features like likeability scoring, coach analysis, and persistent chat history.",
     tags: ["Node.js", "Express", "LLM Orchestration", "Claude Code"],

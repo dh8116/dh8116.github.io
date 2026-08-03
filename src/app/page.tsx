@@ -106,9 +106,11 @@ export default function Home() {
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-semibold">{project.name}</h3>
-                <span className="rounded-full border border-brand-yellow/40 px-2.5 py-1 text-xs font-medium text-brand-yellow">
-                  {project.status}
-                </span>
+                {project.status && (
+                  <span className="rounded-full border border-brand-yellow/40 px-2.5 py-1 text-xs font-medium text-brand-yellow">
+                    {project.status}
+                  </span>
+                )}
               </div>
               <p className="mt-3 flex-1 text-sm text-zinc-400">
                 {project.description}
