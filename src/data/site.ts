@@ -18,7 +18,7 @@ export type Project = {
   description: string;
   tags: string[];
   url?: string;
-  repo: string;
+  repo?: string;
 };
 
 export const projects: Project[] = [
@@ -30,7 +30,6 @@ export const projects: Project[] = [
       "An AI companion and social simulation application. Exploring LLM orchestration, fallback routing, and real-time narrative response design, with features like likeability scoring, coach analysis, and persistent chat history.",
     tags: ["Node.js", "Express", "LLM Orchestration", "Claude Code"],
     url: "https://soulor-ai.vercel.app/",
-    repo: "https://github.com/dh8116/",
   },
   {
     slug: "vnportal",
@@ -40,7 +39,6 @@ export const projects: Project[] = [
       "A full-stack vinyl music web portal with real-time audio via the Web Audio API, Spotify SDK, and Jamendo — multi-deck mixing, beat sequencing, and multitrack DAW export, backed by Supabase auth and hardened with CSP, XSS escaping, and rate limiting.",
     tags: ["Web Audio API", "Supabase", "Spotify SDK", "Playwright"],
     url: "https://vnportal.vercel.app/",
-    repo: "https://github.com/dh8116/",
   },
 ];
 
