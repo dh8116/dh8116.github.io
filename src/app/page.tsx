@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-5xl px-6 lg:pr-40">
       <section className="grid grid-cols-1 items-center gap-12 py-24 lg:grid-cols-[1fr_auto]">
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 rounded-3xl border border-white/10 bg-card p-8 transition-all duration-200 hover:-translate-y-1 hover:border-brand-blue/50 hover:shadow-xl hover:shadow-brand-blue/10">
           <p className="text-sm font-medium uppercase tracking-widest text-brand-blue-light">
             Hello, I&apos;m
           </p>
