@@ -39,6 +39,7 @@ export const projects: Project[] = [
     description:
       "A full-stack vinyl music web portal with real-time audio via the Web Audio API, Spotify SDK, and Jamendo — multi-deck mixing, beat sequencing, and multitrack DAW export, backed by Supabase auth and hardened with CSP, XSS escaping, and rate limiting.",
     tags: ["Web Audio API", "Supabase", "Spotify SDK", "Playwright"],
+    url: "https://vnportal.vercel.app/",
     repo: "https://github.com/dh8116/",
   },
 ];
