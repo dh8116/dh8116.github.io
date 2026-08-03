@@ -108,7 +108,7 @@ export default function Home() {
             {projects.map((project) => (
               <div
                 key={project.slug}
-                className="flex flex-col rounded-2xl border border-white/10 bg-card p-6 transition-colors hover:border-brand-blue/50"
+                className="flex flex-col rounded-2xl border border-white/10 bg-card p-6 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:border-brand-blue/50 hover:shadow-xl hover:shadow-brand-blue/10"
               >
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-semibold">{project.name}</h3>
@@ -175,7 +175,7 @@ export default function Home() {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="group block rounded-2xl border border-white/10 bg-card p-6 transition-colors hover:border-brand-yellow/50"
+                className="group block rounded-2xl border border-white/10 bg-card p-6 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:border-brand-yellow/50 hover:shadow-xl hover:shadow-brand-yellow/10"
               >
                 <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
                   {post.date}

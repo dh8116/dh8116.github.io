@@ -31,7 +31,7 @@ export default function BlogList({ posts }: { posts: Post[] }) {
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="group block rounded-2xl border border-white/10 p-6 transition-colors hover:border-brand-yellow/50"
+            className="group block rounded-2xl border border-white/10 p-6 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:border-brand-yellow/50 hover:shadow-xl hover:shadow-brand-yellow/10"
           >
             <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
               {post.date}

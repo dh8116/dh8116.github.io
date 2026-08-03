@@ -27,7 +27,7 @@ export const projects: Project[] = [
     name: "Soulor AI",
     description:
       "An AI companion and social simulation application. Exploring LLM orchestration, fallback routing, and real-time narrative response design, with features like likeability scoring, coach analysis, and persistent chat history.",
-    tags: ["Node.js", "Express", "LLM Orchestration", "Claude Code"],
+    tags: ["Node.js", "Express", "LLM Orchestration", "Supabase"],
     url: "https://soulor-ai.vercel.app/",
   },
   {
