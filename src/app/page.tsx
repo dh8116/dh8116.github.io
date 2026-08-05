@@ -46,6 +46,12 @@ export default function Home() {
             >
               X
             </a>
+            <a
+              href={`mailto:${site.email}`}
+              className="rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-zinc-200 transition-colors hover:border-brand-blue-light hover:text-brand-blue-light"
+            >
+              Email
+            </a>
           </div>
         </div>
         <div className="group relative h-56 w-56 overflow-hidden rounded-3xl border border-white/10 bg-card transition-all duration-200 hover:-translate-y-1 hover:border-brand-blue/50 hover:shadow-xl hover:shadow-brand-blue/10 sm:h-64 sm:w-64">
