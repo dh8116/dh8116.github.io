@@ -18,6 +18,17 @@ export default function PersonalDetailsCard() {
           <dd className="text-right text-zinc-300">{site.status}</dd>
         </div>
         <div className="flex justify-between gap-4">
+          <dt className="text-zinc-500">Email</dt>
+          <dd className="text-right">
+            <a
+              href={`mailto:${site.email}`}
+              className="text-brand-blue-light hover:underline"
+            >
+              {site.email}
+            </a>
+          </dd>
+        </div>
+        <div className="flex justify-between gap-4">
           <dt className="text-zinc-500">GitHub</dt>
           <dd className="text-right">
             <a
