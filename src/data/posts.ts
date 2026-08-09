@@ -75,6 +75,21 @@ const unsortedPosts: Post[] = [
     imageAlt:
       "Line chart comparing Triton and Torch SDPA throughput (TFLOPs/s) across sequence lengths from 512 to 8192. Torch SDPA climbs quickly to 13-14 TFLOPs/s, while Triton stays flat around 0.5 TFLOPs/s across all sequence lengths.",
   },
+  {
+    slug: "triton-matmul-no-tensor-cores",
+    title: "Matmul: Correct, but No Tensor Cores",
+    date: "2026-08-09",
+    excerpt:
+      "Output matches PyTorch, but throughput stays flat around 1 TFLOPS no matter the matrix size while cuBLAS climbs to 38 — traced it to the compiled PTX and found zero tensor-core instructions.",
+    paragraphs: [
+      "4th kernel: tiled matmul. Correct (matches torch.matmul within fp16 tolerance), but flat around ~1 TFLOPS regardless of matrix size, while PyTorch's cuBLAS climbs to ~38 TFLOPS.",
+      "Flat-no-matter-the-size is the tell for a compute-bound kernel — something wasn't engaging. Tried deeper pipelining (num_stages), tried stripping out boundary masking, neither moved the needle. Grepped the actual compiled PTX: zero mma.sync, HMMA, or wmma instructions. Tensor cores never fired, not even once.",
+      "Unlike flash attention, this isn't a hard architecture wall — Turing does have tensor cores. Looks more like current Triton (3.6.0) just isn't generating tensor-core code for the T4's sm_75 target anymore, as the project's focus has moved to newer hardware. Second week running an old T4 has surfaced a real gap between what current Triton ships for and what Colab's free-tier GPU can actually do.",
+    ],
+    image: "/blog/triton-matmul-benchmark.png",
+    imageAlt:
+      "Line chart comparing Triton and PyTorch cuBLAS matmul throughput (TFLOPS) across square matrix sizes from 256 to 3840. PyTorch climbs sharply to a peak around 38 TFLOPS near M=1800 before gradually declining to ~19 TFLOPS, while Triton stays flat near 1 TFLOPS across the entire range.",
+  },
 ];
 
 // unsortedPosts is declared in the order each post was written, so on a
