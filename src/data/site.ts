@@ -69,9 +69,9 @@ export const aboutCards: AboutCard[] = [
   },
   {
     period: "Volunteer",
-    title: "Math Competition Community",
+    title: "Worldwide Math Community",
     description:
-      "Accepted as a volunteer in Technology, Design, and Problem Writing, contributing technical skills, creative thinking, and mathematical problem-solving experience.",
+      "Volunteering in Mustang Math Community in Technology and Curriculum Development, contributing technical skills, creative thinking, and mathematical problem-solving experience.",
   },
 ];
 
