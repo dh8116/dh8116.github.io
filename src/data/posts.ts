@@ -90,6 +90,22 @@ const unsortedPosts: Post[] = [
     imageAlt:
       "Line chart comparing Triton and PyTorch cuBLAS matmul throughput (TFLOPS) across square matrix sizes from 256 to 3840. PyTorch climbs sharply to a peak around 38 TFLOPS near M=1800 before gradually declining to ~19 TFLOPS, while Triton stays flat near 1 TFLOPS across the entire range.",
   },
+  {
+    slug: "rmsnorm-forward-and-backward",
+    title: "RMSNorm: Forward, Backward, and Why It Matters",
+    date: "2026-08-16",
+    excerpt:
+      "Reading Kimi K3's report right now, and RMSNorm keeps coming up as one of its bigger architectural wins alongside attention residuals — so this week's kernel is RMSNorm, forward and backward.",
+    paragraphs: [
+      "5th kernel: RMSNorm, forward and backward. Motivation came from the paper side of the track — reading Kimi K3's report at the moment, and RMSNorm keeps coming up as one of the report's bigger architectural wins, right alongside attention residuals. Felt worth building rather than just reading about.",
+      "Forward pass: correct (max diff 0.00195, normal fp16 tolerance), ~230 GB/s vs ~20 GB/s for an unfused PyTorch baseline. Same fusion story as softmax's win a few weeks back.",
+      "Backward was the harder half — had to actually derive the gradient (dx = rrms * (dxnorm - x_norm * mean(dxnorm * x_norm))), and the weight gradient needs a sum across every row, not just within one. Used atomic_add for that, which works (dx diff 0.0078, dweight diff 0.0625, both fine once you account for dweight's larger scale) but shows up as a jagged, non-flat throughput line instead of forward's clean one — real atomic contention, not a bug. Still ~10x over PyTorch either way.",
+      "Next: maybe fix the atomics with a proper two-stage reduction, or move on to week 6.",
+    ],
+    image: "/blog/triton-rmsnorm-benchmark.png",
+    imageAlt:
+      "Line chart comparing Triton and PyTorch throughput (GB/s) for the RMSNorm backward pass across column widths from 1024 to 15872. Triton climbs sharply then settles into a jagged band roughly between 108-150 GB/s with visible dips, while PyTorch stays flat around 11 GB/s.",
+  },
 ];
 
 // unsortedPosts is declared in the order each post was written, so on a
