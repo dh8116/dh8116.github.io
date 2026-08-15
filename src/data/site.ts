@@ -63,9 +63,9 @@ export const aboutCards: AboutCard[] = [
   },
   {
     period: "Ongoing",
-    title: "Building with AI tools",
+    title: "AI Research & Development",
     description:
-      "Using Claude Code, ChatGPT, and GitHub Copilot to prototype ideas, solve problems, and ship projects like Soulor AI and VNportal.",
+      "Using tools like Claude, VS Code, and Google Colab to read frontier model papers, build GPU kernels, solve real-world problems, and ship web apps.",
   },
   {
     period: "Volunteer",
