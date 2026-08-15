@@ -88,13 +88,13 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-6">
               <PersonalDetailsCard />
-              <div className="flex min-h-[160px] items-center justify-center rounded-2xl border border-white/10 bg-card p-6">
-                <div className="relative h-20 w-20 overflow-hidden rounded-xl">
+              <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-white/10 bg-card p-6">
+                <div className="relative h-32 w-32 overflow-hidden rounded-xl border border-white/10">
                   <Image
                     src="/cat-mascot.jpg"
                     alt="Pixel-art cat mascot"
                     fill
-                    sizes="80px"
+                    sizes="128px"
                     className="object-cover"
                   />
                 </div>
