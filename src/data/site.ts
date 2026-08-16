@@ -1,7 +1,7 @@
 export const site = {
-  name: "Doria H",
-  firstName: "Doria",
-  lastName: "H",
+  name: "Richael",
+  firstName: "Richael",
+  lastName: "",
   tagline: "Building AI that remembers",
   status: "Year 11 Student",
   location: "Auckland, New Zealand",

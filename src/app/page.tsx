@@ -16,7 +16,7 @@ export default function Home() {
             Hello, I&apos;m
           </p>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            <span className="text-brand-blue-light">{site.firstName}</span>{" "}
+            <span className="text-brand-blue-light">{site.firstName}</span>
             <span>{site.lastName}</span>
           </h1>
           <p className="text-lg font-medium text-brand-yellow">
