@@ -85,3 +85,30 @@ export const skills: string[] = [
   "Product Thinking",
   "AI-Assisted Development",
 ];
+
+export type CurrentlyItem = {
+  label: string;
+  title: string;
+  detail: string;
+};
+
+export const currentlyLearning: CurrentlyItem[] = [
+  {
+    label: "Reading",
+    title: "Kimi K3 technical report",
+    detail:
+      "Working through the architecture section by section — attention residuals, MoE routing — as part of a weekly paper-dissection loop.",
+  },
+  {
+    label: "Building",
+    title: "Triton GPU kernels",
+    detail:
+      "Week 5 done: RMSNorm forward + backward, benchmarked against PyTorch eager. Picking the Week 6 kernel next.",
+  },
+  {
+    label: "Next up",
+    title: "AI/ML infrastructure research",
+    detail:
+      "Preparing a research project in AI/ML infrastructure programming — the next step after the kernel track.",
+  },
+];

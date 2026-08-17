@@ -1,6 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { site, projects, aboutCards, skills } from "@/data/site";
+import {
+  site,
+  projects,
+  aboutCards,
+  skills,
+  currentlyLearning,
+} from "@/data/site";
 import { posts } from "@/data/posts";
 import PersonalDetailsCard from "@/components/PersonalDetailsCard";
 import FadeInSection from "@/components/FadeInSection";
@@ -88,15 +94,22 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-6">
               <PersonalDetailsCard />
-              <div className="relative min-h-[220px] flex-1">
-                <div className="absolute left-1/2 top-1/2 h-[85%] w-[85%] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl">
-                  <Image
-                    src="/cat-mascot.jpg"
-                    alt="Pixel-art cat mascot"
-                    fill
-                    sizes="320px"
-                    className="object-cover"
-                  />
+              <div className="rounded-2xl border border-white/10 bg-card p-6">
+                <h3 className="text-lg font-semibold">Currently Learning</h3>
+                <div className="mt-4 flex flex-col gap-4">
+                  {currentlyLearning.map((item) => (
+                    <div key={item.title}>
+                      <p className="text-xs font-medium uppercase tracking-widest text-brand-blue-light">
+                        {item.label}
+                      </p>
+                      <h4 className="mt-1 text-sm font-semibold">
+                        {item.title}
+                      </h4>
+                      <p className="mt-1 text-sm text-zinc-400">
+                        {item.detail}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
