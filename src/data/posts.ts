@@ -116,7 +116,7 @@ const unsortedPosts: Post[] = [
       "6th kernel: RoPE (rotary position embeddings), forward and backward. Same paper tie-in as RMSNorm last week — still working through Kimi K3's report, and RoPE is the other piece of its attention stack worth building instead of just reading past. Used the Llama-style \"rotate-half\" convention — split head_dim in half and rotate the two halves against each other — rather than GPT-J's interleaved-pairs version, since it's what most current LLMs (Kimi K3 included) actually use.",
       "Correct on both passes: fwd max diff 0.00390625, bwd max diff 0.00390625, both normal fp16 rounding. Throughput: ~156-206 GB/s on Triton vs a flat ~38-46 GB/s for PyTorch eager across sequence lengths 512-8192. Same caveat as softmax and RMSNorm though — that's a fused kernel against an unfused eager baseline, not a fused-vs-fused comparison, so I'm not calling it a clean win.",
       "The actual interesting part: backward didn't need a second kernel. Rotating by -theta undoes a rotation by theta, so backward is just the forward kernel called again with a NEGATE_SIN flag flipping sin to -sin at compile time. No separate gradient derivation, no second set of pointer math.",
-      "Next: week 7.",
+      "Next up is probably cross-entropy loss, forward and backward — it's the one op every training step touches, and it'd round RMSNorm and RoPE out into something that actually looks like a transformer forward pass.",
     ],
     image: "/blog/triton-rope-benchmark.png",
     imageAlt:
