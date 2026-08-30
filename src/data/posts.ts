@@ -122,6 +122,28 @@ const unsortedPosts: Post[] = [
     imageAlt:
       "Line chart comparing Triton and PyTorch throughput (GB/s) for RoPE across sequence lengths from 512 to 8192. Triton rises to a peak around 205 GB/s near seq_len 2000 then gradually declines to about 156 GB/s, while PyTorch stays flat around 40-47 GB/s.",
   },
+  {
+    slug: "fused-cross-entropy",
+    title: "Fused Cross-Entropy, and the Benchmark That Nearly Fooled Me",
+    date: "2026-08-30",
+    excerpt:
+      "7th kernel: cross-entropy loss, forward and backward in one pass. First week my PyTorch baseline was genuinely fused \u2014 and the first draft of the result was 2.5x faster only because I'd quietly handicapped the baseline.",
+    paragraphs: [
+      "7th kernel: cross-entropy loss, forward and backward fused into a single Triton kernel. This is the one op every training step touches, and together with RMSNorm and RoPE from the last two weeks it starts to look like an actual transformer.",
+      "The idea it's built on: the gradient of cross-entropy with respect to the logits is just softmax(logits) - onehot(target). That depends on nothing but the logits themselves. So you don't have to keep the logits around for a separate backward pass later \u2014 you can compute the gradient during the forward pass and write it straight back over the input buffer. PyTorch has to allocate a second [batch, vocab] tensor for the gradient. This doesn't.",
+      "First numbers I got were 2.5x faster and 2.5x less memory, and I nearly stopped there. The problem was my baseline: I'd written F.cross_entropy(x.float(), targets), and that .float() silently materialises a full fp32 copy of the logits that my kernel never pays for. I was benchmarking against an opponent I'd handicapped. Against the honest fp16 baseline the speedup collapsed from 2.5x to 1.06x \u2014 pure noise.",
+      "What was left after that was worth more than the fake number. Every previous kernel I've written here was measured against unfused eager PyTorch, so the win was always partly \"fusion beats no fusion.\" F.cross_entropy is a real fused kernel. This is the first week the comparison is actually fair.",
+      "So, fairly: at vocab 131072 it's 1.51x faster (15.9ms vs 24.0ms) and uses 1.67x less peak memory. The memory ratio is exactly 1.67x at every vocab size I tested, which turns out to have a clean explanation \u2014 PyTorch keeps five copies of the logits tensor alive through forward and backward, and the fused version keeps three.",
+      "The speed win only shows up once the vocab is big, and that's the honest reading: the kernel itself runs at ~240 GB/s, which is the same bandwidth ceiling my softmax and RMSNorm kernels hit, i.e. the T4's limit rather than mine. Both implementations are already pinned there. What the fusion actually saves is passes over memory, so it only matters once the logits tensor is big enough to dominate everything else. Real vocabs are big (Llama is 32k-128k, Kimi K3 is around 160k), which is why this is worth doing at all.",
+      "There's a catch I only found because a sanity check returned a number I couldn't explain. At vocab 32k, 74.3% of the gradient values my kernel writes are exactly zero \u2014 not small, zero. Each entry is about p/n_valid, roughly 1/(vocab x batch), which lands at ~6e-8, and fp16's smallest subnormal is 5.96e-8. The whole tail of the distribution underflows on the way into the buffer.",
+      "The annoying part is that the usual fix doesn't work here. Mixed-precision training handles exactly this with a GradScaler that multiplies the loss by a large constant to lift gradients into fp16's range \u2014 but that scale arrives in backward(), and by then my kernel has already stored the underflowed values. Writing the gradient in place during forward is the whole trick, and it's also what puts the store before the scaling. In fp32 the math checks out fine (2.8e-6 relative error), so this is a range problem, not a correctness one, but it means the in-place fp16 version is genuinely fragile in a way the benchmark can't see.",
+      "Worth saying that my first correctness check missed this completely. I compared my fp16 gradients against PyTorch's and got a max difference of 5.96e-08, which I read as excellent precision. It's the same number as fp16's minimum subnormal, because both tensors were mostly zeros agreeing with each other. A passing test that tests nothing.",
+      "Next one is probably fused linear + cross-entropy \u2014 chunking the lm_head projection into the loss so the full [batch, vocab] logits tensor never exists at all. This week's whole result was that the logits tensor dominates the time and the memory, so the obvious move is to stop materialising it.",
+    ],
+    image: "/blog/triton-cross-entropy-benchmark.png",
+    imageAlt:
+      "Two line charts comparing Triton fused cross-entropy against torch F.cross_entropy on a T4 across vocab sizes 4096 to 131072. Left panel, forward plus backward time: both curves rise steeply, with Triton reaching about 15.9ms at vocab 131072 versus PyTorch's 24.0ms. Right panel, peak memory: Triton stays consistently below PyTorch, ending at about 1611MB versus 2684MB.",
+  },
 ];
 
 // unsortedPosts is declared in the order each post was written, so on a
