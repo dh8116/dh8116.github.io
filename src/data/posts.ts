@@ -124,6 +124,39 @@ const unsortedPosts: Post[] = [
   },
   {
     slug: "fused-cross-entropy",
+    title: "Cross-Entropy: The Benchmark That Nearly Fooled Me",
+    date: "2026-08-30",
+    excerpt:
+      "7th kernel: cross-entropy, forward and backward in one pass. First fused-vs-fused comparison I've done \u2014 which is how I caught that my 2.5x speedup was just me handicapping the baseline.",
+    paragraphs: [
+      "7th kernel: cross-entropy loss, forward and backward fused into one kernel. The gradient is just softmax(logits) - onehot(target), which depends on nothing but the logits \u2014 so you can compute it during the forward pass and write it straight back over the input buffer. PyTorch allocates a second [batch, vocab] tensor for the gradient. This doesn't.",
+      "First numbers were 2.5x faster and 2.5x less memory, and I nearly stopped there. My baseline was F.cross_entropy(x.float(), targets), and that .float() quietly makes a full fp32 copy of the logits my kernel never pays for. Against the honest fp16 baseline the speedup dropped to 1.06x \u2014 noise. Still worth it though: F.cross_entropy is a real fused kernel, so this is the first week I'm not measuring against unfused eager PyTorch.",
+      "Fairly, then: 1.51x faster at vocab 131072 (15.9ms vs 24.0ms), and 1.67x less peak memory \u2014 exactly 1.67x at every vocab size, because PyTorch keeps five copies of the logits alive through fwd+bwd and this keeps three. The speed win only shows up at large vocab. The kernel sits at ~240 GB/s, the same T4 ceiling softmax and RMSNorm hit, so fusion only pays once the logits tensor is big enough to dominate everything else.",
+      "The catch: at vocab 32k, 74.3% of the gradient values it writes are exactly zero. Each one is about 1/(vocab x batch) \u2248 6e-8, and fp16's smallest subnormal is 5.96e-8, so the tail underflows on the way into the buffer. GradScaler can't save it either \u2014 that scale arrives in backward(), after the kernel has already stored them. My first correctness check missed this completely: max diff 5.96e-08, which I read as great precision, except that's fp16's min subnormal and both tensors were mostly zeros agreeing with each other.",
+      "Next is probably fused linear + cross-entropy \u2014 chunking the lm_head projection into the loss so the [batch, vocab] logits never exist at all. The whole result this week was that that tensor dominates both the time and the memory.",
+    ],
+    image: "/blog/triton-cross-entropy-benchmark.png",
+    imageAlt:
+      "Two line charts comparing Triton fused cross-entropy against torch F.cross_entropy on a T4 across vocab sizes 4096 to 131072. Left panel, forward plus backward time: Triton reaches about 15.9ms at vocab 131072 versus PyTorch's 24.0ms. Right panel, peak memory: Triton stays consistently below PyTorch, ending at about 1611MB versus 2684MB.",
+  },
+  {
+    slug: "rope-forward-and-backward",
+    title: "RoPE: One Kernel for Both Directions",
+    date: "2026-08-23",
+    excerpt:
+      "6th kernel: rotary position embeddings, the other piece of Kimi K3's attention stack worth building. The nice part isn't the speedup, it's that backward reuses the exact same kernel as forward — just flip the sign on sin.",
+    paragraphs: [
+      "6th kernel: RoPE (rotary position embeddings), forward and backward. Same paper tie-in as RMSNorm last week — still working through Kimi K3's report, and RoPE is the other piece of its attention stack worth building instead of just reading past. Used the Llama-style \"rotate-half\" convention — split head_dim in half and rotate the two halves against each other — rather than GPT-J's interleaved-pairs version, since it's what most current LLMs (Kimi K3 included) actually use.",
+      "Correct on both passes: fwd max diff 0.00390625, bwd max diff 0.00390625, both normal fp16 rounding. Throughput: ~156-206 GB/s on Triton vs a flat ~38-46 GB/s for PyTorch eager across sequence lengths 512-8192. Same caveat as softmax and RMSNorm though — that's a fused kernel against an unfused eager baseline, not a fused-vs-fused comparison, so I'm not calling it a clean win.",
+      "The actual interesting part: backward didn't need a second kernel. Rotating by -theta undoes a rotation by theta, so backward is just the forward kernel called again with a NEGATE_SIN flag flipping sin to -sin at compile time. No separate gradient derivation, no second set of pointer math.",
+      "Next up is probably cross-entropy loss, forward and backward — it's the one op every training step touches, and it'd round RMSNorm and RoPE out into something that actually looks like a transformer forward pass.",
+    ],
+    image: "/blog/triton-rope-benchmark.png",
+    imageAlt:
+      "Line chart comparing Triton and PyTorch throughput (GB/s) for RoPE across sequence lengths from 512 to 8192. Triton rises to a peak around 205 GB/s near seq_len 2000 then gradually declines to about 156 GB/s, while PyTorch stays flat around 40-47 GB/s.",
+  },
+  {
+    slug: "fused-cross-entropy",
     title: "Fused Cross-Entropy, and the Benchmark That Nearly Fooled Me",
     date: "2026-08-30",
     excerpt:
