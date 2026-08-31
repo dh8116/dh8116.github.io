@@ -37,16 +37,16 @@ export default function BlogList({ posts }: { posts: Post[] }) {
         </button>
       </div>
 
-      <div className="mt-8 flex items-center gap-1 border-b border-white/10">
+      <div className="mt-8 grid grid-cols-2 border-b border-white/10">
         {TABS.map(({ id, label }) => (
           <button
             key={id}
             type="button"
             onClick={() => setTab(id)}
             aria-current={tab === id ? "page" : undefined}
-            className={`-mb-px border-b-2 px-4 py-3 text-sm font-semibold transition-colors ${
+            className={`-mb-px border-b-2 py-3 text-center text-sm font-semibold transition-colors ${
               tab === id
-                ? "border-brand-yellow text-brand-yellow"
+                ? "border-brand-blue-light text-brand-blue-light"
                 : "border-transparent text-zinc-500 hover:text-zinc-300"
             }`}
           >
