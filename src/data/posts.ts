@@ -2,6 +2,8 @@ export type Post = {
   slug: string;
   title: string;
   date: string;
+  // "kernel" posts are grouped separately on /blog; anything else is general.
+  category?: "kernel";
   excerpt: string;
   paragraphs: string[];
   image?: string;
@@ -34,6 +36,7 @@ const unsortedPosts: Post[] = [
   },
   {
     slug: "writing-my-first-gpu-kernel",
+    category: "kernel",
     title: "Writing My First GPU Kernel",
     date: "2026-07-26",
     excerpt:
@@ -48,6 +51,7 @@ const unsortedPosts: Post[] = [
   },
   {
     slug: "fused-softmax-kernel",
+    category: "kernel",
     title: "Fused Softmax in Triton",
     date: "2026-07-29",
     excerpt:
@@ -63,6 +67,7 @@ const unsortedPosts: Post[] = [
   },
   {
     slug: "flash-attention-kernel",
+    category: "kernel",
     title: "Flash Attention: Correct, but Not Fast",
     date: "2026-08-03",
     excerpt:
@@ -77,6 +82,7 @@ const unsortedPosts: Post[] = [
   },
   {
     slug: "triton-matmul-no-tensor-cores",
+    category: "kernel",
     title: "Matmul: Correct, but No Tensor Cores",
     date: "2026-08-09",
     excerpt:
@@ -92,6 +98,7 @@ const unsortedPosts: Post[] = [
   },
   {
     slug: "rmsnorm-forward-and-backward",
+    category: "kernel",
     title: "RMSNorm: Forward, Backward, and Why It Matters",
     date: "2026-08-16",
     excerpt:
@@ -108,6 +115,7 @@ const unsortedPosts: Post[] = [
   },
   {
     slug: "rope-forward-and-backward",
+    category: "kernel",
     title: "RoPE: One Kernel for Both Directions",
     date: "2026-08-23",
     excerpt:
@@ -124,6 +132,7 @@ const unsortedPosts: Post[] = [
   },
   {
     slug: "fused-cross-entropy",
+    category: "kernel",
     title: "Cross-Entropy: The Benchmark That Nearly Fooled Me",
     date: "2026-08-30",
     excerpt:
@@ -137,6 +146,18 @@ const unsortedPosts: Post[] = [
     image: "/blog/triton-cross-entropy-benchmark.png",
     imageAlt:
       "Two line charts comparing Triton fused cross-entropy against torch F.cross_entropy on a T4 across vocab sizes 4096 to 131072. Left panel, forward plus backward time: Triton reaches about 15.9ms at vocab 131072 versus PyTorch's 24.0ms. Right panel, peak memory: Triton stays consistently below PyTorch, ending at about 1611MB versus 2684MB.",
+  },
+  {
+    slug: "small-models-are-the-future",
+    title: "LLMs Are Dead. Small Models Are the Future.",
+    date: "2026-08-31",
+    excerpt:
+      "Today's LLMs win on text prediction and data volume, not depth \u2014 what we actually need are small models built deep in one field, with LLMs there just to wire them together.",
+    paragraphs: [
+      "Nowadays, LLMs are strong mainly through text prediction and data accumulation. I have to admit that they can handle many cross-domain work, including the hard ones, but their training data is messy and largely outdated, and according to some, only \u201ctutorial-level difficulty\u201d. Their advantages are mostly the same \u2014 \u201ccoding\u201d, \u201creasoning\u201d, \u201clong memory\u201d \u2014 which, after years of advertising, became plain and not as useful.",
+      "Instead, what we are increasingly in need of are efficient small models for deep, narrow areas to ensure real professional performance, not just surface work, which will definitely outperform LLMs in their own field. For example, each one for emotional communication, astrophysics, art, etc. The role of LLMs in the future is just to wire those small models up, to do integration and cross-domain work to produce more grounded achievements.",
+      "I'm Richael, and I'm fine-tuning small models like Qwen 14B to improve the performance of Soulor \u2014 a multi-companion and simulation app \u2014 and VNPortal \u2014 a music recreation and creation community platform with fair, controllable AI assistance. I hope to redefine AI's role in the modern and future world. If you're interested, welcome to visit my apps, share, and support. Thanks for reading, and have a good day!",
+    ],
   },
 ];
 
