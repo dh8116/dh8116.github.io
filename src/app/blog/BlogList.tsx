@@ -5,52 +5,24 @@ import Link from "next/link";
 import type { Post } from "@/data/posts";
 
 type SortOrder = "desc" | "asc";
+type Tab = "general" | "kernel";
 
-function PostCard({ post }: { post: Post }) {
-  return (
-    <Link
-      href={`/blog/${post.slug}`}
-      className="group block rounded-2xl border border-white/10 p-6 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:border-brand-yellow/50 hover:shadow-xl hover:shadow-brand-yellow/10"
-    >
-      <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
-        {post.date}
-      </p>
-      <h3 className="mt-2 text-xl font-semibold group-hover:text-brand-yellow">
-        {post.title}
-      </h3>
-      <p className="mt-2 text-zinc-400">{post.excerpt}</p>
-    </Link>
-  );
-}
-
-function PostSection({ title, posts }: { title: string; posts: Post[] }) {
-  if (posts.length === 0) return null;
-
-  return (
-    <section className="mt-12">
-      <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-blue-light">
-        {title}
-      </h2>
-      <div className="mt-6 flex flex-col gap-6">
-        {posts.map((post) => (
-          <PostCard key={post.slug} post={post} />
-        ))}
-      </div>
-    </section>
-  );
-}
+const TABS: { id: Tab; label: string }[] = [
+  { id: "general", label: "General" },
+  { id: "kernel", label: "Kernel" },
+];
 
 export default function BlogList({ posts }: { posts: Post[] }) {
   const [order, setOrder] = useState<SortOrder>("desc");
+  const [tab, setTab] = useState<Tab>("general");
 
-  const { general, kernel } = useMemo(() => {
-    const sorted = [...posts].sort((a, b) => b.date.localeCompare(a.date));
-    const ordered = order === "desc" ? sorted : sorted.reverse();
-    return {
-      general: ordered.filter((p) => p.category !== "kernel"),
-      kernel: ordered.filter((p) => p.category === "kernel"),
-    };
-  }, [posts, order]);
+  const visiblePosts = useMemo(() => {
+    const filtered = posts.filter((post) =>
+      tab === "kernel" ? post.category === "kernel" : post.category !== "kernel"
+    );
+    const sorted = filtered.sort((a, b) => b.date.localeCompare(a.date));
+    return order === "desc" ? sorted : sorted.reverse();
+  }, [posts, order, tab]);
 
   return (
     <div>
@@ -64,8 +36,42 @@ export default function BlogList({ posts }: { posts: Post[] }) {
           {order === "desc" ? "Latest → Earliest" : "Earliest → Latest"}
         </button>
       </div>
-      <PostSection title="General" posts={general} />
-      <PostSection title="Kernels" posts={kernel} />
+
+      <div className="mt-8 flex items-center gap-1 border-b border-white/10">
+        {TABS.map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setTab(id)}
+            aria-current={tab === id ? "page" : undefined}
+            className={`-mb-px border-b-2 px-4 py-3 text-sm font-semibold transition-colors ${
+              tab === id
+                ? "border-brand-yellow text-brand-yellow"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-10 flex flex-col gap-6">
+        {visiblePosts.map((post) => (
+          <Link
+            key={post.slug}
+            href={`/blog/${post.slug}`}
+            className="group block rounded-2xl border border-white/10 p-6 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:border-brand-yellow/50 hover:shadow-xl hover:shadow-brand-yellow/10"
+          >
+            <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
+              {post.date}
+            </p>
+            <h2 className="mt-2 text-xl font-semibold group-hover:text-brand-yellow">
+              {post.title}
+            </h2>
+            <p className="mt-2 text-zinc-400">{post.excerpt}</p>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
