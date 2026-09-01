@@ -159,6 +159,17 @@ const unsortedPosts: Post[] = [
       "I'm Richael, and I'm fine-tuning small models like Qwen 14B to improve the performance of Soulor \u2014 a multi-companion and simulation app \u2014 and VNPortal \u2014 a music recreation and creation community platform with fair, controllable AI assistance. I hope to redefine AI's role in the modern and future world. If you're interested, welcome to visit my apps, share, and support. Thanks for reading, and have a good day!",
     ],
   },
+  {
+    slug: "apps-are-just-prompt-shells",
+    title: "Most Apps Today Are Just Prompt Shells",
+    date: "2026-09-01",
+    excerpt:
+      "APIs are still efficient and cheap enough for everyday use, but for vertical apps it is increasingly essential to fine-tune a small model to serve a narrow area.",
+    paragraphs: [
+      "Most apps today are just prompt shells around LLMs. Though some of them go viral and look genuinely useful, they can't do anything the underlying model cannot do, and they disappear quickly after models ship updates. And as these models are trained to be broad rather than deep, their outputs can't be professional enough to produce the results specialised tasks demand. APIs are still efficient and cheap enough for everyday use, but for vertical apps it is increasingly essential to train — or at least fine-tune — a small model to serve a narrow area. Refer to my last post to see why small models are necessary: https://dh8116.github.io/blog/small-models-are-the-future.",
+      "I'm Richael. I'm creating new ways to use AI in applications, so as to redefine its role in the next era. I'm currently developing two apps: a multi-companion and simulation platform, and a music recreation & creation community. If you are interested, check out my website or follow me for more!",
+    ],
+  },
 ];
 
 // unsortedPosts is declared in the order each post was written, so on a
