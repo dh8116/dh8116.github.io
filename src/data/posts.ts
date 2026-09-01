@@ -161,7 +161,7 @@ const unsortedPosts: Post[] = [
   },
   {
     slug: "apps-are-just-prompt-shells",
-    title: "Most Apps Today Are Just Prompt Shells",
+    title: "Apps Need Their Own Models, Not Prompt Shells",
     date: "2026-09-01",
     excerpt:
       "APIs are still efficient and cheap enough for everyday use, but for vertical apps it is increasingly essential to fine-tune a small model to serve a narrow area.",
