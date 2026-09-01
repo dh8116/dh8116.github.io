@@ -11,6 +11,48 @@ export function generateStaticParams() {
 
 export const dynamicParams = false;
 
+// Paragraphs are plain strings, so bare URLs in post text are turned into real
+// links here. Links back to this site become client-side routes.
+const SITE_ORIGIN = "https://dh8116.github.io";
+const URL_PATTERN = /(https?:\/\/[^\s<>()]*[^\s<>().,;:!?])/g;
+
+function ParagraphText({ text }: { text: string }) {
+  // String.split with a capture group puts the matched URLs at odd indices.
+  const chunks = text.split(URL_PATTERN);
+
+  return (
+    <>
+      {chunks.map((chunk, i) => {
+        if (i % 2 === 0) {
+          return chunk;
+        }
+
+        const internalPath = chunk.startsWith(SITE_ORIGIN)
+          ? chunk.slice(SITE_ORIGIN.length) || "/"
+          : null;
+        const className =
+          "text-brand-blue-light underline underline-offset-4 hover:no-underline";
+
+        return internalPath ? (
+          <Link key={i} href={internalPath} className={className}>
+            {chunk}
+          </Link>
+        ) : (
+          <a
+            key={i}
+            href={chunk}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={className}
+          >
+            {chunk}
+          </a>
+        );
+      })}
+    </>
+  );
+}
+
 function getPost(slug: string) {
   return posts.find((post) => post.slug === slug);
 }
@@ -55,7 +97,9 @@ export default async function BlogPost({
       </h1>
       <div className="mt-8 flex flex-col gap-4 text-lg leading-relaxed text-zinc-300">
         {post.paragraphs.map((paragraph, i) => (
-          <p key={i}>{paragraph}</p>
+          <p key={i}>
+            <ParagraphText text={paragraph} />
+          </p>
         ))}
       </div>
       {post.image && (
