@@ -76,13 +76,17 @@ export const aboutCards: AboutCard[] = [
 ];
 
 export const skills: string[] = [
-  "Strong Written Communication",
-  "Technical Report Writing",
-  "Detail-Oriented Review & Testing",
-  "Problem Solving & Research",
-  "QA Mindset",
-  "Technical Documentation",
-  "Product Thinking",
+  "Triton GPU Kernels",
+  "PyTorch",
+  "GPU Benchmarking & Profiling",
+  "LLM Fine-Tuning (LoRA)",
+  "Model Serving (vLLM, Modal)",
+  "LLM Orchestration & Fallback Routing",
+  "Full-Stack TypeScript (Next.js, Express)",
+  "Supabase & Postgres",
+  "Real-Time Web Audio",
+  "Mathematical Modelling",
+  "Technical Writing",
   "AI-Assisted Development",
 ];
 
@@ -97,18 +101,18 @@ export const currentlyLearning: CurrentlyItem[] = [
     label: "Reading",
     title: "Kimi K3 technical report",
     detail:
-      "Working through the architecture section by section — attention residuals, MoE routing — as part of a weekly paper-dissection loop.",
+      "At Part 10 of a part-by-part read — through KDA and attention residuals, Stable LatentMoE, and into post-training. Part 11 is on building trustworthy rewards, which runs straight into the research below.",
   },
   {
     label: "Building",
     title: "Triton GPU kernels",
     detail:
-      "Week 5 done: RMSNorm forward + backward, benchmarked against PyTorch eager. Picking the Week 6 kernel next.",
+      "Week 7 done: cross-entropy with forward and backward fused into one kernel — 1.51x faster and 1.67x less peak memory at vocab 131072, and the first genuinely fair baseline of the track. Week 8 folds the linear layer in to stop materialising the logits at all.",
   },
   {
     label: "Next up",
-    title: "AI/ML infrastructure research",
+    title: "RLVR verifier research",
     detail:
-      "Preparing a research project in AI/ML infrastructure programming — the next step after the kernel track.",
+      "A paper on when a persistently wrong verifier actually harms GRPO training — holding error rate and asymmetry fixed, sweeping persistence, and mapping the ground between two published results that disagree.",
   },
 ];
