@@ -27,7 +27,7 @@ export const projects: Project[] = [
     slug: "soulor-ai",
     name: "Soulor AI",
     description:
-      "A companion app that tries to remember you. Each companion carries its own personality, and the relationship moves through five stages as affection, trust and intimacy build \u2014 with simulation modes for rehearsing a conversation before having it for real. Relationship state and per-companion sampling bias reach generation itself instead of sitting in the prompt, and every outbound call runs through one gateway with region-aware routing.",
+      "Most companion apps forget you between sessions and keep the whole relationship inside a prompt, so every character ends up sounding the same. Soulor pushes that state into generation itself \u2014 memory and relationship stage change how a companion speaks, and five stages from stranger to soulmate carry it forward, so companions diverge in voice over time. The same engine runs simulation modes, which makes it a place to rehearse a hard conversation before having it for real.",
     tags: [
       "Express Gateway",
       "Supabase",
@@ -40,7 +40,7 @@ export const projects: Project[] = [
     slug: "vnportal",
     name: "VNportal",
     description:
-      "A vinyl and music platform built around real-time audio. It finds a record, finds something playable behind it through a six-source fallback cascade, then treats the track as material \u2014 multi-deck mixing, a multitrack DAW, and a rhythm game charted from the song\u2019s own detected beats. It also makes sound of its own: single instrument stems generated bar-locked to a tempo you ask for.",
+      "Music tools either hand you a play button and stop, or hand the whole song to a model and call that creation. VNportal treats a track as material and keeps the person deciding: find a record, play what sits behind it, then mix it, chop it into a DAW, or play it as a rhythm game charted from the song\u2019s own beats. Its generation is asked for one instrument at a time, at a tempo and key you set, so what comes back is a part you place rather than a finished song handed to you.",
     tags: [
       "Vite SPA",
       "Express Gateway",
