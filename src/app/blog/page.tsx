@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function BlogIndex() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-24">
+    <div className="mx-auto max-w-3xl px-6 pb-24 pt-12">
       <BlogList posts={posts} />
     </div>
   );

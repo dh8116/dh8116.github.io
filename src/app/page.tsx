@@ -10,6 +10,7 @@ import {
 import { posts } from "@/data/posts";
 import PersonalDetailsCard from "@/components/PersonalDetailsCard";
 import FadeInSection from "@/components/FadeInSection";
+import SkillPills from "@/components/SkillPills";
 
 export default function Home() {
   const latestPosts = posts.slice(0, 2);
@@ -17,7 +18,7 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-5xl px-6 lg:pr-40">
       <section className="grid grid-cols-1 items-center gap-12 py-24 lg:grid-cols-[1fr_auto]">
-        <div className="flex flex-col gap-6 rounded-3xl p-2 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-xl hover:shadow-brand-blue/10">
+        <FadeInSection className="flex flex-col gap-6">
           <p className="text-sm font-medium uppercase tracking-widest text-brand-blue-light">
             Hello, I&apos;m
           </p>
@@ -59,7 +60,7 @@ export default function Home() {
               Email
             </a>
           </div>
-        </div>
+        </FadeInSection>
         <div className="group relative h-56 w-56 overflow-hidden rounded-3xl border border-white/10 bg-card transition-all duration-200 hover:-translate-y-1 hover:border-brand-blue/50 hover:shadow-xl hover:shadow-brand-blue/10 sm:h-64 sm:w-64">
           <Image
             src={site.avatar}
@@ -76,7 +77,7 @@ export default function Home() {
         <section id="about" className="scroll-mt-24 py-16">
           <SectionHeading eyebrow="My" title="About" />
           <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className="grid content-start gap-6 sm:grid-cols-2">
               {aboutCards.map((card) => (
                 <div
                   key={card.title}
@@ -120,16 +121,7 @@ export default function Home() {
       <FadeInSection>
         <section id="skills" className="scroll-mt-24 py-16">
           <SectionHeading eyebrow="My" title="Skills" />
-          <div className="mt-8 flex flex-wrap gap-3">
-            {skills.map((skill) => (
-              <span
-                key={skill}
-                className="rounded-full border border-white/10 bg-card px-4 py-2 text-sm text-zinc-300"
-              >
-                {skill}
-              </span>
-            ))}
-          </div>
+          <SkillPills skills={skills} />
         </section>
       </FadeInSection>
 

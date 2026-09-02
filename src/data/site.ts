@@ -3,7 +3,7 @@ export const site = {
   firstName: "Richael",
   lastName: "",
   tagline: "Building AI that remembers",
-  status: "Year 11 Student",
+  status: "AI & GPU Systems",
   location: "Auckland, New Zealand",
   bio: "Year 11 student building AI companion apps, full-stack web platforms, and GPU kernels, with a background in mathematical modelling competitions and AI-assisted development.",
   email: "huangd6666@gmail.com",
@@ -27,17 +27,26 @@ export const projects: Project[] = [
     slug: "soulor-ai",
     name: "Soulor AI",
     description:
-      "An AI companion and social simulation application. Exploring LLM orchestration, fallback routing, and real-time narrative response design, with features like likeability scoring, coach analysis, and persistent chat history.",
-    tags: ["Node.js", "Express", "LLM Orchestration", "Supabase"],
+      "A companion app that tries to remember you. Each companion carries its own personality, and the relationship moves through five stages as affection, trust and intimacy build \u2014 with simulation modes for rehearsing a conversation before having it for real. Relationship state and per-companion sampling bias reach generation itself instead of sitting in the prompt, and every outbound call runs through one gateway with region-aware routing.",
+    tags: [
+      "Express Gateway",
+      "Supabase",
+      "Region-Aware Routing",
+      "Fine-Tuning Workflow",
+    ],
     url: "https://soulor-ai.vercel.app/",
   },
   {
     slug: "vnportal",
     name: "VNportal",
-    status: "In development",
     description:
-      "A full-stack vinyl music web portal with real-time audio via the Web Audio API, Spotify SDK, and Jamendo — multi-deck mixing, beat sequencing, and multitrack DAW export, backed by Supabase auth and hardened with CSP, XSS escaping, and rate limiting.",
-    tags: ["Web Audio API", "Supabase", "Spotify SDK", "Playwright"],
+      "A vinyl and music platform built around real-time audio. It finds a record, finds something playable behind it through a six-source fallback cascade, then treats the track as material \u2014 multi-deck mixing, a multitrack DAW, and a rhythm game charted from the song\u2019s own detected beats. It also makes sound of its own: single instrument stems generated bar-locked to a tempo you ask for.",
+    tags: [
+      "Vite SPA",
+      "Express Gateway",
+      "Supabase",
+      "Real-Time Audio Pipeline",
+    ],
     url: "https://vnportal.vercel.app/",
   },
 ];
