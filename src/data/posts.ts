@@ -170,6 +170,19 @@ const unsortedPosts: Post[] = [
       "I'm Richael. I'm creating new ways to use AI in applications, so as to redefine its role in the next era. I'm currently developing two apps: a multi-companion and simulation platform, and a music recreation & creation community. If you are interested, check out my website or follow me for more!",
     ],
   },
+  {
+    slug: "fine-tuning-is-a-trade",
+    title: "Fine-Tuning Is a Trade, Not an Upgrade",
+    date: "2026-09-02",
+    excerpt:
+      "Everyone advertises what fine-tuning brings and no one talks about what it costs \u2014 mine bought key and instrument identity, and paid for it in timing.",
+    paragraphs: [
+      "No decision is worth making just because it works, it is worth making only when what it wins is worth more than what it costs, and you'd only know that after running all over. This is also the case for fine-tuning, and is still the decision I made: a broad model will never go deep enough for professional work, so a vertical app has to train its own. But everyone advertises what it brings, no one talks about what it costs.",
+      "I'm fine-tuning small models for both of my apps, and here is a bill. I trained a small music model to generate single instrument stems, and it worked \u2014 the instruments, keys both came out right, and it followed existing fields instead of guessing. But it lost tempo and rhythmic accuracy while the base model hit that almost exactly. So the training bought key and tune identity, in return for timing. It was still worth it \u2014 but I got to say that only after I got the data, and for weeks before that I could just guess.",
+      "And this is a crucial part missing from previous small-model arguments, as fine-tunes change the whole scene, not just the one you were aiming at. Whatever we assume as foreground drifts quietly during training, indistinguishable, until something backs up against it. So the message here is not \u201cdon't fine-tune\u201d. It is to build and consider comprehensively before training, so as to have something to compare against eventually.",
+      "I'm Richael. My two apps are a multi-companion and simulation platform and a music recreation and creation community, and I'm upgrading their models so they can make use of full potential in their unique fields. My last post, about why vertical apps need their own models, is here: https://dh8116.github.io/blog/apps-are-just-prompt-shells. If you're interested, check out my website or follow for more, thanks for your support!",
+    ],
+  },
 ];
 
 // unsortedPosts is declared in the order each post was written, so on a
