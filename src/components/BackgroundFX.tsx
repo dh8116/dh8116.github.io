@@ -2,7 +2,7 @@ export default function BackgroundFX() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-background"
+      className="pointer-events-none fixed inset-0 -z-10 transform-gpu overflow-hidden bg-background"
     >
       <div className="absolute inset-0 bg-grid" />
       <div className="motion-safe:animate-drift-a absolute -top-32 -left-24 h-[36rem] w-[36rem] rounded-full bg-brand-blue/45 blur-[90px]" />

@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BackgroundFX from "@/components/BackgroundFX";
 import SideNav from "@/components/SideNav";
+import RouteRepaint from "@/components/RouteRepaint";
 import { site } from "@/data/site";
 
 const geistSans = Geist({
@@ -20,6 +21,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: `${site.name} — ${site.tagline}`,
   description: `${site.name}'s personal site: projects and writing.`,
+  referrer: "strict-origin-when-cross-origin",
+  // "noai"/"noimageai" is the advisory opt-out some crawlers and image scrapers
+  // read; robots.txt carries the enforceable half of the same request.
+  robots: "index, follow, noai, noimageai",
 };
 
 export default function RootLayout({
@@ -33,6 +38,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
+        <RouteRepaint />
         <BackgroundFX />
         <SideNav />
         <Header />

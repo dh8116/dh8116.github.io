@@ -13,13 +13,18 @@ const links = [
 
 export default function SideNav() {
   const pathname = usePathname();
-  const [active, setActive] = useState<string | null>(null);
+  const [visibleSection, setVisibleSection] = useState<string | null>(null);
+
+  // Off the homepage the route decides; on it, the section in view does.
+  const active =
+    pathname === "/"
+      ? visibleSection
+      : pathname.startsWith("/blog")
+        ? "blog"
+        : null;
 
   useEffect(() => {
-    if (pathname !== "/") {
-      setActive(pathname.startsWith("/blog") ? "blog" : null);
-      return;
-    }
+    if (pathname !== "/") return;
 
     const sections = ["about", "skills", "projects"]
       .map((id) => document.getElementById(id))
@@ -29,7 +34,7 @@ export default function SideNav() {
     const observer = new IntersectionObserver(
       (entries) => {
         const hit = entries.find((entry) => entry.isIntersecting);
-        if (hit) setActive(hit.target.id);
+        if (hit) setVisibleSection(hit.target.id);
       },
       { rootMargin: "-45% 0px -50% 0px" }
     );
