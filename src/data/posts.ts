@@ -183,6 +183,17 @@ const unsortedPosts: Post[] = [
       "I'm Richael. My two apps are a multi-companion and simulation platform and a music recreation and creation community, and I'm upgrading their models so they can make use of full potential in their unique fields. My last post, about why vertical apps need their own models, is here: https://dh8116.github.io/blog/apps-are-just-prompt-shells. If you're interested, check out my website or follow for more, thanks for your support!",
     ],
   },
+  {
+    slug: "ship-before-perfection-has-expired",
+    title: "\"Ship Before Perfection\" Has Expired",
+    date: "2026-09-06",
+    excerpt:
+      "The advice made sense when a working product took a team months. Now agents write the code, one person builds in a day, and what shipping fast mostly produces is slop.",
+    paragraphs: [
+      "\"Ship before perfection\" was advice for a world where building was expensive. The famous quote of Reid Hoffman has been followed by builders for decades: when a working product took a team months, shipping early was the only way to search for user feedback. However, that cost is mostly gone. In this era of AI boom, agents write most of the code, and one person can build a complete working product online in a day. But the advice outlived the conditions that justified it, and what it produces now is thousands of AI slops, which run, look finished, but are useless, shipped by those who were told that shipping was the key part. Meanwhile our gaps also shift: whether the product is worth opening twice, whether the details hold up under real use, whether anyone thought of the situation you're actually in.",
+      "Therefore, the advice now seems to have inverted, suggesting perfection over shipping. Though shipping is still necessary to get real feedback, tons of new projects are shipped everywhere all the time. So \"perfection\" is becoming increasingly important for apps, and even builders themselves, to stand out from this booming market. Knowing what is worth building, and refusing to release it before it is genuinely good is what builders should follow now.",
+    ],
+  },
 ];
 
 // unsortedPosts is declared in the order each post was written, so on a
