@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Share_Tech_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Orbitron } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -20,9 +20,9 @@ const geistMono = Geist_Mono({
 
 // Display face for the 404 glyphs only - self-hosted at build time, so the
 // export's font-src 'self' CSP still covers it.
-const shareTechMono = Share_Tech_Mono({
+const orbitron = Orbitron({
   variable: "--font-hacker",
-  weight: "400",
+  weight: "900",
   subsets: ["latin"],
 });
 
@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${shareTechMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <RouteRepaint />
