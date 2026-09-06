@@ -7,6 +7,9 @@
   --color-brand-blue: #3b82f6;
   --color-brand-blue-light: #60a5fa;
   --color-brand-yellow: #facc15;
+  /* Terminal green, used only by the 404 page. */
+  --color-term: #4ade80;
+  --color-term-dim: #22c55e;
 }
 
 @theme inline {
@@ -16,6 +19,8 @@
   --color-brand-blue: var(--color-brand-blue);
   --color-brand-blue-light: var(--color-brand-blue-light);
   --color-brand-yellow: var(--color-brand-yellow);
+  --color-term: var(--color-term);
+  --color-term-dim: var(--color-term-dim);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --animate-drift-a: drift-a 22s ease-in-out infinite;
@@ -62,5 +67,117 @@ body {
   }
   50% {
     transform: translate(-2.5rem, -3rem) scale(1.1);
+  }
+}
+
+/* --- 404 terminal treatment ------------------------------------------- */
+
+.crt-glow {
+  text-shadow:
+    0 0 18px rgba(74, 222, 128, 0.55),
+    0 0 60px rgba(74, 222, 128, 0.2);
+}
+
+/* Scanline sheet over the terminal card. */
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(74, 222, 128, 0.05) 0px,
+    rgba(74, 222, 128, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* Chromatic-aberration glitch on the 404. Both layers are decorative copies
+   drawn from data-text, so the readable green glyphs stay a single DOM node. */
+.glitch {
+  position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  /* The glyphs themselves are invisible; only the offset colored shadow shows,
+     so these layers never paint a box over the animated background. */
+  color: transparent;
+  opacity: 0.32;
+}
+
+.glitch::before {
+  left: 1px;
+  text-shadow: -2px 0 rgba(244, 63, 94, 0.75);
+  clip-path: inset(0 0 58% 0);
+  animation: glitch-a 3.2s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+  left: -1px;
+  text-shadow: 2px 0 rgba(34, 211, 238, 0.75);
+  clip-path: inset(58% 0 0 0);
+  animation: glitch-b 2.7s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-a {
+  0%,
+  62%,
+  100% {
+    transform: translate(0, 0);
+  }
+  64% {
+    transform: translate(-3px, -1px);
+  }
+  67% {
+    transform: translate(2px, 1px);
+  }
+  70% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glitch-b {
+  0%,
+  72%,
+  100% {
+    transform: translate(0, 0);
+  }
+  74% {
+    transform: translate(3px, 1px);
+  }
+  78% {
+    transform: translate(-2px, -1px);
+  }
+  81% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Staggered boot-log reveal; delay is set per line inline. */
+.term-line {
+  animation: term-line 0.45s ease-out both;
+}
+
+@keyframes term-line {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch::before,
+  .glitch::after {
+    animation: none;
+  }
+  .term-line {
+    animation: none;
   }
 }
