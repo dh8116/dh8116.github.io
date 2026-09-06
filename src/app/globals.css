@@ -23,6 +23,7 @@
   --color-term-dim: var(--color-term-dim);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-hacker: var(--font-hacker);
   --animate-drift-a: drift-a 22s ease-in-out infinite;
   --animate-drift-b: drift-b 28s ease-in-out infinite;
 }

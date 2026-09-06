@@ -40,7 +40,7 @@ export default function NotFound() {
       <p className="font-mono text-sm font-medium uppercase tracking-widest text-brand-blue-light">
         HTTP/1.1 404 Not Found
       </p>
-      <h1 className="mt-4 font-mono text-[5.5rem] font-bold leading-none tracking-tighter sm:text-[8rem] md:text-[10rem]">
+      <h1 className="mt-4 font-hacker text-[5.5rem] font-bold leading-none tracking-tighter sm:text-[8rem] md:text-[10rem]">
         404
       </h1>
       <p className="mt-4 text-2xl font-medium text-brand-yellow sm:text-3xl">
@@ -108,17 +108,18 @@ export default function NotFound() {
         </div>
       </div>
 
-      <p className="mt-8 text-lg leading-relaxed text-zinc-400">
-        Recon complete, and there is nothing to pop. No admin panel, no{" "}
-        <code className="font-mono text-zinc-300">.env</code>, no{" "}
-        <code className="font-mono text-zinc-300">.git</code> left exposed, no
-        login to brute force, no query parameter that reaches a database, no
-        session cookie worth stealing. The entire attack surface is a folder of
-        HTML files that GitHub serves off disk — and the source is already
-        public, so you can clone it instead of enumerating it.
+      <p className="mt-8 text-lg leading-relaxed">
+        <a
+          href="https://github.com/dh8116/dh8116.github.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="break-all font-mono text-brand-blue-light underline underline-offset-4 hover:no-underline"
+        >
+          https://github.com/dh8116/dh8116.github.io
+        </a>
       </p>
       <p className="mt-4 text-lg leading-relaxed text-zinc-400">
-        And if you got here by clicking a broken link rather than by fuzzing —
+        If you got here by clicking a broken link rather than by fuzzing —
         sorry, no exploit either way. Just a wrong path.
       </p>
 
