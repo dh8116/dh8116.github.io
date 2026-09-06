@@ -12,36 +12,45 @@ export default function NotFound() {
         404
       </p>
       <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-        Index out of bounds
-        <span className="ml-1 inline-block h-7 w-[0.6ch] translate-y-0.5 animate-pulse bg-brand-yellow align-baseline motion-reduce:animate-none sm:h-9" />
+        Nice try.
       </h1>
 
       <div className="mt-8 overflow-x-auto rounded-2xl border border-white/10 bg-card p-6">
         <pre className="font-mono text-sm leading-relaxed text-zinc-300">
           <code>
-            {"offsets = tl.arange(0, BLOCK)\n"}
-            {"mask    = offsets < n_pages"}
+            <span className="text-brand-blue-light">{"$ "}</span>
+            {"ffuf -u https://dh8116.github.io/FUZZ -w common.txt\n\n"}
+            {"  /                        "}
+            <span className="text-zinc-500">{"[Status: 200]\n"}</span>
+            {"  /blog                    "}
+            <span className="text-zinc-500">{"[Status: 200]\n"}</span>
+            {"  /admin                   "}
+            <span className="text-brand-yellow">{"[Status: 404]\n"}</span>
+            {"  /.env                    "}
+            <span className="text-brand-yellow">{"[Status: 404]\n"}</span>
+            {"  /wp-login.php            "}
+            <span className="text-brand-yellow">{"[Status: 404]\n"}</span>
+            {"  /whatever-you-just-tried "}
+            <span className="text-brand-yellow">{"[Status: 404]\n\n"}</span>
             <span className="text-zinc-500">
-              {"        # this URL is not in range"}
+              {":: 0 findings :: nothing exposed here ::"}
             </span>
-            {"\n"}
-            {"page    = tl.load(site + offsets, mask=mask, other="}
-            <span className="text-brand-yellow">404</span>
-            {")"}
+            <span className="ml-1 inline-block h-4 w-[0.6ch] translate-y-0.5 animate-pulse bg-brand-yellow motion-reduce:animate-none" />
           </code>
         </pre>
       </div>
 
       <p className="mt-8 text-lg leading-relaxed text-zinc-400">
-        You asked for a page past the end of the buffer. In a kernel this is
-        where the mask kicks in and hands back whatever you set{" "}
-        <code className="font-mono text-zinc-300">other</code> to, instead of
-        reading memory that was never yours. Here,{" "}
-        <code className="font-mono text-zinc-300">other</code> is this page.
+        That path is not on this site. If you were fuzzing for it, the wordlist
+        is not the problem — there is no admin panel, no{" "}
+        <code className="font-mono text-zinc-300">.env</code>, and no login to
+        brute force. This is a static site: no server, no database, no session
+        to steal. Everything behind it is a folder of HTML files, and all of it
+        is already public on GitHub.
       </p>
       <p className="mt-4 text-lg leading-relaxed text-zinc-400">
-        Nothing crashed. The link is just wrong, or it used to point at
-        something I have since renamed.
+        If you just clicked a broken link instead — sorry. Same page, less
+        interesting reason.
       </p>
 
       <div className="mt-8 flex flex-wrap gap-4">
@@ -49,7 +58,7 @@ export default function NotFound() {
           href="/"
           className="rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-light"
         >
-          Back in range
+          Back to /
         </Link>
         <Link
           href="/blog"
@@ -60,7 +69,7 @@ export default function NotFound() {
       </div>
 
       <h2 className="mt-16 text-xs font-medium uppercase tracking-widest text-zinc-500">
-        Or try one of these
+        Endpoints that do exist
       </h2>
       <div className="mt-5 flex flex-col gap-4">
         {latestPosts.map((post) => (
