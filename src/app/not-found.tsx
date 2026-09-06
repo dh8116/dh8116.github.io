@@ -40,7 +40,7 @@ export default function NotFound() {
       <p className="font-mono text-sm font-medium uppercase tracking-widest text-brand-blue-light">
         HTTP/1.1 404 Not Found
       </p>
-      <h1 className="mt-4 font-hacker text-[5.5rem] font-bold leading-none tracking-tighter sm:text-[8rem] md:text-[10rem]">
+      <h1 className="mt-4 font-hacker text-[6rem] leading-none tracking-tight sm:text-[8.5rem] md:text-[10.5rem]">
         404
       </h1>
       <p className="mt-4 text-2xl font-medium text-brand-yellow sm:text-3xl">
@@ -141,19 +141,20 @@ export default function NotFound() {
       <h2 className="mt-16 text-xs font-medium uppercase tracking-widest text-zinc-500">
         Endpoints that do exist
       </h2>
-      <div className="mt-5 flex flex-col gap-4">
+      <div className="mt-5 flex flex-col gap-6">
         {latestPosts.map((post) => (
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="group block rounded-2xl border border-white/10 p-5 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:border-brand-yellow/50 hover:shadow-xl hover:shadow-brand-yellow/10"
+            className="group block rounded-2xl border border-white/10 p-6 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:border-brand-yellow/50 hover:shadow-xl hover:shadow-brand-yellow/10"
           >
-            <p className="font-mono text-xs font-medium uppercase tracking-widest text-zinc-500">
+            <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
               {post.date}
             </p>
-            <h3 className="mt-2 font-semibold group-hover:text-brand-yellow">
+            <h3 className="mt-2 text-xl font-semibold group-hover:text-brand-yellow">
               {post.title}
             </h3>
+            <p className="mt-2 text-zinc-400">{post.excerpt}</p>
           </Link>
         ))}
       </div>
