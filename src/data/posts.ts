@@ -184,7 +184,7 @@ const unsortedPosts: Post[] = [
     ],
   },
   {
-    slug: "ship-before-perfection-has-expired",
+    slug: "ship-before-perfection-is-out-of-date",
     title: "\"Ship Before Perfection\" is out of date",
     date: "2026-09-06",
     excerpt:
