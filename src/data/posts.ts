@@ -185,7 +185,7 @@ const unsortedPosts: Post[] = [
   },
   {
     slug: "ship-before-perfection-has-expired",
-    title: "\"Ship Before Perfection\" Has Expired",
+    title: "\"Ship Before Perfection\" is out of date",
     date: "2026-09-06",
     excerpt:
       "The advice made sense when a working product took a team months. Now agents write the code, one person builds in a day, and what shipping fast mostly produces is slop.",
