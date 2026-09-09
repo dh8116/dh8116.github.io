@@ -148,6 +148,23 @@ const unsortedPosts: Post[] = [
       "Two line charts comparing Triton fused cross-entropy against torch F.cross_entropy on a T4 across vocab sizes 4096 to 131072. Left panel, forward plus backward time: Triton reaches about 15.9ms at vocab 131072 versus PyTorch's 24.0ms. Right panel, peak memory: Triton stays consistently below PyTorch, ending at about 1611MB versus 2684MB.",
   },
   {
+    slug: "fused-linear-cross-entropy",
+    category: "kernel",
+    title: "Fused Linear + CE: 10x Less Memory, and Slower",
+    date: "2026-09-10",
+    excerpt:
+      "8th kernel: chunking the lm_head projection into the loss so the [batch, vocab] logits never exist at all. About 10x less activation memory \u2014 and slower at every single size.",
+    paragraphs: [
+      "8th kernel: fused linear + cross-entropy. Last week's version still took the [batch, vocab] logits as its input, and then found that tensor was what dominated both the time and the memory. So this one pulls the lm_head projection inside the loss: project a chunk of rows, turn it into loss and gradient, fold that into dx and dw, free it. The full logits tensor never exists. The backward has to run during the forward \u2014 once a chunk is freed you can't get it back without redoing the matmul.",
+      "Activation memory drops about 10x, holding all the way from vocab 4096 to 131072. It is also slower at every one of them, 0.85-0.94x \u2014 and still 9% behind with the chunk size set to 2048, which is one chunk, no chunking at all. So that gap is my loss kernel and the passes that scale the gradients, not the chunking. The 10x needs a caveat too: the weight gradient is [vocab, hidden] and both versions allocate it, so it cancels out of the measurement. Counting everything the card actually has to hold, peak is 2181MB against 978MB. 2.23x.",
+      "The good part is what happened to last week's underflow. Week 7 wrote (softmax - onehot)/n_valid into an fp16 buffer and 74.3% of the values landed as exactly zero. This kernel stores plain softmax - onehot, which lives in [-1, 1], and applies the 1/n_valid to dx and dw afterwards, where the tensors are small. Same maths, same dtype, 0% zeros \u2014 the division just moved to the other side of the matmul.",
+      "Next is probably a fused SwiGLU MLP. With RMSNorm, RoPE, attention and the loss done, it's the last piece of a transformer block I haven't written, and the other place a block parks a big activation tensor.",
+    ],
+    image: "/blog/triton-fused-linear-ce-benchmark.png",
+    imageAlt:
+      "Two line charts comparing a Triton fused linear + cross-entropy kernel against torch F.cross_entropy on a T4 across vocab sizes 4096 to 131072. Left panel, forward plus backward time: the fused version tracks slightly above PyTorch throughout, ending at about 85ms versus 79ms at vocab 131072. Right panel, peak allocated memory: PyTorch climbs steeply to about 1338MB while the fused version stays nearly flat, ending at about 134MB.",
+  },
+  {
     slug: "small-models-are-the-future",
     title: "LLMs Are Dead. Small Models Are the Future.",
     date: "2026-08-31",
