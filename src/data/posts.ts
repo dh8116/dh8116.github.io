@@ -211,6 +211,21 @@ const unsortedPosts: Post[] = [
       "Therefore, the advice now seems to have inverted, suggesting perfection over shipping. Though shipping is still necessary to get real feedback, tons of new projects are shipped everywhere all the time. So \"perfection\" is becoming increasingly important for apps, and even builders themselves, to stand out from this booming market. Knowing what is worth building, and refusing to release it before it is genuinely good is what builders should follow now.",
     ],
   },
+  {
+    slug: "leaderboard-changes-every-week",
+    title: "The Leaderboard Changes Every Week. You Shouldn't.",
+    date: "2026-09-12",
+    excerpt:
+      "An excitement that arrives in an afternoon lasts only as long as a frontier model holds its ranking \u2014 switch every launch and you start over as a beginner six times a year.",
+    paragraphs: [
+      "Yesterday Anthropic, OpenAI, and xAI all launched their new flagship models within hours of each other, and before the day was over benchmarks and performance tests were everywhere \u2014 Astra 6 ahead of Fable 5.1, OpenAI back in front again. People celebrated it as a historic moment, and many read it as karma for Dario being arrogant. Plenty announced they were cancelling Claude and switching.",
+      "This scene has appeared before. A few months ago it ran almost identically, only with OpenAI as the victim. The target always changes and the discussion stays the same, and almost none of the people who switched last time were still talking about it a month later.",
+      "What actually makes it sick isn't which side people pick, it's how fast the enthusiasm rises and drops, and how much that costs. An excitement that arrives in an afternoon lasts only as long as a frontier model holds its ranking \u2014 one or two weeks on average. So the cycle feeds itself. You switch, you get a few weeks of novelty, the next launch lands, you switch again. Six times a year you start over as a beginner.",
+      "And a tool only pays you back after the boring part: after you've learned where it fails, what it needs from your prompts, which jobs to keep away from it. That knowledge is the actual asset, and it takes longer to build than the hype takes to expire. Every switch throws it away and buys a fresh launch-day feeling instead. Meanwhile the number driving the whole thing measures a narrow, averaged version of capability that often has little to do with the work you personally do. The model that came second can still be the better one for your thing.",
+      "The useful question was never which lab is winning. It's which model is better at the specific work in front of you, and you only find that out by staying with one long enough to stop being impressed by it. I use several, for different jobs, and none of them are exciting to me anymore. That's the point. I'd rather that stayed boring.",
+      "I'm Richael. I build two apps \u2014 Soulor, a multi-companion and simulation platform, and VNportal, a music recreation and creation community \u2014 and both of them care about which model is right for one narrow job, not which one is ahead this week. My last post, on why \u201cship before perfection\u201d is out of date, is here: https://dh8116.github.io/blog/ship-before-perfection-is-out-of-date. If you're interested, check out my website or follow for more.",
+    ],
+  },
 ];
 
 // unsortedPosts is declared in the order each post was written, so on a
