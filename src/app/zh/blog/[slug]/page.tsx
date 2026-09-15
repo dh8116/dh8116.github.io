@@ -17,18 +17,18 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPost("en", slug);
+  const post = getPost("zh", slug);
   return {
     title: post ? `${post.title} — ${site.name}` : site.name,
-    alternates: alternates(`/blog/${slug}`, "en"),
+    alternates: alternates(`/blog/${slug}`, "zh"),
   };
 }
 
-export default async function BlogPost({
+export default async function BlogPostZh({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  return <BlogPostPage lang="en" slug={slug} />;
+  return <BlogPostPage lang="zh" slug={slug} />;
 }

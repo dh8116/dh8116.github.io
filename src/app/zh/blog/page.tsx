@@ -4,10 +4,10 @@ import { site } from "@/data/site";
 import { alternates } from "@/data/i18n";
 
 export const metadata: Metadata = {
-  title: `Blog — ${site.name}`,
-  alternates: alternates("/blog", "en"),
+  title: `博客 — ${site.name}`,
+  alternates: alternates("/blog", "zh"),
 };
 
-export default function BlogIndex() {
-  return <BlogIndexPage lang="en" />;
+export default function BlogIndexZh() {
+  return <BlogIndexPage lang="zh" />;
 }

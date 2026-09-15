@@ -3,28 +3,32 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { langFromPath, localePath, stripLang, ui } from "@/data/i18n";
 
 const links = [
-  { href: "/#about", id: "about", label: "About" },
-  { href: "/#skills", id: "skills", label: "Skills" },
-  { href: "/#projects", id: "projects", label: "Projects" },
-  { href: "/blog", id: "blog", label: "Blog" },
-];
+  { path: "/#about", id: "about" },
+  { path: "/#skills", id: "skills" },
+  { path: "/#projects", id: "projects" },
+  { path: "/blog", id: "blog" },
+] as const;
 
 export default function SideNav() {
   const pathname = usePathname();
+  const lang = langFromPath(pathname);
+  const route = stripLang(pathname);
+  const labels = ui[lang].nav;
   const [visibleSection, setVisibleSection] = useState<string | null>(null);
 
   // Off the homepage the route decides; on it, the section in view does.
   const active =
-    pathname === "/"
+    route === "/"
       ? visibleSection
-      : pathname.startsWith("/blog")
+      : route.startsWith("/blog")
         ? "blog"
         : null;
 
   useEffect(() => {
-    if (pathname !== "/") return;
+    if (route !== "/") return;
 
     const sections = ["about", "skills", "projects"]
       .map((id) => document.getElementById(id))
@@ -41,7 +45,7 @@ export default function SideNav() {
 
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, [pathname]);
+  }, [route]);
 
   return (
     <nav
@@ -52,8 +56,8 @@ export default function SideNav() {
         const isActive = active === link.id;
         return (
           <Link
-            key={link.href}
-            href={link.href}
+            key={link.id}
+            href={localePath(link.path, lang)}
             aria-current={isActive ? "true" : undefined}
             className="group flex items-center gap-3 text-xs font-medium tracking-widest uppercase"
           >
@@ -64,7 +68,7 @@ export default function SideNav() {
                   : "text-zinc-500 group-hover:text-zinc-200"
               }`}
             >
-              {link.label}
+              {labels[link.id]}
             </span>
             <span
               className={`h-px transition-all duration-300 ${

@@ -1,5 +1,15 @@
+"use client";
+
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
-import { posts } from "@/data/posts";
+import { getPosts } from "@/data/content";
+import { langFromPath, localePath, ui } from "@/data/i18n";
+
+// The path never changes under this page, so there is nothing to subscribe to;
+// the server snapshot keeps hydration matching the English prerender.
+const subscribe = () => () => {};
+const clientPathname = () => window.location.pathname;
+const serverPathname = () => "/";
 
 // Root not-found also catches every unmatched URL in the static export, which
 // is how GitHub Pages' 404.html gets its content.
@@ -33,7 +43,15 @@ const session: TermLine[] = [
 ];
 
 export default function NotFound() {
-  const latestPosts = posts.slice(0, 3);
+  // 404.html is one file for the whole export, so it can't be prerendered per
+  // language. It ships as English and reads the real URL on the client, which
+  // is how /zh/... answers in Chinese.
+  const lang = langFromPath(
+    useSyncExternalStore(subscribe, clientPathname, serverPathname)
+  );
+
+  const t = ui[lang].notFound;
+  const latestPosts = getPosts(lang).slice(0, 3);
 
   return (
     <div className="mx-auto max-w-3xl px-6 pb-24 pt-16">
@@ -44,7 +62,7 @@ export default function NotFound() {
         404
       </h1>
       <p className="mt-4 text-2xl font-medium text-brand-yellow sm:text-3xl">
-        Nice try.
+        {t.tagline}
       </p>
 
       <div className="scanlines relative mt-8 overflow-hidden rounded-2xl border border-white/10 bg-card p-6">
@@ -119,19 +137,18 @@ export default function NotFound() {
         </a>
       </p>
       <p className="mt-4 text-lg leading-relaxed text-zinc-400">
-        If you got here by clicking a broken link rather than by fuzzing —
-        sorry, no exploit either way. Just a wrong path.
+        {t.body}
       </p>
 
       <div className="mt-8 flex flex-wrap gap-4">
         <Link
-          href="/"
+          href={localePath("/", lang)}
           className="rounded-full bg-brand-blue px-5 py-2.5 font-mono text-sm font-semibold text-white transition-colors hover:bg-brand-blue-light"
         >
           cd /
         </Link>
         <Link
-          href="/blog"
+          href={localePath("/blog", lang)}
           className="rounded-full border border-brand-yellow px-5 py-2.5 font-mono text-sm font-semibold text-brand-yellow transition-colors hover:bg-brand-yellow hover:text-black"
         >
           ls /blog
@@ -139,13 +156,13 @@ export default function NotFound() {
       </div>
 
       <h2 className="mt-16 text-xs font-medium uppercase tracking-widest text-zinc-500">
-        Endpoints that do exist
+        {t.existing}
       </h2>
       <div className="mt-5 flex flex-col gap-6">
         {latestPosts.map((post) => (
           <Link
             key={post.slug}
-            href={`/blog/${post.slug}`}
+            href={localePath(`/blog/${post.slug}`, lang)}
             className="group block rounded-2xl border border-white/10 p-6 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:border-brand-yellow/50 hover:shadow-xl hover:shadow-brand-yellow/10"
           >
             <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">

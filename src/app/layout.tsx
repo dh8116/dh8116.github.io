@@ -7,6 +7,7 @@ import BackgroundFX from "@/components/BackgroundFX";
 import SideNav from "@/components/SideNav";
 import RouteRepaint from "@/components/RouteRepaint";
 import { site } from "@/data/site";
+import { alternates } from "@/data/i18n";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,12 +28,14 @@ const orbitron = Orbitron({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dh8116.github.io"),
   title: `${site.name} — ${site.tagline}`,
   description: `${site.name}'s personal site: projects and writing.`,
   referrer: "strict-origin-when-cross-origin",
   // "noai"/"noimageai" is the advisory opt-out some crawlers and image scrapers
   // read; robots.txt carries the enforceable half of the same request.
   robots: "index, follow, noai, noimageai",
+  alternates: alternates("/", "en"),
 };
 
 export default function RootLayout({
