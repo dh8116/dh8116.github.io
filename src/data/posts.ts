@@ -225,6 +225,23 @@ const unsortedPosts: Post[] = [
       "The useful question was never which lab is winning. You only choose that by staying with them long enough for real use, from Qwen 3.8-27b to Claude Opus 5.",
     ],
   },
+  {
+    slug: "fused-swiglu-mlp",
+    category: "kernel",
+    title: "Fused SwiGLU: Tied on Speed, Two Tensors Instead of Four",
+    date: "2026-09-17",
+    excerpt:
+      "9th kernel: a fused SwiGLU MLP. Level with torch.compile on time, but holding two big activation tensors between forward and backward where eager holds four \u2014 because a compiler will fuse for you, and won't throw an activation away.",
+    paragraphs: [
+      "9th kernel: a fused SwiGLU MLP, the last piece of a transformer block I hadn't written. A SwiGLU MLP makes three [rows, intermediate] tensors \u2014 g and u from two projections, then h = silu(g) * u \u2014 and since intermediate is 3-4x hidden, that is where the block parks its memory. Two things get fused here. The elementwise silu-and-multiply becomes one Triton kernel. And h stops being saved at all: eager keeps it alive because the down projection needs it for the weight gradient, so this version folds that projection into the same autograd node, lets h die inside the forward, and recomputes it in the backward from g and u.",
+      "Against torch.compile it is a tie on time \u2014 27.50ms against 26.68ms at intermediate 16384, and within 3% at every size above 2048. The memory is not a tie. Held between forward and backward: eager 260MB, torch.compile 196MB, this 132MB. Those are exactly four, three and two copies of the [2048, 16384] tensor, plus the input. Whole-step peak, 420 / 356 / 292MB.",
+      "Which is the actual finding. torch.compile does the fusion \u2014 it folds silu into the multiply and takes eager's four saved tensors down to three, for free, in one line, and I am not going to beat it on the elementwise. What it does not do is decide to throw an activation away and pay to rebuild it. That decision needs to know h is cheap to recompute from things already saved, and it changes the shape of the autograd graph rather than the kernel. The win this week is not the kernel. It is where the boundary of the autograd node got drawn.",
+      "This is also the first week off Colab \u2014 it ran on a Modal T4, the same card, so the numbers still line up with weeks 1-8. Which makes the next one obvious: flash attention has sat unfinished since week 3, forward-only and 25x behind torch, because a T4 is pre-Ampere and has no cp.async to pipeline with. Modal rents Ampere by the minute.",
+    ],
+    image: "/blog/triton-swiglu-benchmark.png",
+    imageAlt:
+      "Two line charts comparing a Triton fused SwiGLU MLP against torch eager and torch.compile on a T4, N=2048 rows, hidden 1024, fp16, across intermediate sizes 1024 to 16384. Left panel, forward plus backward time: all three converge, with torch.compile and the fused version overlapping near 27ms at intermediate 16384 and eager slightly above at 28ms. Right panel, activations held from forward to backward: three clearly separated lines, eager climbing to 260MB, torch.compile to 196MB and the fused version to 132MB.",
+  },
 ];
 
 // unsortedPosts is declared in the order each post was written, so on a
