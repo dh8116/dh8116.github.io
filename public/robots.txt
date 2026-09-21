@@ -32,3 +32,8 @@ User-agent: YouBot
 User-agent: AI2Bot
 User-agent: Scrapy
 Disallow: /
+
+# The admin pages are useless without a GitHub token, but there is no reason
+# for them to sit in a search index.
+User-agent: *
+Disallow: /admin

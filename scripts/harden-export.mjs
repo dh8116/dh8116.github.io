@@ -11,6 +11,12 @@
 // Second job: the Chinese pages under out/zh need <html lang="zh-Hans">, and a
 // single root layout can only emit one lang attribute. Stamping it here is the
 // only place that knows which export a page came from.
+//
+// Third job: /admin talks to api.github.com, which `connect-src 'self'` blocks
+// silently — no console error the page can catch, just a fetch that never
+// resolves. Those pages get that one extra origin. The rest of the site keeps
+// the stricter policy, so a scripted exfiltration of anything on a content
+// page still has nowhere to send it.
 
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join, sep } from "node:path";
@@ -32,7 +38,14 @@ const CSP = [
   "upgrade-insecure-requests",
 ].join("; ");
 
-const META = `<meta http-equiv="Content-Security-Policy" content="${CSP}">`;
+// Same policy, plus the one origin the admin pages need to reach.
+const ADMIN_CSP = CSP.replace(
+  "connect-src 'self'",
+  "connect-src 'self' https://api.github.com"
+);
+
+const meta = (policy) =>
+  `<meta http-equiv="Content-Security-Policy" content="${policy}">`;
 const EXISTING = /<meta http-equiv="Content-Security-Policy"[^>]*>/gi;
 
 async function* htmlFiles(dir) {
@@ -47,17 +60,28 @@ async function* htmlFiles(dir) {
 const ZH_PAGE = join("out", "zh.html");
 const ZH_DIR = join("out", "zh") + sep;
 const isChinese = (file) => file === ZH_PAGE || file.startsWith(ZH_DIR);
+
+// Same shape for "/admin": out/admin.html plus everything under out/admin/.
+const ADMIN_PAGE = join("out", "admin.html");
+const ADMIN_DIR = join("out", "admin") + sep;
+const isAdmin = (file) => file === ADMIN_PAGE || file.startsWith(ADMIN_DIR);
 const HTML_LANG_EN = /<html([^>]*?)\slang="en"/i;
 
 let patched = 0;
 let relabelled = 0;
+let relaxed = 0;
 for await (const file of htmlFiles("out")) {
   const html = await readFile(file, "utf8");
   const stripped = html.replace(EXISTING, "");
   if (!stripped.includes("<head>")) {
     throw new Error(`No <head> to harden in ${file}`);
   }
-  let out = stripped.replace("<head>", `<head>${META}`);
+  const admin = isAdmin(file);
+  if (admin) relaxed += 1;
+  let out = stripped.replace(
+    "<head>",
+    `<head>${meta(admin ? ADMIN_CSP : CSP)}`
+  );
 
   if (isChinese(file)) {
     if (!HTML_LANG_EN.test(out)) {
@@ -73,5 +97,5 @@ for await (const file of htmlFiles("out")) {
 
 console.log(
   `Hardened ${patched} exported page${patched === 1 ? "" : "s"}` +
-    ` (${relabelled} relabelled zh-Hans)`
+    ` (${relabelled} relabelled zh-Hans, ${relaxed} admin)`
 );
