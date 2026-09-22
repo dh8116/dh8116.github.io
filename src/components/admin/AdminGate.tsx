@@ -2,14 +2,25 @@
 
 // The gate every /admin page sits behind.
 //
-// There is no server here to hold a session, so "signed in" means: a GitHub
-// token is in this browser's localStorage, and GitHub confirmed it belongs to
-// an account that can push to this repo. Both halves matter — a valid token
-// for an account with no write access gets turned away, because everything
-// these pages do is a commit.
+// Signing in is the real GitHub OAuth flow: the button hands the browser to
+// GitHub's consent screen by way of a small proxy (dh8116-auth) that holds the
+// client secret, and the proxy will only hand a token back for ALLOWED_LOGIN —
+// anyone else's is revoked and never reaches this page. That check lives on the
+// server because a check here could be edited out; this copy only exists so the
+// UI can explain the refusal.
+//
+// The token comes back in the URL fragment, which is not sent to servers and
+// does not appear in logs or a Referer. It is read once and the fragment is
+// wiped from the address bar immediately.
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { TOKEN_KEY, verifyIdentity, type Identity } from "@/lib/github";
+import {
+  ALLOWED_LOGIN,
+  AUTH_ORIGIN,
+  TOKEN_KEY,
+  verifyIdentity,
+  type Identity,
+} from "@/lib/github";
 
 type Session = { token: string; identity: Identity; signOut: () => void };
 
@@ -21,82 +32,140 @@ export function useAdminSession(): Session {
   return session;
 }
 
-const TOKEN_HELP =
-  "https://github.com/settings/personal-access-tokens/new";
+const STATE_KEY = "admin:oauth-state";
+
+function readStored(key: string, session = false): string | null {
+  try {
+    return (session ? window.sessionStorage : window.localStorage).getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeStored(key: string, value: string, session = false) {
+  try {
+    (session ? window.sessionStorage : window.localStorage).setItem(key, value);
+  } catch {
+    /* private mode; the flow still works for this page load */
+  }
+}
+
+// What the proxy can send back instead of a token, in words rather than codes.
+function explain(error: string, login?: string | null): string {
+  switch (error) {
+    case "not_allowed":
+      return `Signed in as ${login || "someone else"} — this admin is only for ${ALLOWED_LOGIN}.`;
+    case "denied":
+      return "Sign-in was cancelled.";
+    case "not_configured":
+      return "Sign-in is not finished being set up — the proxy has no GitHub credentials yet.";
+    case "stale_state":
+      return "That sign-in link was stale. Try again.";
+    case "exchange_failed":
+      return "GitHub would not complete the sign-in. Try again.";
+    case "whoami_failed":
+      return "Signed in, but GitHub would not say who you are. Try again.";
+    case "github_unreachable":
+      return "Could not reach GitHub. Check your connection and try again.";
+    default:
+      return "Sign-in failed. Try again.";
+  }
+}
 
 export default function AdminGate({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [checking, setChecking] = useState(true);
-  const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [input, setInput] = useState("");
 
   const signOut = useCallback(() => {
     try {
       window.localStorage.removeItem(TOKEN_KEY);
     } catch {
-      /* private mode — the in-memory sign-out below is what matters */
+      /* the in-memory sign-out below is what matters */
     }
     setSession(null);
   }, []);
 
-  const signIn = useCallback(
-    async (token: string, remember: boolean) => {
-      setBusy(true);
-      setError("");
-      try {
-        const identity = await verifyIdentity(token);
-        if (!identity.canPush) {
-          setError(
-            `Signed in as ${identity.login}, but that account cannot push to this repo.`
-          );
-          return;
-        }
-        if (remember) {
-          try {
-            window.localStorage.setItem(TOKEN_KEY, token);
-          } catch {
-            /* the session still works for this tab */
-          }
-        }
-        setSession({ token, identity, signOut });
-        setInput("");
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Could not reach GitHub.");
-      } finally {
-        setBusy(false);
-      }
-    },
-    [signOut]
-  );
+  const signIn = useCallback(() => {
+    // A random state, kept in sessionStorage, is what ties the response that
+    // comes back to the request this tab actually made.
+    const bytes = new Uint8Array(24);
+    crypto.getRandomValues(bytes);
+    const state = btoa(String.fromCharCode(...bytes))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+    writeStored(STATE_KEY, state, true);
+    window.location.href = `${AUTH_ORIGIN}/api/start?state=${encodeURIComponent(state)}`;
+  }, []);
 
-  // Revalidate a stored token on load instead of trusting it: tokens expire,
-  // and finding that out at save time means losing whatever was just typed.
-  //
-  // The verify is awaited even when there is no stored token (resolving to
-  // null) so that every state update below happens off the synchronous effect
-  // body — a cascade of renders on mount is what the alternative buys.
+  // One effect for both ways in: a fragment handed back by the proxy, or a
+  // token already stored from last time. Everything below runs after an await
+  // so nothing writes state synchronously on mount.
   useEffect(() => {
     let cancelled = false;
 
     void (async () => {
-      const stored = (() => {
-        try {
-          return window.localStorage.getItem(TOKEN_KEY);
-        } catch {
-          return null;
-        }
-      })();
+      const hash = window.location.hash.startsWith("#")
+        ? new URLSearchParams(window.location.hash.slice(1))
+        : null;
+      const returned = hash?.get("token") || hash?.get("error");
 
-      const identity = await (stored
-        ? verifyIdentity(stored).catch(() => null)
+      if (returned) {
+        // Wipe the fragment before anything else, so a reload or a shared URL
+        // cannot replay it and the token stops sitting in the address bar.
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + window.location.search
+        );
+      }
+
+      let token: string | null = null;
+      let failure = "";
+
+      if (returned) {
+        const expected = readStored(STATE_KEY, true);
+        if (!expected || hash?.get("state") !== expected) {
+          failure = "stale_state";
+        } else if (hash?.get("error")) {
+          failure = hash.get("error") as string;
+        } else {
+          token = hash?.get("token") ?? null;
+        }
+        try {
+          window.sessionStorage.removeItem(STATE_KEY);
+        } catch {
+          /* nothing to clean up */
+        }
+      }
+
+      if (!token && !failure) token = readStored(TOKEN_KEY);
+
+      const identity = await (token
+        ? verifyIdentity(token).catch(() => null)
         : Promise.resolve(null));
 
       if (cancelled) return;
-      if (stored && identity?.canPush) {
-        setSession({ token: stored, identity, signOut });
-      } else if (stored) {
-        signOut();
+
+      if (token && identity?.canPush && identity.login.toLowerCase() === ALLOWED_LOGIN) {
+        writeStored(TOKEN_KEY, token);
+        setSession({ token, identity, signOut });
+      } else {
+        if (token) {
+          // A stored token that has expired, been revoked, or lost access.
+          try {
+            window.localStorage.removeItem(TOKEN_KEY);
+          } catch {
+            /* nothing to clean up */
+          }
+          if (!failure && identity) failure = "not_allowed";
+        }
+        if (failure) {
+          setError(
+            explain(failure, hash?.get("login") ?? identity?.login ?? null)
+          );
+        }
       }
       setChecking(false);
     })();
@@ -119,75 +188,31 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
       <div className="mx-auto max-w-lg px-6 py-20">
         <h1 className="font-mono text-2xl font-bold">Admin</h1>
         <p className="mt-3 text-sm leading-relaxed text-foreground/70">
-          This page is public, but it can only do anything with a GitHub token
-          that can push to{" "}
-          <span className="font-mono text-brand-blue-light">dh8116.github.io</span>.
-          Every edit you make here is committed as you.
+          Sign in with GitHub to write posts and edit the site. Only{" "}
+          <span className="font-mono text-brand-blue-light">{ALLOWED_LOGIN}</span>{" "}
+          can get in, and every edit is committed as you.
         </p>
 
-        <form
-          className="mt-8 space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const remember = (
-              e.currentTarget.elements.namedItem("remember") as HTMLInputElement
-            )?.checked;
-            if (input.trim()) void signIn(input.trim(), remember);
-          }}
+        <button
+          onClick={signIn}
+          className="mt-8 flex w-full items-center justify-center gap-2.5 rounded-lg bg-brand-blue px-4 py-3 font-mono text-sm font-semibold text-background transition hover:bg-brand-blue-light"
         >
-          <label className="block">
-            <span className="font-mono text-xs uppercase tracking-wider text-foreground/50">
-              GitHub token
-            </span>
-            <input
-              type="password"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              autoComplete="off"
-              spellCheck={false}
-              placeholder="github_pat_…"
-              className="mt-2 w-full rounded-lg border border-white/10 bg-card px-3 py-2 font-mono text-sm outline-none focus:border-brand-blue"
-            />
-          </label>
+          <svg viewBox="0 0 16 16" aria-hidden="true" className="h-4 w-4 fill-current">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+          </svg>
+          Sign in with GitHub
+        </button>
 
-          <label className="flex items-center gap-2 text-sm text-foreground/70">
-            <input
-              type="checkbox"
-              name="remember"
-              defaultChecked
-              className="accent-brand-blue"
-            />
-            Stay signed in on this device
-          </label>
-
-          <button
-            type="submit"
-            disabled={busy || !input.trim()}
-            className="w-full rounded-lg bg-brand-blue px-4 py-2.5 font-mono text-sm font-semibold text-background transition hover:bg-brand-blue-light disabled:opacity-40"
-          >
-            {busy ? "Checking with GitHub…" : "Sign in with GitHub"}
-          </button>
-
-          {error && (
-            <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
-              {error}
-            </p>
-          )}
-        </form>
+        {error && (
+          <p className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+            {error}
+          </p>
+        )}
 
         <p className="mt-8 text-xs leading-relaxed text-foreground/40">
-          Need one?{" "}
-          <a
-            href={TOKEN_HELP}
-            target="_blank"
-            rel="noreferrer"
-            className="text-brand-blue-light underline"
-          >
-            Create a fine-grained token
-          </a>{" "}
-          scoped to this repository with <strong>Contents: read and write</strong>.
-          Give it an expiry date — if you lose the device, the token dies on its
-          own.
+          GitHub will ask for access to your repositories — that is what lets
+          this page commit a post. Nothing is stored anywhere but your own
+          browser.
         </p>
       </div>
     );

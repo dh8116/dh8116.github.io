@@ -1,11 +1,10 @@
 // Browser-side GitHub client for /admin.
 //
-// The site is a static export on GitHub Pages: there is no server to hold a
-// session or an OAuth client secret, so the access token IS the login. The
-// admin pages are public — anyone can load them — but every one of them is
-// inert until a token that can push to this repo is supplied, and GitHub, not
-// this code, is what decides that. A password check here would be theatre,
-// because it would ship inside the public bundle.
+// The admin pages are public — a static export cannot hide a route — but every
+// one of them is inert until GitHub says who you are. Sign-in is the real OAuth
+// flow, brokered by a small proxy that holds the client secret and refuses to
+// return a token for any account but ALLOWED_LOGIN. A password check here would
+// be theatre, because it would ship inside the public bundle.
 //
 // Writes go through the Git Data API rather than the simpler Contents API so
 // that one save is one commit even when it touches several files. A bilingual
@@ -16,6 +15,17 @@ const OWNER = "dh8116";
 const REPO = "dh8116.github.io";
 const BRANCH = "main";
 const API = "https://api.github.com";
+
+// The server half of "Sign in with GitHub", deployed separately because this
+// site is a static export with nowhere to keep an OAuth client secret and
+// nowhere to run the code-for-token exchange. GitHub's device flow would avoid
+// the secret but sends no CORS headers, so a browser cannot finish that either.
+// Source: ~/Desktop/DFI/dh8116-auth.
+export const AUTH_ORIGIN = "https://dh8116-auth.vercel.app";
+
+// The only account this admin is for. The proxy enforces this before it ever
+// hands a token back — this copy is so the UI can say why, not the gate.
+export const ALLOWED_LOGIN = OWNER;
 
 export const TOKEN_KEY = "admin:gh-token";
 
