@@ -55,6 +55,12 @@ function explain(error: string, login?: string | null): string {
   switch (error) {
     case "not_allowed":
       return `Signed in as ${login || "someone else"} — this admin is only for ${ALLOWED_LOGIN}.`;
+    // The right account, but GitHub is not granting write access to the repo.
+    // Worth its own message because the cause is nearly always the app: a
+    // GitHub App grants repo access by *installation*, not by the `scope` it
+    // was asked for, so an uninstalled one signs in fine and can write nothing.
+    case "no_repo_access":
+      return `Signed in as ${login || ALLOWED_LOGIN}, but GitHub is not granting write access to the site's repo. If this is a GitHub App, install it on dh8116/dh8116.github.io with Contents: read and write — an OAuth app instead needs the repo scope.`;
     case "denied":
       return "Sign-in was cancelled.";
     case "not_configured":
@@ -159,7 +165,14 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
           } catch {
             /* nothing to clean up */
           }
-          if (!failure && identity) failure = "not_allowed";
+          if (!failure && identity) {
+            // Separate "wrong person" from "right person, no access" — they
+            // need completely different fixes.
+            failure =
+              identity.login.toLowerCase() === ALLOWED_LOGIN
+                ? "no_repo_access"
+                : "not_allowed";
+          }
         }
         if (failure) {
           setError(
