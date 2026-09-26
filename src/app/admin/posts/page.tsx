@@ -8,7 +8,7 @@
 // alone would quietly produce posts that render in English under /zh.
 
 import { useEffect, useMemo, useState } from "react";
-import { AdminHeader, Field, PublishStatus } from "@/components/admin/AdminChrome";
+import { AdminHeader, Field, SaveBar } from "@/components/admin/AdminChrome";
 import { useAdminSession } from "@/components/admin/AdminGate";
 import { usePublish } from "@/components/admin/usePublish";
 import { readJson } from "@/lib/github";
@@ -84,6 +84,15 @@ export default function PostsAdmin() {
   const [loadError, setLoadError] = useState("");
   const [draft, setDraft] = useState<Draft | null>(null);
   const [problem, setProblem] = useState("");
+  const [query, setQuery] = useState("");
+
+  // A draft counts as dirty when it differs from whatever it was opened with.
+  // Picking another post used to replace an in-progress draft without a word,
+  // which is the sort of thing you only find out you did afterwards.
+  const [baseline, setBaseline] = useState("");
+  const [pending, setPending] = useState<{ run: () => void } | null>(null);
+
+  const dirty = draft !== null && JSON.stringify(draft) !== baseline;
 
   // The fetch lives in the effect rather than in a callback the effect calls:
   // the lint rule reads a setState-containing function called from an effect
@@ -116,6 +125,15 @@ export default function PostsAdmin() {
     };
   }, [token, reloadKey]);
 
+  // The browser's own guard for closing the tab or hitting back. Crude, but it
+  // is the only thing that catches a navigation this component never sees.
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
+
   // Newest first for picking, while posts.json keeps its write order — that
   // order is the tie-break for two posts sharing a date, so it must not be
   // reordered by anything the UI does.
@@ -132,8 +150,28 @@ export default function PostsAdmin() {
     [posts]
   );
 
+  const shown = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return listed;
+    return listed.filter(
+      ({ post }) =>
+        post.title.toLowerCase().includes(q) || post.slug.includes(q)
+    );
+  }, [listed, query]);
+
   const set = (patch: Partial<Draft>) =>
     setDraft((d) => (d ? { ...d, ...patch } : d));
+
+  function openDraft(next: Draft) {
+    setDraft(next);
+    setBaseline(JSON.stringify(next));
+    setProblem("");
+    setPending(null);
+    reset();
+  }
+
+  // Anything that would throw the current draft away goes through here.
+  const guarded = (run: () => void) => (dirty ? setPending({ run }) : run());
 
   async function save() {
     if (!draft || !posts) return;
@@ -194,7 +232,9 @@ export default function PostsAdmin() {
     if (ok) {
       setPosts(nextPosts);
       setZh(nextZh);
-      setDraft({ ...draft, editing: slug });
+      const saved = { ...draft, editing: slug };
+      setDraft(saved);
+      setBaseline(JSON.stringify(saved));
     }
   }
 
@@ -221,24 +261,57 @@ export default function PostsAdmin() {
         <div className="grid gap-8 md:grid-cols-[260px_1fr]">
           <aside>
             <button
-              onClick={() => {
-                setDraft(blankDraft());
-                setProblem("");
-                reset();
-              }}
+              onClick={() => guarded(() => openDraft(blankDraft()))}
               className="mb-4 w-full rounded-lg bg-brand-blue px-3 py-2 font-mono text-sm font-semibold text-background hover:bg-brand-blue-light"
             >
               + New post
             </button>
-            <ul className="max-h-[60vh] space-y-1 overflow-y-auto pr-1">
-              {listed.map(({ post }) => (
-                <li key={post.slug}>
+
+            {pending && (
+              <div className="mb-4 rounded-lg border border-brand-yellow/40 bg-brand-yellow/10 p-3">
+                <p className="text-sm text-brand-yellow">
+                  This draft has unsaved changes.
+                </p>
+                <div className="mt-2 flex gap-2">
                   <button
                     onClick={() => {
-                      setDraft(draftFrom(post, zh[post.slug]));
-                      setProblem("");
-                      reset();
+                      const { run } = pending;
+                      setPending(null);
+                      run();
                     }}
+                    className="rounded-md bg-brand-yellow/20 px-2.5 py-1 text-xs font-semibold text-brand-yellow"
+                  >
+                    Discard it
+                  </button>
+                  <button
+                    onClick={() => setPending(null)}
+                    className="rounded-md px-2.5 py-1 text-xs text-foreground/60 hover:text-foreground"
+                  >
+                    Keep editing
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Filter posts…"
+              className="mb-3 w-full rounded-lg border border-white/10 bg-card px-3 py-1.5 text-sm outline-none focus:border-brand-blue"
+            />
+
+            <ul className="max-h-[60vh] space-y-1 overflow-y-auto pr-1">
+              {shown.length === 0 && (
+                <li className="px-2 py-3 text-sm text-foreground/40">
+                  Nothing matches “{query}”.
+                </li>
+              )}
+              {shown.map(({ post }) => (
+                <li key={post.slug}>
+                  <button
+                    onClick={() =>
+                      guarded(() => openDraft(draftFrom(post, zh[post.slug])))
+                    }
                     className={`w-full rounded-md px-2 py-2 text-left text-sm transition hover:bg-white/5 ${
                       draft?.editing === post.slug ? "bg-white/10" : ""
                     }`}
@@ -301,6 +374,7 @@ export default function PostsAdmin() {
                 <Field
                   label="Excerpt"
                   hint="shown on /blog"
+                  limit={200}
                   rows={2}
                   value={draft.excerpt}
                   onChange={(excerpt) => set({ excerpt })}
@@ -366,25 +440,14 @@ export default function PostsAdmin() {
                   </div>
                 </div>
 
-                {problem && (
-                  <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-                    {problem}
-                  </p>
-                )}
-
-                <button
-                  onClick={() => void save()}
-                  disabled={busy}
-                  className="w-full rounded-lg bg-brand-blue px-4 py-3 font-mono text-sm font-semibold text-background transition hover:bg-brand-blue-light disabled:opacity-40"
-                >
-                  {busy
-                    ? "Publishing…"
-                    : draft.editing
-                      ? "Save and publish"
-                      : "Publish new post"}
-                </button>
-
-                <PublishStatus state={state} />
+                <SaveBar
+                  label={draft.editing ? "Save and publish" : "Publish new post"}
+                  busy={busy}
+                  dirty={dirty}
+                  onSave={() => void save()}
+                  state={state}
+                  problem={problem}
+                />
               </div>
             )}
           </section>

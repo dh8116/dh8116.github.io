@@ -9,7 +9,7 @@
 // what stops the two drifting out of alignment.
 
 import { useEffect, useState } from "react";
-import { AdminHeader, Field, PublishStatus } from "@/components/admin/AdminChrome";
+import { AdminHeader, Field, SaveBar } from "@/components/admin/AdminChrome";
 import { useAdminSession } from "@/components/admin/AdminGate";
 import { usePublish } from "@/components/admin/usePublish";
 import { readJson } from "@/lib/github";
@@ -347,21 +347,13 @@ export default function HomeAdmin() {
         </div>
       </Section>
 
-      {problem && (
-        <p className="mt-6 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-          {problem}
-        </p>
-      )}
-
-      <button
-        onClick={() => void save()}
-        disabled={busy}
-        className="mt-8 w-full rounded-lg bg-brand-blue px-4 py-3 font-mono text-sm font-semibold text-background transition hover:bg-brand-blue-light disabled:opacity-40"
-      >
-        {busy ? "Publishing…" : "Save and publish"}
-      </button>
-
-      <PublishStatus state={state} />
+      <SaveBar
+        label="Save and publish"
+        busy={busy}
+        onSave={() => void save()}
+        state={state}
+        problem={problem}
+      />
     </div>
   );
 }
