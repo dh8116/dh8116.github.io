@@ -48,6 +48,20 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} h-full antialiased`}
     >
+      {/* Microsoft Clarity. Inline on purpose: the export's CSP carries
+          'unsafe-inline' for scripts but no nonce, and this has to run before
+          the page is interactive to catch the whole session. The clarity.ms
+          origins are allowed in scripts/harden-export.mjs — without that the
+          tag loads and then silently sends nothing. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            '(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};' +
+            't=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;' +
+            'y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);' +
+            '})(window, document, "clarity", "script", "yo9orgfak3");',
+        }}
+      />
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <RouteRepaint />
         <BackgroundFX />
