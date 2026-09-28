@@ -26,10 +26,11 @@ const CSP = [
   "base-uri 'self'",
   "object-src 'none'",
   // clarity.ms is here because the Clarity tag in the root layout injects a
-  // script from www.clarity.ms and then beacons to c.clarity.ms. Allowing the
+  // loader from www.clarity.ms, which pulls its code from scripts.clarity.ms and
+  // beacons to c.clarity.ms — hence the wildcard. Allowing the
   // script without the connect origin is the silent-failure case: the tag
   // loads, records, and never sends. Both halves or neither.
-  "script-src 'self' 'unsafe-inline' https://www.clarity.ms",
+  "script-src 'self' 'unsafe-inline' https://*.clarity.ms",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https://*.clarity.ms",
   "font-src 'self' data:",
