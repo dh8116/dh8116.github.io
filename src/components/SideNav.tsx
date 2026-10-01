@@ -9,6 +9,7 @@ const links = [
   { path: "/#about", id: "about" },
   { path: "/#skills", id: "skills" },
   { path: "/#projects", id: "projects" },
+  { path: "/#resume", id: "resume" },
   { path: "/blog", id: "blog" },
 ] as const;
 
@@ -25,12 +26,14 @@ export default function SideNav() {
       ? visibleSection
       : route.startsWith("/blog")
         ? "blog"
-        : null;
+        : route.startsWith("/resume")
+          ? "resume"
+          : null;
 
   useEffect(() => {
     if (route !== "/") return;
 
-    const sections = ["about", "skills", "projects"]
+    const sections = ["about", "skills", "projects", "resume"]
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
     if (sections.length === 0) return;

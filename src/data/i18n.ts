@@ -46,7 +46,13 @@ type SectionHeading = { eyebrow: string; title: string };
 
 export type Ui = {
   toggleLabel: string;
-  nav: { about: string; skills: string; projects: string; blog: string };
+  nav: {
+    about: string;
+    skills: string;
+    projects: string;
+    resume: string;
+    blog: string;
+  };
   home: {
     greeting: string;
     viewProjects: string;
@@ -90,6 +96,7 @@ export const ui: Record<Lang, Ui> = {
       about: "About",
       skills: "Skills",
       projects: "Projects",
+      resume: "Resume",
       blog: "Blog",
     },
     home: {
@@ -133,6 +140,7 @@ export const ui: Record<Lang, Ui> = {
       about: "关于",
       skills: "技能",
       projects: "项目",
+      resume: "简历",
       blog: "博客",
     },
     home: {

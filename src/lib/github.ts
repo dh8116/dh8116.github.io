@@ -105,7 +105,11 @@ export async function readJson<T>(token: string, path: string): Promise<T> {
   return JSON.parse(new TextDecoder().decode(bytes)) as T;
 }
 
-export type FileWrite = { path: string; json: unknown };
+// JSON is pretty-printed as text; `base64` is for binary files (the resume
+// PDF), committed byte for byte.
+export type FileWrite =
+  | { path: string; json: unknown }
+  | { path: string; base64: string };
 
 // One commit for all the files in `writes`. Pushing to main is what triggers
 // .github/workflows/deploy.yml, so this call is the whole publish: commit,
@@ -134,7 +138,10 @@ export async function commitJson(
         method: "POST",
         // Trailing newline so the committed file matches what a local editor
         // and `npm run build` would write, and diffs stay one-line-per-change.
-        body: { content: JSON.stringify(w.json, null, 2) + "\n", encoding: "utf-8" },
+        body:
+          "base64" in w
+            ? { content: w.base64, encoding: "base64" }
+            : { content: JSON.stringify(w.json, null, 2) + "\n", encoding: "utf-8" },
       });
       return { path: w.path, mode: "100644" as const, type: "blob" as const, sha: blob.sha };
     })

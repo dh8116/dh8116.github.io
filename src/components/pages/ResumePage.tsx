@@ -62,22 +62,11 @@ export default function ResumePage({ lang }: { lang: Lang }) {
           <h2 className="text-3xl font-bold tracking-tight text-foreground">
             {resume.name}
           </h2>
-          <p className="mt-2 whitespace-pre-wrap">
-            {resume.contact.map((c, i) => (
-              <Fragment key={c}>
-                {i > 0 && "  |  "}
-                {linkify(c)}
-              </Fragment>
-            ))}
-          </p>
-          <p className="whitespace-pre-wrap">
-            {resume.links.map((l, i) => (
-              <Fragment key={l}>
-                {i > 0 && "  |  "}
-                {linkify(l)}
-              </Fragment>
-            ))}
-          </p>
+          {resume.contact.map((line, i) => (
+            <p key={i} className={`whitespace-pre-wrap ${i === 0 ? "mt-2" : ""}`}>
+              {linkify(line)}
+            </p>
+          ))}
         </header>
 
         {resume.sections.map((section) => (
@@ -85,26 +74,19 @@ export default function ResumePage({ lang }: { lang: Lang }) {
             <h3 className="font-bold uppercase text-foreground">
               {section.heading}
             </h3>
-            {section.intro && <p className="mt-2">{linkify(section.intro)}</p>}
-            {section.lines && (
-              <div className="mt-2 flex flex-col gap-1">
-                {section.lines.map((line) => (
-                  <p key={line.text}>
-                    {line.label && `${line.label}: `}
-                    {linkify(line.text)}
-                  </p>
-                ))}
-              </div>
-            )}
-            {section.bullets && <Bullets items={section.bullets} />}
-            {section.groups?.map((group) => (
-              <div key={group.title} className="mt-3">
-                <h4 className="font-bold text-foreground">
-                  {linkify(group.title)}
+            {section.blocks.map((block, i) =>
+              block.kind === "bullets" ? (
+                <Bullets key={i} items={block.items} />
+              ) : block.kind === "title" ? (
+                <h4 key={i} className="mt-3 font-bold text-foreground">
+                  {linkify(block.text)}
                 </h4>
-                <Bullets items={group.bullets} />
-              </div>
-            ))}
+              ) : (
+                <p key={i} className="mt-1 first-of-type:mt-2">
+                  {linkify(block.text)}
+                </p>
+              )
+            )}
           </section>
         ))}
       </article>

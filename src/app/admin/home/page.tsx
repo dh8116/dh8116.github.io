@@ -7,6 +7,11 @@
 // keyed by the English project's slug. So the English and Chinese of each
 // entry are edited side by side here rather than on separate screens, which is
 // what stops the two drifting out of alignment.
+//
+// The last section is the resume: resume.json (the text /resume renders) and,
+// optionally, a replacement public/resume.pdf. They go in the same commit as
+// the rest, and the deploy re-crops the homepage preview from whichever PDF
+// is committed (scripts/resume-preview.py).
 
 import { useEffect, useState } from "react";
 import { AdminHeader, Field, SaveBar } from "@/components/admin/AdminChrome";
@@ -16,6 +21,20 @@ import { readJson } from "@/lib/github";
 
 const SITE_PATH = "src/data/site.json";
 const SITE_ZH_PATH = "src/data/site.zh.json";
+const RESUME_PATH = "src/data/resume.json";
+const RESUME_PDF_PATH = "public/resume.pdf";
+
+type ResumeJson = { text: string };
+
+// FileReader gives "data:application/pdf;base64,<payload>"; the Git blob API
+// wants the payload alone.
+const readBase64 = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result).split(",", 2)[1] ?? "");
+    r.onerror = () => reject(r.error);
+    r.readAsDataURL(file);
+  });
 
 type Card = { period: string; title: string; description: string };
 type Item = { label: string; title: string; detail: string };
@@ -67,6 +86,8 @@ export default function HomeAdmin() {
 
   const [en, setEn] = useState<SiteJson | null>(null);
   const [zh, setZh] = useState<SiteZhJson | null>(null);
+  const [resume, setResume] = useState<ResumeJson | null>(null);
+  const [pdf, setPdf] = useState<File | null>(null);
   const [loadError, setLoadError] = useState("");
   const [problem, setProblem] = useState("");
 
@@ -80,13 +101,15 @@ export default function HomeAdmin() {
 
     void (async () => {
       try {
-        const [a, b] = await Promise.all([
+        const [a, b, c] = await Promise.all([
           readJson<SiteJson>(token, SITE_PATH),
           readJson<SiteZhJson>(token, SITE_ZH_PATH),
+          readJson<ResumeJson>(token, RESUME_PATH),
         ]);
         if (cancelled) return;
         setEn(a);
         setZh(b);
+        setResume(c);
         setLoadError("");
       } catch (err) {
         if (!cancelled) {
@@ -113,7 +136,7 @@ export default function HomeAdmin() {
       </div>
     );
 
-  if (!en || !zh)
+  if (!en || !zh || !resume)
     return (
       <div className="mx-auto max-w-3xl px-6 py-16">
         <AdminHeader title="Home page text" />
@@ -126,7 +149,7 @@ export default function HomeAdmin() {
   const busy = state.phase === "saving" || state.phase === "deploying";
 
   async function save() {
-    if (!en || !zh) return;
+    if (!en || !zh || !resume) return;
     setProblem("");
     reset();
 
@@ -137,13 +160,27 @@ export default function HomeAdmin() {
         `Skills lists must line up: ${en.skills.length} English, ${zh.skillsZh.length} Chinese.`
       );
 
-    await publish(
+    if (!resume.text.trim().startsWith("# "))
+      return setProblem("Resume text must start with the name line, e.g. \"# Richael\".");
+
+    let pdfBase64 = "";
+    if (pdf) {
+      pdfBase64 = await readBase64(pdf);
+      // "%PDF" — catches picking the wrong file before it replaces the download.
+      if (!pdfBase64.startsWith("JVBERi"))
+        return setProblem(`${pdf.name} is not a PDF.`);
+    }
+
+    const ok = await publish(
       [
         { path: SITE_PATH, json: en },
         { path: SITE_ZH_PATH, json: zh },
+        { path: RESUME_PATH, json: resume },
+        ...(pdfBase64 ? [{ path: RESUME_PDF_PATH, base64: pdfBase64 }] : []),
       ],
-      "Update home page copy"
+      pdf ? "Update home page copy and resume PDF" : "Update home page copy"
     );
+    if (ok) setPdf(null);
   }
 
   return (
@@ -344,6 +381,30 @@ export default function HomeAdmin() {
             onChange={(v) => patchZh({ skillsZh: unlines(v) })}
           />
         </div>
+      </Section>
+
+      <Section title="Resume">
+        <Field
+          label="Resume text"
+          hint="# name · ## heading · ### project · - bullet · [label](url)"
+          rows={30}
+          value={resume.text}
+          onChange={(v) => setResume({ text: v })}
+        />
+        <label className="block">
+          <span className="text-xs uppercase tracking-wider text-foreground/50">
+            Resume PDF
+          </span>
+          <span className="ml-2 text-xs text-foreground/30">
+            optional — replaces the download and the homepage preview
+          </span>
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={(e) => setPdf(e.target.files?.[0] ?? null)}
+            className="mt-2 block w-full text-sm text-foreground/70 file:mr-4 file:rounded-lg file:border-0 file:bg-card file:px-4 file:py-2 file:text-sm file:text-foreground hover:file:bg-white/10"
+          />
+        </label>
       </Section>
 
       <SaveBar

@@ -30,6 +30,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Resume preview from the committed PDF
+        run: |
+          pip install --quiet pymupdf
+          python scripts/resume-preview.py
+
       - name: Build
         run: npm run build
 
