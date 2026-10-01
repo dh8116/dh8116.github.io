@@ -3,7 +3,7 @@
     "tagline": "构建会记住你的 AI",
     "status": "AI 与 GPU 系统",
     "location": "新西兰 奥克兰",
-    "bio": "11 年级学生，做 AI 陪伴应用、全栈 Web 平台和 GPU kernel，有数学建模竞赛和 AI 辅助开发的经历。"
+    "bio": "11 年级学生，做 GPU kernel、微调语言模型，以及有真实用户的全栈应用，有数学与建模竞赛的经历。"
   },
   "projectStatusZh": {
     "Live": "已上线",
@@ -13,19 +13,19 @@
     "soulor-ai": {
       "description": "Soulor 是一个会记住你的陪伴应用。记忆和关系阶段会一路进入生成本身，角色说话的方式随着从陌生人到灵魂伴侣的五个阶段而改变——同一套引擎也驱动模拟模式，可以先排练一场难开口的对话，再去现实里真正开口。",
       "tags": [
-        "状态化采样",
+        "跨模式引擎",
         "关系阶段推进",
         "偏置自适应",
-        "跨模式引擎"
+        "状态化采样"
       ]
     },
     "vnportal": {
       "description": "VNportal 是一个建立在实时音频之上的黑胶与音乐平台。找到一张唱片，听见它背后的声音，然后混音、切进 DAW，或者玩一局由它自身节拍生成谱面的节奏游戏——也可以生成单件乐器，严格锁在你设定的速度的小节上。",
       "tags": [
+        "可控音频合成",
         "起音谱面生成",
         "音源级联",
-        "分轨生成",
-        "小节锁定生成"
+        "分轨生成"
       ]
     }
   },
@@ -33,17 +33,17 @@
     {
       "period": "2026 – 2028 · 奥克兰",
       "title": "11 年级学生",
-      "description": "一边上学一边做 AI 产品，课业上也经常写结构化的数学与分析类报告。"
+      "description": "就读于 St Cuthbert's College，2028 年毕业——修 IB Math AA HL 和 NCEA Level 1，明年计划考 AP 微积分和计算机科学——课余做 AI 产品。"
     },
     {
       "period": "竞赛",
-      "title": "数学建模",
-      "description": "在竞赛时限内与队友合作完成数学建模论文，分析真实世界的问题——查资料、立假设、建模型、写结论，再一起反复打磨。"
+      "title": "数学与建模",
+      "description": "HiMCM 和 IMMC 区域赛荣誉奖，在竞赛时限内与队友合作完成建模论文。AIME 10/15，AMC 12 Honor Roll（前 5%），澳大利亚数学竞赛 High Distinction。"
     },
     {
       "period": "持续进行",
       "title": "AI 研究与开发",
-      "description": "用 Claude、VS Code、Google Colab 这类工具读前沿模型论文、写 GPU kernel、解决真实问题，并把 Web 应用做出来上线。"
+      "description": "用 Claude、VS Code、Modal 读前沿模型论文、编写并基准测试 GPU kernel、微调和部署语言模型，并把 Web 应用做出来上线。"
     },
     {
       "period": "志愿",
@@ -52,18 +52,26 @@
     }
   ],
   "skillsZh": [
-    "Triton GPU Kernel",
+    "Triton",
     "PyTorch",
+    "Python",
     "GPU 基准测试与性能分析",
-    "大模型微调 (LoRA)",
-    "模型部署 (vLLM、Modal)",
-    "大模型编排与回退路由",
-    "全栈 TypeScript (Next.js、Express)",
+    "LoRA 微调",
+    "vLLM",
+    "Modal",
+    "评测框架",
+    "TypeScript",
+    "Node.js",
+    "Express",
+    "Next.js",
+    "React",
     "Supabase 与 Postgres",
-    "实时 Web 音频",
-    "数学建模",
-    "技术写作",
-    "AI 辅助开发"
+    "Web Audio API",
+    "Stripe",
+    "Git",
+    "GitHub Actions",
+    "Playwright 端到端测试",
+    "Web 安全加固 (CSP、XSS)"
   ],
   "currentlyLearningZh": [
     {
@@ -74,12 +82,12 @@
     {
       "label": "在写",
       "title": "Triton GPU kernel",
-      "detail": "第 7 周完成：把交叉熵的前向和反向融进同一个 kernel——在 vocab 131072 下快 1.51 倍、峰值显存少 1.67 倍，也是这条线上第一次真正公平的基准。第 8 周把线性层也折进去，让完整的 logits 张量根本不再出现。"
+      "detail": "每周一个 kernel，每个都和 PyTorch 对比基准并公开数据。目前最好的结果：融合交叉熵在 vocab 131,072 下 15.90 ms，对比 PyTorch 的 24.03 ms（快 1.51 倍），峰值显存少 1.67 倍。"
     },
     {
-      "label": "接下来",
+      "label": "在研究",
       "title": "RLVR 验证器研究",
-      "detail": "一篇关于「持续出错的验证器何时会真正损害 GRPO 训练」的论文——固定错误率和不对称性，扫描持续性，并厘清两篇结论相左的已发表结果之间的地带。"
+      "detail": "带领五人团队写一篇论文，研究「持续出错的验证器何时会真正损害 GRPO 训练」——固定错误率和不对称性，扫描持续性。目标投稿 COLM / TMLR。"
     }
   ]
 }

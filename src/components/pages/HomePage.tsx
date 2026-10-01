@@ -13,6 +13,7 @@ import { type Lang, localePath, ui } from "@/data/i18n";
 import PersonalDetailsCard from "@/components/PersonalDetailsCard";
 import FadeInSection from "@/components/FadeInSection";
 import SkillPills from "@/components/SkillPills";
+import { RESUME_FILENAME, RESUME_PDF } from "@/components/pages/ResumePage";
 
 export default function HomePage({ lang }: { lang: Lang }) {
   const t = ui[lang];
@@ -187,6 +188,27 @@ export default function HomePage({ lang }: { lang: Lang }) {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+      </FadeInSection>
+
+      <FadeInSection>
+        <section id="resume" className="scroll-mt-24 py-16">
+          <SectionHeading lang={lang} heading={t.home.resume} />
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link
+              href={localePath("/resume", lang)}
+              className="rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-light"
+            >
+              {t.resume.view} &rarr;
+            </Link>
+            <a
+              href={RESUME_PDF}
+              download={RESUME_FILENAME}
+              className="rounded-full border border-brand-yellow px-5 py-2.5 text-sm font-semibold text-brand-yellow transition-colors hover:bg-brand-yellow hover:text-black"
+            >
+              {t.resume.download}
+            </a>
           </div>
         </section>
       </FadeInSection>

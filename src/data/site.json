@@ -6,7 +6,7 @@
     "tagline": "Building AI that remembers",
     "status": "AI & GPU Systems",
     "location": "Auckland, New Zealand",
-    "bio": "Year 11 student building AI companion apps, full-stack web platforms, and GPU kernels, with a background in mathematical modelling competitions and AI-assisted development.",
+    "bio": "Year 11 student building GPU kernels, fine-tuned language models, and full-stack applications with real users, with a background in mathematics and modelling competitions.",
     "email": "huangd6666@gmail.com",
     "github": "https://github.com/dh8116/",
     "x": "https://x.com/RicaV42",
@@ -18,10 +18,10 @@
       "name": "Soulor AI",
       "description": "Soulor is a companion app that remembers you. Memory and relationship stage reach generation itself, so a companion's voice shifts across five stages from stranger to soulmate — and the same engine runs simulation modes, for rehearsing a hard conversation before having it for real.",
       "tags": [
-        "Stateful Sampling",
+        "Cross-Mode Engine",
         "Relationship Staging",
         "Bias Adaptation",
-        "Cross-Mode Engine"
+        "Stateful Sampling"
       ],
       "url": "https://soulor-ai.vercel.app/"
     },
@@ -30,10 +30,10 @@
       "name": "VNportal",
       "description": "VNportal is a vinyl and music platform built on real-time audio. Find a record, play what sits behind it, then mix it, cut it into a DAW, or play a rhythm game charted from its own detected beats — and generate single instruments, bar-locked to the tempo you set.",
       "tags": [
+        "Controllable Audio Synthesis",
         "Onset Charting",
         "Source Cascade",
-        "Stem Synthesis",
-        "Bar-Locked Generation"
+        "Stem Synthesis"
       ],
       "url": "https://vnportal.vercel.app/"
     }
@@ -42,17 +42,17 @@
     {
       "period": "2026 – 2028 · Auckland",
       "title": "Year 11 Student",
-      "description": "Studying while building AI products on the side, regularly producing structured mathematical and analytical reports for coursework."
+      "description": "At St Cuthbert's College, graduating 2028 — IB Math AA HL and NCEA Level 1, planning AP Calculus and Computer Science exams next year — while building AI products on the side."
     },
     {
       "period": "Competition",
-      "title": "Mathematical Modelling",
-      "description": "Co-authored mathematical modelling papers analyzing real-world problems under competition deadlines — research, assumptions, models, and written findings, refined with a team."
+      "title": "Mathematics & Modelling",
+      "description": "Honorable Mention at HiMCM and the IMMC regional round, co-authoring modelling papers with a team under competition deadlines. AIME 10/15, AMC 12 Honor Roll (top 5%), and High Distinction in the Australian Mathematics Competition."
     },
     {
       "period": "Ongoing",
       "title": "AI Research & Development",
-      "description": "Using tools like Claude, VS Code, and Google Colab to read frontier model papers, build GPU kernels, solve real-world problems, and ship web apps."
+      "description": "Using Claude, VS Code, and Modal to read frontier model papers, write and benchmark GPU kernels, fine-tune and serve language models, and ship web apps."
     },
     {
       "period": "Volunteer",
@@ -61,18 +61,26 @@
     }
   ],
   "skills": [
-    "Triton GPU Kernels",
+    "Triton",
     "PyTorch",
+    "Python",
     "GPU Benchmarking & Profiling",
-    "LLM Fine-Tuning (LoRA)",
-    "Model Serving (vLLM, Modal)",
-    "LLM Orchestration & Fallback Routing",
-    "Full-Stack TypeScript (Next.js, Express)",
+    "LoRA Fine-Tuning",
+    "vLLM",
+    "Modal",
+    "Eval Harnesses",
+    "TypeScript",
+    "Node.js",
+    "Express",
+    "Next.js",
+    "React",
     "Supabase & Postgres",
-    "Real-Time Web Audio",
-    "Mathematical Modelling",
-    "Technical Writing",
-    "AI-Assisted Development"
+    "Web Audio API",
+    "Stripe",
+    "Git",
+    "GitHub Actions",
+    "Playwright E2E Testing",
+    "Web Security Hardening (CSP, XSS)"
   ],
   "currentlyLearning": [
     {
@@ -83,12 +91,12 @@
     {
       "label": "Building",
       "title": "Triton GPU kernels",
-      "detail": "Week 7 done: cross-entropy with forward and backward fused into one kernel — 1.51x faster and 1.67x less peak memory at vocab 131072, and the first genuinely fair baseline of the track. Week 8 folds the linear layer in to stop materialising the logits at all."
+      "detail": "One kernel a week, each benchmarked against PyTorch and published with its numbers. Best so far: fused cross-entropy at 15.90 ms against PyTorch's 24.03 ms at vocab 131,072 (1.51x), with 1.67x less peak memory."
     },
     {
-      "label": "Next up",
+      "label": "Researching",
       "title": "RLVR verifier research",
-      "detail": "A paper on when a persistently wrong verifier actually harms GRPO training — holding error rate and asymmetry fixed, sweeping persistence, and mapping the ground between two published results that disagree."
+      "detail": "Leading a five-person paper on when a persistently wrong verifier actually harms GRPO training — holding error rate and asymmetry fixed and sweeping persistence. Targeting COLM / TMLR."
     }
   ]
 }
