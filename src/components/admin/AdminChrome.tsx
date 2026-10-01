@@ -12,7 +12,7 @@ export function AdminHeader({ title, back }: { title: string; back?: string }) {
   return (
     <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
       <div>
-        <h1 className="font-mono text-2xl font-bold">{title}</h1>
+        <h1 className="text-2xl font-bold">{title}</h1>
         <p className="mt-1 text-xs text-foreground/50">
           Signed in as {identity.login}
           <button onClick={signOut} className="ml-2 text-brand-blue-light underline">
@@ -22,7 +22,7 @@ export function AdminHeader({ title, back }: { title: string; back?: string }) {
       </div>
       <Link
         href={back ?? "/admin"}
-        className="font-mono text-sm text-brand-blue-light hover:underline"
+        className="text-sm text-brand-blue-light hover:underline"
       >
         ← {back === "/" ? "Back to site" : "Back to admin"}
       </Link>
@@ -81,7 +81,7 @@ export function SaveBar({
         <button
           onClick={onSave}
           disabled={busy}
-          className="rounded-lg bg-brand-blue px-5 py-2.5 font-mono text-sm font-semibold text-background transition hover:bg-brand-blue-light disabled:opacity-40"
+          className="rounded-lg bg-brand-blue px-5 py-2.5 text-sm font-semibold text-background transition hover:bg-brand-blue-light disabled:opacity-40"
         >
           {busy ? "Publishing…" : label}
         </button>
@@ -112,7 +112,6 @@ export function Field({
   value,
   onChange,
   rows = 3,
-  mono = false,
   placeholder,
   hint,
   // Shown as "n/limit" and turns amber past the limit. The excerpt is the one
@@ -124,22 +123,21 @@ export function Field({
   value: string;
   onChange: (v: string) => void;
   rows?: number;
-  mono?: boolean;
   placeholder?: string;
   hint?: string;
   limit?: number;
 }) {
-  const cls = `mt-2 w-full rounded-lg border border-white/10 bg-card px-3 py-2 text-sm outline-none focus:border-brand-blue ${mono ? "font-mono" : ""}`;
+  const cls = `mt-2 w-full rounded-lg border border-white/10 bg-card px-3 py-2 text-sm outline-none focus:border-brand-blue`;
   const over = limit !== undefined && value.length > limit;
   return (
     <label className="block">
-      <span className="font-mono text-xs uppercase tracking-wider text-foreground/50">
+      <span className="text-xs uppercase tracking-wider text-foreground/50">
         {label}
       </span>
       {hint && <span className="ml-2 text-xs text-foreground/30">{hint}</span>}
       {limit !== undefined && (
         <span
-          className={`ml-2 font-mono text-xs ${over ? "text-brand-yellow" : "text-foreground/30"}`}
+          className={`ml-2 text-xs ${over ? "text-brand-yellow" : "text-foreground/30"}`}
         >
           {value.length}/{limit}
         </span>

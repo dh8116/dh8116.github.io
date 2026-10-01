@@ -53,7 +53,7 @@ const unlines = (s: string) =>
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-10 border-t border-white/10 pt-6">
-      <h2 className="mb-5 font-mono text-sm uppercase tracking-wider text-foreground/50">
+      <h2 className="mb-5 text-sm uppercase tracking-wider text-foreground/50">
         {title}
       </h2>
       <div className="space-y-5">{children}</div>
@@ -117,7 +117,7 @@ export default function HomeAdmin() {
     return (
       <div className="mx-auto max-w-3xl px-6 py-16">
         <AdminHeader title="Home page text" />
-        <p className="font-mono text-sm text-foreground/50">Loading copy from main…</p>
+        <p className="text-sm text-foreground/50">Loading copy from main…</p>
       </div>
     );
 
@@ -225,7 +225,6 @@ export default function HomeAdmin() {
                 />
                 <Field
                   label="URL"
-                  mono
                   rows={1}
                   value={project.url ?? ""}
                   onChange={(v) => setProject({ url: v })}

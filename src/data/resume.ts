@@ -116,7 +116,7 @@ export const resume: {
       bullets: [
         "Score 10/15, AIME (American Invitational Mathematics Examination) | Honor Roll (Top 5%), AMC 12 (The American Mathematics Competition 12) | High Distinction, AUSAMC (Australian Mathematics Competition)",
         "Honorable Mention, HiMCM (High School Mathematical Contest in Modeling)",
-        "Honorable Mention, IMMC regional (International Mathematical Modeling Challenge Regional Round)",
+        "Honorable Mention, IMMC regional(International Mathematical Modeling Challenge Regional Round)",
         "Volunteer, Mustang Math Community — Technology and Curriculum Development",
       ],
     },

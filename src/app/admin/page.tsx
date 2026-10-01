@@ -56,7 +56,7 @@ export default function AdminHome() {
       <AdminHeader title="Admin" back="/" />
 
       <p className="mb-8 text-sm leading-relaxed text-foreground/60">
-        Every save here commits to <span className="font-mono">main</span>, which
+        Every save here commits to main, which
         starts the Pages deploy. You stay on the page until it reports back live.
       </p>
 
@@ -139,10 +139,10 @@ export default function AdminHome() {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-white/10 bg-card px-4 py-3">
-      <div className="font-mono text-xs uppercase tracking-wider text-foreground/40">
+      <div className="text-xs uppercase tracking-wider text-foreground/40">
         {label}
       </div>
-      <div className="mt-1 font-mono text-lg">{value}</div>
+      <div className="mt-1 text-lg">{value}</div>
     </div>
   );
 }
@@ -160,7 +160,7 @@ function Tool({
 }) {
   const body = (
     <>
-      <div className="font-mono text-base font-semibold">
+      <div className="text-base font-semibold">
         {name}
         {external && <span className="ml-1 text-foreground/30">↗</span>}
       </div>

@@ -26,7 +26,7 @@ function linkify(text: string): ReactNode[] {
 
 function Bullets({ items }: { items: string[] }) {
   return (
-    <ul className="mt-2 flex list-disc flex-col gap-1.5 pl-5 marker:text-brand-blue-light">
+    <ul className="mt-2 flex list-disc flex-col gap-2 pl-6">
       {items.map((item) => (
         <li key={item}>{linkify(item)}</li>
       ))}
@@ -57,23 +57,23 @@ export default function ResumePage({ lang }: { lang: Lang }) {
         </a>
       </div>
 
-      <article lang="en" className="mt-10 text-sm leading-relaxed text-zinc-400">
+      <article lang="en" className="mt-10 text-lg leading-relaxed text-zinc-300">
         <header>
-          <h2 className="text-3xl font-bold tracking-tight text-zinc-100">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground">
             {resume.name}
           </h2>
-          <p className="mt-2">
+          <p className="mt-2 whitespace-pre-wrap">
             {resume.contact.map((c, i) => (
               <Fragment key={c}>
-                {i > 0 && <span className="px-2 text-zinc-600">|</span>}
+                {i > 0 && "  |  "}
                 {linkify(c)}
               </Fragment>
             ))}
           </p>
-          <p className="mt-1">
+          <p className="whitespace-pre-wrap">
             {resume.links.map((l, i) => (
               <Fragment key={l}>
-                {i > 0 && <span className="px-2 text-zinc-600">|</span>}
+                {i > 0 && "  |  "}
                 {linkify(l)}
               </Fragment>
             ))}
@@ -81,23 +81,16 @@ export default function ResumePage({ lang }: { lang: Lang }) {
         </header>
 
         {resume.sections.map((section) => (
-          <section
-            key={section.heading}
-            className="mt-8 border-t border-white/10 pt-6"
-          >
-            <h3 className="text-xs font-medium uppercase tracking-widest text-brand-blue-light">
+          <section key={section.heading} className="mt-8">
+            <h3 className="font-bold uppercase text-foreground">
               {section.heading}
             </h3>
-            {section.intro && <p className="mt-3">{linkify(section.intro)}</p>}
+            {section.intro && <p className="mt-2">{linkify(section.intro)}</p>}
             {section.lines && (
-              <div className="mt-3 flex flex-col gap-1.5">
+              <div className="mt-2 flex flex-col gap-1">
                 {section.lines.map((line) => (
                   <p key={line.text}>
-                    {line.label && (
-                      <span className="font-semibold text-zinc-200">
-                        {line.label}:{" "}
-                      </span>
-                    )}
+                    {line.label && `${line.label}: `}
                     {linkify(line.text)}
                   </p>
                 ))}
@@ -105,8 +98,8 @@ export default function ResumePage({ lang }: { lang: Lang }) {
             )}
             {section.bullets && <Bullets items={section.bullets} />}
             {section.groups?.map((group) => (
-              <div key={group.title} className="mt-4">
-                <h4 className="font-semibold text-zinc-200">
+              <div key={group.title} className="mt-3">
+                <h4 className="font-bold text-foreground">
                   {linkify(group.title)}
                 </h4>
                 <Bullets items={group.bullets} />

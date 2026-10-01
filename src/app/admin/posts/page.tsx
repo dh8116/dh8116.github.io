@@ -254,7 +254,7 @@ export default function PostsAdmin() {
       )}
 
       {!posts && !loadError && (
-        <p className="font-mono text-sm text-foreground/50">Loading posts from main…</p>
+        <p className="text-sm text-foreground/50">Loading posts from main…</p>
       )}
 
       {posts && (
@@ -262,7 +262,7 @@ export default function PostsAdmin() {
           <aside>
             <button
               onClick={() => guarded(() => openDraft(blankDraft()))}
-              className="mb-4 w-full rounded-lg bg-brand-blue px-3 py-2 font-mono text-sm font-semibold text-background hover:bg-brand-blue-light"
+              className="mb-4 w-full rounded-lg bg-brand-blue px-3 py-2 text-sm font-semibold text-background hover:bg-brand-blue-light"
             >
               + New post
             </button>
@@ -317,7 +317,7 @@ export default function PostsAdmin() {
                     }`}
                   >
                     <span className="block truncate">{post.title}</span>
-                    <span className="font-mono text-xs text-foreground/40">
+                    <span className="text-xs text-foreground/40">
                       {post.date}
                       {post.category === "kernel" && " · kernel"}
                       {!zh[post.slug] && " · no zh"}
@@ -339,7 +339,6 @@ export default function PostsAdmin() {
                   <Field
                     label="Slug"
                     hint="the URL"
-                    mono
                     rows={1}
                     value={draft.slug}
                     onChange={(slug) => set({ slug })}
@@ -348,7 +347,6 @@ export default function PostsAdmin() {
                   <Field
                     label="Date"
                     hint="YYYY-MM-DD"
-                    mono
                     rows={1}
                     value={draft.date}
                     onChange={(date) => set({ date })}
@@ -391,7 +389,6 @@ export default function PostsAdmin() {
                   <Field
                     label="Image"
                     hint="optional"
-                    mono
                     rows={1}
                     value={draft.image}
                     onChange={(image) => set({ image })}
@@ -406,7 +403,7 @@ export default function PostsAdmin() {
                 </div>
 
                 <div className="mt-8 border-t border-white/10 pt-6">
-                  <h2 className="mb-4 font-mono text-sm uppercase tracking-wider text-foreground/50">
+                  <h2 className="mb-4 text-sm uppercase tracking-wider text-foreground/50">
                     中文 — required
                   </h2>
                   <div className="space-y-5">
