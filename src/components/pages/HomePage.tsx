@@ -195,17 +195,30 @@ export default function HomePage({ lang }: { lang: Lang }) {
       <FadeInSection>
         <section id="resume" className="scroll-mt-24 py-16">
           <SectionHeading lang={lang} heading={t.home.resume} />
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link
-              href={localePath("/resume", lang)}
-              className="rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-light"
-            >
+          <Link
+            href={localePath("/resume", lang)}
+            aria-label={t.resume.view}
+            className="group relative mt-8 block overflow-hidden rounded-2xl border border-white/10 bg-card p-2 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:border-brand-blue/50 hover:shadow-xl hover:shadow-brand-blue/10 sm:p-3"
+          >
+            <Image
+              src="/resume-preview.png"
+              alt=""
+              width={1546}
+              height={279}
+              sizes="(min-width: 1024px) 760px, 100vw"
+              className="h-auto w-full rounded-xl"
+            />
+            {/* Fades the cut-off last line so the crop reads as "more below". */}
+            <div className="pointer-events-none absolute inset-x-2 bottom-2 h-1/3 rounded-b-xl bg-gradient-to-t from-card to-transparent sm:inset-x-3 sm:bottom-3" />
+            <span className="absolute bottom-4 right-5 rounded-full bg-brand-blue px-4 py-1.5 text-xs font-semibold text-white shadow-lg transition-colors group-hover:bg-brand-blue-light">
               {t.resume.view} &rarr;
-            </Link>
+            </span>
+          </Link>
+          <div className="mt-6">
             <a
               href={RESUME_PDF}
               download={RESUME_FILENAME}
-              className="rounded-full border border-brand-yellow px-5 py-2.5 text-sm font-semibold text-brand-yellow transition-colors hover:bg-brand-yellow hover:text-black"
+              className="inline-block rounded-full border border-brand-yellow px-5 py-2.5 text-sm font-semibold text-brand-yellow transition-colors hover:bg-brand-yellow hover:text-black"
             >
               {t.resume.download}
             </a>

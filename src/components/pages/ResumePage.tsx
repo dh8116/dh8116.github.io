@@ -1,11 +1,38 @@
-import Image from "next/image";
+import { Fragment, type ReactNode } from "react";
+import { resume } from "@/data/resume";
 import { type Lang, ui } from "@/data/i18n";
 
-// The PDF is the source of truth; resume.png is its single page rendered at
-// 200 dpi. Embedding the PDF itself would need frame-src/object-src, which the
-// export CSP keeps at 'none' — re-render the PNG whenever the PDF changes.
 export const RESUME_PDF = "/resume.pdf";
 export const RESUME_FILENAME = "Richael-Resume.pdf";
+
+// Turns "[label](url)" runs into links; everything else stays plain text.
+function linkify(text: string): ReactNode[] {
+  return text.split(/(\[[^\]]+\]\([^)]+\))/).map((part, i) => {
+    const m = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (!m) return <Fragment key={i}>{part}</Fragment>;
+    const external = m[2].startsWith("http");
+    return (
+      <a
+        key={i}
+        href={m[2]}
+        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        className="text-brand-blue-light hover:underline"
+      >
+        {m[1]}
+      </a>
+    );
+  });
+}
+
+function Bullets({ items }: { items: string[] }) {
+  return (
+    <ul className="mt-2 flex list-disc flex-col gap-1.5 pl-5 marker:text-brand-blue-light">
+      {items.map((item) => (
+        <li key={item}>{linkify(item)}</li>
+      ))}
+    </ul>
+  );
+}
 
 export default function ResumePage({ lang }: { lang: Lang }) {
   const t = ui[lang];
@@ -29,17 +56,65 @@ export default function ResumePage({ lang }: { lang: Lang }) {
           {t.resume.download}
         </a>
       </div>
-      <div className="mt-10 overflow-hidden rounded-2xl border border-white/10 bg-card p-2 transition-all duration-200 hover:border-brand-blue/50 hover:shadow-xl hover:shadow-brand-blue/10 sm:p-3">
-        <Image
-          src="/resume.png"
-          alt="Richael — resume"
-          width={1700}
-          height={2200}
-          sizes="(min-width: 768px) 720px, 100vw"
-          className="h-auto w-full rounded-xl"
-          priority
-        />
-      </div>
+
+      <article lang="en" className="mt-10 text-sm leading-relaxed text-zinc-400">
+        <header>
+          <h2 className="text-3xl font-bold tracking-tight text-zinc-100">
+            {resume.name}
+          </h2>
+          <p className="mt-2">
+            {resume.contact.map((c, i) => (
+              <Fragment key={c}>
+                {i > 0 && <span className="px-2 text-zinc-600">|</span>}
+                {linkify(c)}
+              </Fragment>
+            ))}
+          </p>
+          <p className="mt-1">
+            {resume.links.map((l, i) => (
+              <Fragment key={l}>
+                {i > 0 && <span className="px-2 text-zinc-600">|</span>}
+                {linkify(l)}
+              </Fragment>
+            ))}
+          </p>
+        </header>
+
+        {resume.sections.map((section) => (
+          <section
+            key={section.heading}
+            className="mt-8 border-t border-white/10 pt-6"
+          >
+            <h3 className="text-xs font-medium uppercase tracking-widest text-brand-blue-light">
+              {section.heading}
+            </h3>
+            {section.intro && <p className="mt-3">{linkify(section.intro)}</p>}
+            {section.lines && (
+              <div className="mt-3 flex flex-col gap-1.5">
+                {section.lines.map((line) => (
+                  <p key={line.text}>
+                    {line.label && (
+                      <span className="font-semibold text-zinc-200">
+                        {line.label}:{" "}
+                      </span>
+                    )}
+                    {linkify(line.text)}
+                  </p>
+                ))}
+              </div>
+            )}
+            {section.bullets && <Bullets items={section.bullets} />}
+            {section.groups?.map((group) => (
+              <div key={group.title} className="mt-4">
+                <h4 className="font-semibold text-zinc-200">
+                  {linkify(group.title)}
+                </h4>
+                <Bullets items={group.bullets} />
+              </div>
+            ))}
+          </section>
+        ))}
+      </article>
     </div>
   );
 }
