@@ -11,7 +11,8 @@
 // The last section is the resume: resume.json (the text /resume renders) and,
 // optionally, a replacement public/resume.pdf. They go in the same commit as
 // the rest, and the deploy re-crops the homepage preview from whichever PDF
-// is committed (scripts/resume-preview.py).
+// is committed. The deploy keeps the two in step (scripts/resume-sync.py):
+// a new PDF re-extracts the text, edited text re-renders the PDF.
 
 import { useEffect, useState } from "react";
 import { AdminHeader, Field, SaveBar } from "@/components/admin/AdminChrome";
@@ -87,6 +88,10 @@ export default function HomeAdmin() {
   const [en, setEn] = useState<SiteJson | null>(null);
   const [zh, setZh] = useState<SiteZhJson | null>(null);
   const [resume, setResume] = useState<ResumeJson | null>(null);
+  // What main held when this page loaded. resume.json is only written when it
+  // differs, so an untouched editor never pushes stale text over a version the
+  // deploy has just re-extracted from a new PDF.
+  const [resumeLoaded, setResumeLoaded] = useState("");
   const [pdf, setPdf] = useState<File | null>(null);
   const [loadError, setLoadError] = useState("");
   const [problem, setProblem] = useState("");
@@ -110,6 +115,7 @@ export default function HomeAdmin() {
         setEn(a);
         setZh(b);
         setResume(c);
+        setResumeLoaded(c.text);
         setLoadError("");
       } catch (err) {
         if (!cancelled) {
@@ -175,12 +181,16 @@ export default function HomeAdmin() {
       [
         { path: SITE_PATH, json: en },
         { path: SITE_ZH_PATH, json: zh },
-        { path: RESUME_PATH, json: resume },
+        ...(resume.text !== resumeLoaded ? [{ path: RESUME_PATH, json: resume }] : []),
         ...(pdfBase64 ? [{ path: RESUME_PDF_PATH, base64: pdfBase64 }] : []),
       ],
       pdf ? "Update home page copy and resume PDF" : "Update home page copy"
     );
-    if (ok) setPdf(null);
+    if (ok) {
+      setPdf(null);
+      // The deploy may have rewritten resume.json or resume.pdf; pick that up.
+      setReloadKey((k) => k + 1);
+    }
   }
 
   return (
@@ -386,7 +396,7 @@ export default function HomeAdmin() {
       <Section title="Resume">
         <Field
           label="Resume text"
-          hint="# name · ## heading · ### project · - bullet · [label](url)"
+          hint="# name · ## heading · ### project · - bullet · [label](url) — saving edited text re-renders the PDF"
           rows={30}
           value={resume.text}
           onChange={(v) => setResume({ text: v })}
@@ -396,7 +406,7 @@ export default function HomeAdmin() {
             Resume PDF
           </span>
           <span className="ml-2 text-xs text-foreground/30">
-            optional — replaces the download and the homepage preview
+            optional — the text above is re-read from it on deploy (it wins over text edits in the same save)
           </span>
           <input
             type="file"
