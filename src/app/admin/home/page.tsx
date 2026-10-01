@@ -12,7 +12,7 @@
 // optionally, a replacement public/resume.pdf. They go in the same commit as
 // the rest, and the deploy re-crops the homepage preview from whichever PDF
 // is committed. The deploy keeps the two in step (scripts/resume-sync.py):
-// a new PDF re-extracts the text, edited text re-renders the PDF.
+// whichever of PDF and text was saved last is the source.
 
 import { useEffect, useState } from "react";
 import { AdminHeader, Field, SaveBar } from "@/components/admin/AdminChrome";
@@ -26,6 +26,19 @@ const RESUME_PATH = "src/data/resume.json";
 const RESUME_PDF_PATH = "public/resume.pdf";
 
 type ResumeJson = { text: string };
+
+// The text the live site was built with, which the deploy has already synced
+// with the PDF; main's resume.json can be older when the PDF is the newer of
+// the two. Falls back to main when the site has not published it yet.
+async function loadResume(token: string): Promise<ResumeJson> {
+  try {
+    const res = await fetch(`/resume.json?t=${Date.now()}`, { cache: "no-store" });
+    if (res.ok) return (await res.json()) as ResumeJson;
+  } catch {
+    // fall through to main
+  }
+  return readJson<ResumeJson>(token, RESUME_PATH);
+}
 
 // FileReader gives "data:application/pdf;base64,<payload>"; the Git blob API
 // wants the payload alone.
@@ -109,7 +122,7 @@ export default function HomeAdmin() {
         const [a, b, c] = await Promise.all([
           readJson<SiteJson>(token, SITE_PATH),
           readJson<SiteZhJson>(token, SITE_ZH_PATH),
-          readJson<ResumeJson>(token, RESUME_PATH),
+          loadResume(token),
         ]);
         if (cancelled) return;
         setEn(a);

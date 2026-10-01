@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# written by scripts/resume-sync.py at build time
+/public/resume.json
+__pycache__/
