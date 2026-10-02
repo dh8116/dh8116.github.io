@@ -2,25 +2,15 @@
 #
 #   public/resume.pdf     the download (normally a Google Docs export)
 #   src/data/resume.json  the text /resume renders, in resume.ts's line format
-#   the Google Doc        page 1 of the "Resume (Sep 2026)" doc
 #
 # Nothing here commits. At build time the NEWER of resume.pdf / resume.json
 # (by last commit) is the source and the other is regenerated in the build
 # workspace only, so the deploy is always consistent and main never gains
 # bot commits. A tie goes to the PDF: it is the export of the real document.
 #
-#   python scripts/resume-sync.py build      sync the workspace, crop preview,
-#                                            and carry edited text into the Doc
-#   python scripts/resume-sync.py doc-pull   export the Doc; if its text differs
-#                                            from the site's, replace
-#                                            public/resume.pdf with it (the
-#                                            workflow commits that change)
+#   python scripts/resume-sync.py build      sync the workspace, crop preview
 #   python scripts/resume-sync.py pdf|text   force a direction (local use)
 #
-# Google access needs the GOOGLE_SERVICE_ACCOUNT env var: a service-account
-# JSON key whose client_email has edit access to the Doc. Without it the Doc
-# steps are skipped and everything else still runs.
-
 import json
 import os
 import re
@@ -34,7 +24,6 @@ PDF = "public/resume.pdf"
 TEXT = "src/data/resume.json"
 PREVIEW = "public/resume-preview.png"
 PUBLIC_TEXT = "public/resume.json"  # what /admin/home loads, already synced
-DOC_ID = "14lUervmjnXTZGJJ4vjLKb4UquATYVB5p1eDMMvOBaog"
 
 ZW = "​"
 NBSP = " "
@@ -264,221 +253,6 @@ def text_to_pdf(text, path):
     doc.save(path, garbage=3, deflate=True)
 
 
-# ------------------------------------------------------------- Google Doc
-
-
-def _google(scopes):
-    info = os.environ.get("GOOGLE_SERVICE_ACCOUNT", "").strip()
-    if not info:
-        return None
-    from google.oauth2 import service_account
-
-    return service_account.Credentials.from_service_account_info(json.loads(info), scopes=scopes)
-
-
-def doc_export_pdf(path):
-    """Page 1 of the Doc as a PDF at `path`; False when there are no credentials."""
-    creds = _google(["https://www.googleapis.com/auth/drive.readonly"])
-    if not creds:
-        return False
-    from googleapiclient.discovery import build
-
-    data = build("drive", "v3", credentials=creds).files().export(
-        fileId=DOC_ID, mimeType="application/pdf"
-    ).execute()
-    with open(path, "wb") as f:
-        f.write(data)
-    keep_first_page(path)
-    return True
-
-
-def _u16(s):
-    # Docs API indexes are UTF-16 code units.
-    return len(s.encode("utf-16-le")) // 2
-
-
-def _para_text(p):
-    return "".join(e.get("textRun", {}).get("content", "") for e in p.get("elements", []))
-
-
-def _has_cjk(s):
-    return re.search(r"[㐀-鿿]", s) is not None
-
-
-def _classify(lines):
-    """Kind of each line of the line format, matching resume.ts."""
-    kinds, seen_heading = [], False
-    for i, l in enumerate(lines):
-        if i == 0 and l.startswith("# "):
-            kinds.append("name")
-        elif l.startswith("## "):
-            kinds.append("heading")
-            seen_heading = True
-        elif not seen_heading:
-            kinds.append("contact")
-        elif l.startswith("### "):
-            kinds.append("title")
-        elif l.startswith("- "):
-            kinds.append("bullet")
-        else:
-            kinds.append("line")
-    return kinds
-
-
-PARA_FIELDS = ["lineSpacing", "spaceAbove", "spaceBelow", "alignment", "direction"]
-TEXT_FIELDS = ["bold", "italic", "fontSize", "weightedFontFamily", "foregroundColor", "underline"]
-
-
-def _sample_styles(english):
-    """The Doc's current paragraph + text style for each kind of line, so a
-    rewrite looks exactly like the Doc did — nothing is invented here."""
-    style, link_style, kinds = {}, None, []
-    for c in english:
-        p = c["paragraph"]
-        t = _para_text(p).strip()
-        runs = [e["textRun"] for e in p.get("elements", []) if "textRun" in e]
-        texty = [r for r in runs if r["content"].strip()]
-        all_bold = bool(texty) and all(r.get("textStyle", {}).get("bold") for r in texty)
-        first_bold = bool(texty) and texty[0].get("textStyle", {}).get("bold")
-        if not kinds:
-            kind = "name"
-        elif all_bold and t == t.upper():
-            kind = "heading"
-        elif "heading" not in kinds:
-            kind = "contact"
-        elif "bullet" in p:
-            kind = "bullet"
-        elif first_bold:
-            kind = "title"
-        else:
-            kind = "line"
-        kinds.append(kind)
-        if kind not in style and texty:
-            plain = next((r for r in texty if not r.get("textStyle", {}).get("link")), texty[0])
-            ts = dict(plain.get("textStyle", {}))
-            if kind == "title":
-                ts["bold"] = False  # the bold part is applied separately
-            style[kind] = (p.get("paragraphStyle", {}), ts)
-        for r in runs:
-            if r.get("textStyle", {}).get("link") and link_style is None:
-                link_style = r["textStyle"]
-    fallback = style.get("line") or style.get("bullet") or ({}, {})
-    for k in ("name", "contact", "heading", "title", "bullet", "line"):
-        style.setdefault(k, fallback)
-    return style, link_style
-
-
-def doc_push(text):
-    """Rewrite page 1 of the Doc (everything before the Chinese page) from the
-    line format. Google keeps every prior version in the Doc's history."""
-    creds = _google(["https://www.googleapis.com/auth/documents"])
-    if not creds:
-        return False
-    from googleapiclient.discovery import build
-
-    docs = build("docs", "v1", credentials=creds).documents()
-    doc = docs.get(documentId=DOC_ID).execute()
-    paras = [c for c in doc["body"]["content"] if "paragraph" in c]
-
-    english, end = [], None
-    for c in paras:
-        t = _para_text(c["paragraph"])
-        if _has_cjk(t):
-            end = c["startIndex"]
-            break
-        if t.strip():
-            english.append(c)
-    if end is None:
-        end = paras[-1]["endIndex"]
-    style, link_style = _sample_styles(english)
-
-    # New content, with [label](url) resolved to plain text + link ranges.
-    lines = [l.strip() for l in text.split("\n") if l.strip()]
-    kinds = _classify(lines)
-    plain_lines, links, bold_cut = [], [], {}
-    for n, (line, kind) in enumerate(zip(lines, kinds)):
-        body = re.sub(r"^(#{1,3} |- )", "", line)
-        out, pos, first_link = "", 0, None
-        for m in re.finditer(r"\[([^\]]+)\]\(([^)]+)\)", body):
-            out += body[pos : m.start()]
-            if first_link is None:
-                first_link = _u16(out)
-            links.append((n, _u16(out), _u16(m.group(1)), m.group(2)))
-            out += m.group(1)
-            pos = m.end()
-        out += body[pos:]
-        if kind == "title":
-            # bold up to the first link, as in the Doc ("Soulor AI — " + link)
-            bold_cut[n] = first_link if first_link is not None else _u16(out)
-        plain_lines.append(out)
-
-    new = "\n".join(plain_lines)
-    starts, at = [], 1
-    for l in plain_lines:
-        starts.append(at)
-        at += _u16(l) + 1
-
-    # Delete the old English page but keep its last paragraph mark; the new
-    # text is inserted in front of that mark, so it becomes the last line.
-    reqs = []
-    if end - 1 > 1:
-        reqs.append({"deleteContentRange": {"range": {"startIndex": 1, "endIndex": end - 1}}})
-    reqs.append({"insertText": {"location": {"index": 1}, "text": new}})
-    whole = {"startIndex": 1, "endIndex": 1 + _u16(new) + 1}
-    reqs.append({"deleteParagraphBullets": {"range": whole}})
-
-    for n, (line, kind) in enumerate(zip(plain_lines, kinds)):
-        pstyle, tstyle = style[kind]
-        pf = [f for f in PARA_FIELDS if f in pstyle]
-        reqs.append({"updateParagraphStyle": {
-            "range": {"startIndex": starts[n], "endIndex": starts[n] + _u16(line) + 1},
-            "paragraphStyle": {
-                **{f: pstyle[f] for f in pf},
-                "namedStyleType": "NORMAL_TEXT",
-                "indentStart": {"magnitude": 0, "unit": "PT"},
-                "indentFirstLine": {"magnitude": 0, "unit": "PT"},
-            },
-            "fields": ",".join(pf + ["namedStyleType", "indentStart", "indentFirstLine"]),
-        }})
-        if line:
-            ts = {f: tstyle[f] for f in TEXT_FIELDS if f in tstyle}
-            ts.setdefault("bold", False)
-            ts.setdefault("underline", False)
-            reqs.append({"updateTextStyle": {
-                "range": {"startIndex": starts[n], "endIndex": starts[n] + _u16(line)},
-                "textStyle": ts,
-                "fields": ",".join(list(ts) + ["link"]),
-            }})
-    for n, cut in bold_cut.items():
-        if cut:
-            reqs.append({"updateTextStyle": {
-                "range": {"startIndex": starts[n], "endIndex": starts[n] + cut},
-                "textStyle": {"bold": True}, "fields": "bold"}})
-    for n, off, length, url in links:
-        ls = {"link": {"url": url}, "underline": True}
-        if link_style and "foregroundColor" in link_style:
-            ls["foregroundColor"] = link_style["foregroundColor"]
-        reqs.append({"updateTextStyle": {
-            "range": {"startIndex": starts[n] + off, "endIndex": starts[n] + off + length},
-            "textStyle": ls, "fields": ",".join(ls)}})
-    # Bullets last: createParagraphBullets applies the Doc's own list indents.
-    n = 0
-    while n < len(kinds):
-        if kinds[n] != "bullet":
-            n += 1
-            continue
-        m = n
-        while m + 1 < len(kinds) and kinds[m + 1] == "bullet":
-            m += 1
-        reqs.append({"createParagraphBullets": {
-            "range": {"startIndex": starts[n], "endIndex": starts[m] + _u16(plain_lines[m])},
-            "bulletPreset": "BULLET_DISC_CIRCLE_SQUARE"}})
-        n = m + 1
-
-    docs.batchUpdate(documentId=DOC_ID, body={"requests": reqs}).execute()
-    return True
-
-
 # ------------------------------------------------------------------- driver
 
 
@@ -541,48 +315,13 @@ def build(mode=None):
         text = read_text()
         text_to_pdf(text, PDF)
         print("  resume.pdf rendered from resume.json (build workspace only)")
-        # The site's text is newer than the Doc: carry it into the Doc too,
-        # unless the Doc already says the same thing.
-        tmp = PDF + ".doc"
-        try:
-            if doc_export_pdf(tmp):
-                if pdf_to_text(tmp) != text:
-                    doc_push(text)
-                    print("  Google Doc page 1 rewritten from resume.json")
-                else:
-                    print("  Google Doc already matches")
-            else:
-                print("  no GOOGLE_SERVICE_ACCOUNT, so the Doc was not updated")
-        finally:
-            if os.path.exists(tmp):
-                os.remove(tmp)
     shutil.copy(TEXT, PUBLIC_TEXT)
     crop_preview()
 
 
-def doc_pull():
-    """Prints CHANGED when public/resume.pdf was replaced by the Doc's export."""
-    tmp = PDF + ".doc"
-    if not doc_export_pdf(tmp):
-        print("resume-sync: no GOOGLE_SERVICE_ACCOUNT, skipping")
-        return
-    try:
-        current = read_text() if effective_source() == "text" else pdf_to_text(PDF)
-        if pdf_to_text(tmp) != current:
-            os.replace(tmp, PDF)
-            print("CHANGED")
-        else:
-            print("resume-sync: the Doc matches the site")
-    finally:
-        if os.path.exists(tmp):
-            os.remove(tmp)
-
-
 if __name__ == "__main__":
     arg = sys.argv[1] if len(sys.argv) > 1 else "build"
-    if arg == "doc-pull":
-        doc_pull()
-    elif arg in ("pdf", "text"):
+    if arg in ("pdf", "text"):
         build(arg)
     else:
         build()
