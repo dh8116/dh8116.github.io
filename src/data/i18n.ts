@@ -62,6 +62,7 @@ export type Ui = {
     projects: SectionHeading;
     resume: SectionHeading;
     writing: SectionHeading;
+    faq: SectionHeading;
     allPosts: string;
   };
   resume: { view: string; download: string };
@@ -108,6 +109,7 @@ export const ui: Record<Lang, Ui> = {
       projects: { eyebrow: "My", title: "Projects" },
       resume: { eyebrow: "My", title: "Resume" },
       writing: { eyebrow: "Latest", title: "Writing" },
+      faq: { eyebrow: "Common", title: "Questions" },
       allPosts: "All posts",
     },
     details: {
@@ -152,6 +154,7 @@ export const ui: Record<Lang, Ui> = {
       projects: { eyebrow: "我的", title: "项目" },
       resume: { eyebrow: "我的", title: "简历" },
       writing: { eyebrow: "最新", title: "文章" },
+      faq: { eyebrow: "常见", title: "问题" },
       allPosts: "全部文章",
     },
     details: {

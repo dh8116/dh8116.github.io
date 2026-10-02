@@ -8,11 +8,19 @@ import {
   getCurrentlyLearning,
   getPosts,
   getStatusLabel,
+  getFaq,
 } from "@/data/content";
 import { type Lang, localePath, ui } from "@/data/i18n";
 import PersonalDetailsCard from "@/components/PersonalDetailsCard";
 import FadeInSection from "@/components/FadeInSection";
 import SkillPills from "@/components/SkillPills";
+import JsonLd, {
+  ORIGIN,
+  PERSON_ID,
+  faqSchema,
+  personSchema,
+  projectSchemas,
+} from "@/components/JsonLd";
 import { RESUME_FILENAME, RESUME_PDF } from "@/components/pages/ResumePage";
 
 export default function HomePage({ lang }: { lang: Lang }) {
@@ -23,9 +31,28 @@ export default function HomePage({ lang }: { lang: Lang }) {
   const skills = getSkills(lang);
   const currentlyLearning = getCurrentlyLearning(lang);
   const latestPosts = getPosts(lang).slice(0, 2);
+  const faq = getFaq(lang);
 
   return (
     <div className="mx-auto max-w-5xl px-6 lg:pr-40">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              "@id": `${ORIGIN}/#website`,
+              url: `${ORIGIN}/`,
+              name: `${site.name} (dh8116)`,
+              inLanguage: lang === "zh" ? "zh-Hans" : "en",
+              publisher: { "@id": PERSON_ID },
+            },
+            personSchema(),
+            ...projectSchemas(),
+            faqSchema(faq),
+          ],
+        }}
+      />
       <section className="grid grid-cols-1 items-center gap-12 py-24 lg:grid-cols-[1fr_auto]">
         <FadeInSection className="flex flex-col gap-6">
           <p className="text-sm font-medium uppercase tracking-widest text-brand-blue-light">
@@ -254,6 +281,38 @@ export default function HomePage({ lang }: { lang: Lang }) {
               </Link>
             ))}
           </div>
+        </section>
+      </FadeInSection>
+
+      <FadeInSection>
+        <section id="faq" className="scroll-mt-24 py-16">
+          <SectionHeading lang={lang} heading={t.home.faq} />
+          <dl className="mt-8 flex flex-col gap-6">
+            {faq.map((item) => (
+              <div
+                key={item.q}
+                className="rounded-2xl border border-white/10 bg-card p-6"
+              >
+                <dt className="font-semibold">{item.q}</dt>
+                <dd className="mt-2 leading-relaxed text-zinc-400">{item.a}</dd>
+                {item.sources && (
+                  <dd className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                    {item.sources.map((src) => (
+                      <a
+                        key={src.url}
+                        href={src.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-brand-blue-light hover:underline"
+                      >
+                        {src.label} &rarr;
+                      </a>
+                    ))}
+                  </dd>
+                )}
+              </div>
+            ))}
+          </dl>
         </section>
       </FadeInSection>
     </div>

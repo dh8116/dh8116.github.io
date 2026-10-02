@@ -20,6 +20,16 @@ export async function generateMetadata({
   const post = getPost("zh", slug);
   return {
     title: post ? `${post.title} — ${site.name}` : site.name,
+    description: post?.excerpt,
+    openGraph: post
+      ? {
+          type: "article",
+          title: post.title,
+          description: post.excerpt,
+          publishedTime: post.date,
+          ...(post.image ? { images: [post.image] } : {}),
+        }
+      : undefined,
     alternates: alternates(`/blog/${slug}`, "zh"),
   };
 }

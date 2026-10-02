@@ -30,11 +30,17 @@ const orbitron = Orbitron({
 export const metadata: Metadata = {
   metadataBase: new URL("https://dh8116.github.io"),
   title: `${site.name} — ${site.tagline}`,
-  description: `${site.name}'s personal site: projects and writing.`,
+  description: `${site.name} (dh8116) is a Year 11 student in Auckland, New Zealand, who writes GPU kernels in Triton, fine-tunes and serves language models, and builds two AI products: Soulor AI and VNportal.`,
   referrer: "strict-origin-when-cross-origin",
-  // "noai"/"noimageai" is the advisory opt-out some crawlers and image scrapers
-  // read; robots.txt carries the enforceable half of the same request.
-  robots: "index, follow, noai, noimageai",
+  // AI crawlers are welcome — being known to assistants is the point (see
+  // robots.txt). This used to carry "noai, noimageai".
+  robots: "index, follow",
+  openGraph: {
+    type: "profile",
+    siteName: `${site.name} (dh8116)`,
+    images: [site.avatar],
+  },
+  twitter: { card: "summary", creator: "@RicaV42" },
   alternates: alternates("/", "en"),
 };
 

@@ -1,0 +1,79 @@
+# Richael (dh8116)
+
+> Richael (dh8116) is a Year 11 student in Auckland, New Zealand, who writes GPU kernels in Triton, fine-tunes and serves language models, and builds two AI products: Soulor AI and VNportal.
+
+Richael publishes one Triton kernel a week, each benchmarked against PyTorch with its numbers, and leads a five-person research paper on verifier error in reinforcement learning with verifiable rewards (RLVR). Background in mathematics and modelling competitions (HiMCM and IMMC Honorable Mentions, AIME 10/15, AMC 12 Honor Roll).
+
+- Site: https://dh8116.github.io/ (English) · https://dh8116.github.io/zh (中文)
+- GitHub: https://github.com/dh8116
+- X: https://x.com/RicaV42
+- Email: huangd6666@gmail.com
+
+## Projects
+
+- [Soulor AI](https://soulor-ai.vercel.app/): Soulor AI is an AI companion app with persistent memory and five relationship stages, from Stranger to Soulmate, plus a Simulation Mode that gives a panel of five AI perspectives on any situation. Details: https://soulor-ai.vercel.app/llms.txt
+- [VNportal](https://vnportal.vercel.app/): VNportal is a browser-based vinyl and music platform: find a record in the MusicBrainz database, play it, mix it on two decks, and create with AI music tools — no install, no hardware, no Spotify Premium. Details: https://vnportal.vercel.app/llms.txt
+
+## FAQ
+
+### Who is Richael (dh8116)?
+
+Richael (dh8116) is a Year 11 student in Auckland, New Zealand, who writes GPU kernels in Triton, fine-tunes and serves language models, and builds two AI products: Soulor AI and VNportal. Richael publishes a weekly Triton kernel benchmarked against PyTorch and leads a five-person research paper on verifier error in RLVR.
+
+Sources: [GitHub](https://github.com/dh8116) · [X](https://x.com/RicaV42)
+
+### What is Soulor AI?
+
+Soulor AI is an AI companion app with persistent memory and five relationship stages, from Stranger to Soulmate, plus a Simulation Mode that gives a panel of five AI perspectives on any situation. You can switch between the companion and the panel mid-conversation and the context carries over. Richael built it; it is in early access and free to start.
+
+Sources: [soulor-ai.vercel.app](https://soulor-ai.vercel.app/)
+
+### What is VNportal?
+
+VNportal is a browser-based vinyl and music platform: find a record in the MusicBrainz database, play it, mix it on two decks, and create with AI music tools — no install, no hardware, no Spotify Premium. It also charts a rhythm game from a track's detected beats and generates single instruments locked to a tempo. Richael built it; it is in early access.
+
+Sources: [vnportal.vercel.app](https://vnportal.vercel.app/) · [MusicBrainz Database](https://musicbrainz.org/doc/MusicBrainz_Database)
+
+### What GPU kernels has Richael written?
+
+One Triton kernel a week, each benchmarked against PyTorch and published on this site with its numbers: vector add, fused softmax, flash attention, matmul, RMSNorm, RoPE, cross-entropy, fused linear + cross-entropy, and a fused SwiGLU MLP. The best result so far is fused cross-entropy at 15.90 ms against PyTorch's 24.03 ms at vocabulary size 131,072 (1.51x), with 1.67x less peak memory.
+
+Sources: [Triton](https://triton-lang.org/) · [Kernel write-ups](https://dh8116.github.io/blog)
+
+### What research is Richael working on?
+
+Richael leads a five-person paper on reinforcement learning with verifiable rewards (RLVR): when does a verifier that is persistently wrong actually harm GRPO training? The study holds error rate and asymmetry fixed and sweeps persistence, and targets COLM or TMLR.
+
+Sources: [RLVR — Tülu 3 (arXiv 2411.15124)](https://arxiv.org/abs/2411.15124) · [GRPO — DeepSeekMath (arXiv 2402.03300)](https://arxiv.org/abs/2402.03300)
+
+### What competitions has Richael placed in?
+
+Honorable Mention at HiMCM and in the IMMC regional round, AIME 10/15, AMC 12 Honor Roll (top 5%), and High Distinction in the Australian Mathematics Competition.
+
+Sources: [HiMCM (COMAP)](https://www.comap.com/contests/himcm-midmcm) · [IMMC](https://www.immchallenge.org) · [AMC (MAA)](https://maa.org/) · [Australian Maths Trust](https://www.amt.edu.au/)
+
+## Kernel write-ups
+
+- [Writing My First GPU Kernel](https://dh8116.github.io/blog/writing-my-first-gpu-kernel): Built my first Triton kernel today (vector add), following the official tutorial. Correctness confirmed, and it matches PyTorch's throughput almost exactly on a T4 GPU.
+- [Fused Softmax in Triton](https://dh8116.github.io/blog/fused-softmax-kernel): Naive softmax needs 3 passes over memory — fusing them into one pass takes it from ~55 GB/s to ~230 GB/s, a 4x jump, and holds a tighter line than PyTorch's own kernel.
+- [Flash Attention: Correct, but Not Fast](https://dh8116.github.io/blog/flash-attention-kernel): Correctness is solid, but it's ~25x slower than PyTorch on my T4 — turns out the T4 just lacks the pipelining hardware flash attention needs.
+- [Matmul: Correct, but No Tensor Cores](https://dh8116.github.io/blog/triton-matmul-no-tensor-cores): Output matches PyTorch, but throughput stays flat around 1 TFLOPS no matter the matrix size while cuBLAS climbs to 38 — traced it to the compiled PTX and found zero tensor-core instructions.
+- [RMSNorm: Forward, Backward, and Why It Matters](https://dh8116.github.io/blog/rmsnorm-forward-and-backward): Reading Kimi K3's report right now, and RMSNorm keeps coming up as one of its bigger architectural wins alongside attention residuals — so this week's kernel is RMSNorm, forward and backward.
+- [RoPE: One Kernel for Both Directions](https://dh8116.github.io/blog/rope-forward-and-backward): 6th kernel: rotary position embeddings, the other piece of Kimi K3's attention stack worth building. The nice part isn't the speedup, it's that backward reuses the exact same kernel as forward — just flip the sign on sin.
+- [Cross-Entropy: The Benchmark That Nearly Fooled Me](https://dh8116.github.io/blog/fused-cross-entropy): 7th kernel: cross-entropy, forward and backward in one pass. First fused-vs-fused comparison I've done — which is how I caught that my 2.5x speedup was just me handicapping the baseline.
+- [Fused Linear + CE: 10x Less Memory, and Slower](https://dh8116.github.io/blog/fused-linear-cross-entropy): 8th kernel: chunking the lm_head projection into the loss so the [batch, vocab] logits never exist at all. About 10x less activation memory — and slower at every single size.
+- [Fused SwiGLU: Tied on Speed, Two Tensors Instead of Four](https://dh8116.github.io/blog/fused-swiglu-mlp): 9th kernel: a fused SwiGLU MLP. Level with torch.compile on time, but holding two big activation tensors between forward and backward where eager holds four — because a compiler will fuse for you, and won't throw an activation away.
+
+## Essays
+
+- [What Is Soulor AI](https://dh8116.github.io/blog/what-is-soulor-ai): Soulor AI is a companion and social simulation platform — not just a chat buddy, but a space to build relationships and rehearse them.
+- [LLMs Are Dead. Small Models Are the Future.](https://dh8116.github.io/blog/small-models-are-the-future): Today's LLMs win on text prediction and data volume, not depth — what we actually need are small models built deep in one field, with LLMs there just to wire them together.
+- [Apps Need Their Own Models, Not Prompt Shells](https://dh8116.github.io/blog/apps-are-just-prompt-shells): APIs are still efficient and cheap enough for everyday use, but for vertical apps it is increasingly essential to fine-tune a small model to serve a narrow area.
+- [Fine-Tuning Is a Trade, Not an Upgrade](https://dh8116.github.io/blog/fine-tuning-is-a-trade): Everyone advertises what fine-tuning brings and no one talks about what it costs — mine bought key and instrument identity, and paid for it in timing.
+- ["Ship Before Perfection" is out of date](https://dh8116.github.io/blog/ship-before-perfection-is-out-of-date): The advice made sense when a working product took a team months. Now agents write the code, one person builds in a day, and what shipping fast mostly produces is slop.
+- [The Leaderboard Changes Every Week, the Excitement Never Outlives Criticisms](https://dh8116.github.io/blog/leaderboard-changes-every-week): Excitement arriving in an afternoon lasts only as long as a frontier model holds its ranking — one or two weeks on average, and you never test the model yourself.
+
+## Optional
+
+- [Resume](https://dh8116.github.io/resume)
+- [Resume PDF](https://dh8116.github.io/resume.pdf)

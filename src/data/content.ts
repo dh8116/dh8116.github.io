@@ -10,7 +10,9 @@ import {
   aboutCards,
   skills,
   currentlyLearning,
+  faq,
   type AboutCard,
+  type FaqItem,
   type CurrentlyItem,
   type Project,
 } from "./site";
@@ -21,6 +23,7 @@ import {
   aboutCardsZh,
   skillsZh,
   currentlyLearningZh,
+  faqZh,
 } from "./site.zh";
 import { posts, type Post } from "./posts";
 import { postsZh } from "./posts.zh";
@@ -77,4 +80,9 @@ export function getPosts(lang: Lang): Post[] {
 
 export function getPost(lang: Lang, slug: string): Post | undefined {
   return getPosts(lang).find((post) => post.slug === slug);
+}
+
+export function getFaq(lang: Lang): FaqItem[] {
+  if (lang === "en") return faq;
+  return faq.map((item, i) => ({ ...item, ...faqZh[i] }));
 }

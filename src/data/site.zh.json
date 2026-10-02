@@ -89,5 +89,31 @@
       "title": "RLVR 验证器研究",
       "detail": "带领五人团队写一篇论文，研究「持续出错的验证器何时会真正损害 GRPO 训练」——固定错误率和不对称性，扫描持续性。目标投稿 COLM / TMLR。"
     }
+  ],
+  "faqZh": [
+    {
+      "q": "Richael（dh8116）是谁？",
+      "a": "Richael（dh8116）是新西兰奥克兰的一名 11 年级学生，用 Triton 写 GPU kernel，微调并部署语言模型，并做了两个 AI 产品：Soulor AI 和 VNportal。Richael 每周发布一个与 PyTorch 对比基准测试的 Triton kernel，并带领一个五人团队撰写关于 RLVR 中验证器错误的研究论文。"
+    },
+    {
+      "q": "Soulor AI 是什么？",
+      "a": "Soulor AI 是一个有持久记忆的 AI 陪伴应用，关系会经历从陌生人到灵魂伴侣的五个阶段；它还有一个模拟模式，用五个 AI 视角组成的小组来分析任何处境。你可以在对话中途在陪伴和小组之间切换，上下文会一并带过去。由 Richael 开发，目前处于抢先体验阶段，可免费开始使用。"
+    },
+    {
+      "q": "VNportal 是什么？",
+      "a": "VNportal 是一个在浏览器里运行的黑胶与音乐平台：在 MusicBrainz 数据库里找到一张唱片，播放它，在双唱盘上混音，再用 AI 音乐工具创作——不用安装，不用硬件，也不需要 Spotify Premium。它还能根据曲目检测到的节拍生成节奏游戏谱面，并生成锁定在指定速度上的单件乐器。由 Richael 开发，目前处于抢先体验阶段。"
+    },
+    {
+      "q": "Richael 写过哪些 GPU kernel？",
+      "a": "每周一个 Triton kernel，每个都与 PyTorch 做基准对比，并连同数据发布在本站：vector add、fused softmax、flash attention、matmul、RMSNorm、RoPE、cross-entropy、fused linear + cross-entropy，以及 fused SwiGLU MLP。目前最好的结果是 fused cross-entropy：词表大小 131,072 时 15.90 ms，PyTorch 为 24.03 ms（1.51 倍），峰值显存少 1.67 倍。"
+    },
+    {
+      "q": "Richael 在做什么研究？",
+      "a": "Richael 带领一篇五人合作的论文，研究可验证奖励强化学习（RLVR）：一个持续出错的验证器，什么时候才会真正损害 GRPO 训练？研究固定错误率和不对称性，只改变错误的持续性，目标投稿 COLM 或 TMLR。"
+    },
+    {
+      "q": "Richael 在哪些竞赛中获奖？",
+      "a": "HiMCM 和 IMMC 区域赛荣誉提名，AIME 10/15，AMC 12 Honor Roll（前 5%），以及澳大利亚数学竞赛 High Distinction。"
+    }
   ]
 }

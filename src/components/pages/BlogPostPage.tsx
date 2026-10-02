@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPost } from "@/data/content";
 import { type Lang, localePath, ui } from "@/data/i18n";
+import JsonLd, { ORIGIN, PERSON_ID, personSchema } from "@/components/JsonLd";
 
 // Paragraphs are plain strings, so bare URLs in post text are turned into real
 // links here. Links back to this site become client-side routes.
@@ -67,6 +68,24 @@ export default function BlogPostPage({
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-24">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BlogPosting",
+              headline: post.title,
+              description: post.excerpt,
+              datePublished: post.date,
+              inLanguage: lang === "zh" ? "zh-Hans" : "en",
+              url: `${ORIGIN}${localePath(`/blog/${slug}`, lang)}`,
+              ...(post.image ? { image: `${ORIGIN}${post.image}` } : {}),
+              author: { "@id": PERSON_ID },
+            },
+            personSchema(),
+          ],
+        }}
+      />
       <Link
         href={localePath("/blog", lang)}
         className="text-sm font-medium text-brand-blue-light hover:underline"
