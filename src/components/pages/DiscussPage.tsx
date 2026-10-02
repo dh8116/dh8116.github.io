@@ -396,54 +396,131 @@ function Composer({
   const field =
     "w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-zinc-200 outline-none transition-colors placeholder:text-zinc-500 focus:border-brand-blue";
 
-  return (
-    <div
-      className={
-        parentId === null
-          ? "mt-6 rounded-2xl border border-white/10 bg-card p-6"
-          : "mt-4"
-      }
-    >
-      <div className="flex flex-col gap-3">
-        {owner ? (
-          <div className="flex flex-wrap items-center gap-2 text-sm text-zinc-400">
-            <span>{t.label}</span>
-            {OWNER_LABELS.map((l) => (
-              <button
-                key={l}
-                onClick={() => {
-                  setLabel(l);
-                  try {
-                    window.localStorage.setItem(LABEL_KEY, l);
-                  } catch {
-                    // fine, it just won't be remembered
-                  }
-                }}
-                className={`rounded-full px-3 py-1 text-xs font-medium ${
-                  label === l
-                    ? "border border-brand-yellow/60 text-brand-yellow"
-                    : "border border-white/15 text-zinc-400 hover:text-zinc-200"
-                }`}
-              >
-                {l}
-              </button>
-            ))}
-            <input
-              value={OWNER_LABELS.includes(label) ? "" : label}
-              onChange={(e) => {
-                const v = e.target.value.slice(0, 20);
-                setLabel(v || "Author");
-                try {
-                  window.localStorage.setItem(LABEL_KEY, v || "Author");
-                } catch {
-                  // ignore
-                }
+  const labelPicker = owner ? (
+    <div className="flex flex-wrap items-center gap-2 text-sm text-zinc-400">
+      {parentId !== null && <span>{t.label}</span>}
+      {OWNER_LABELS.map((l) => (
+        <button
+          key={l}
+          type="button"
+          onClick={() => {
+            setLabel(l);
+            try {
+              window.localStorage.setItem(LABEL_KEY, l);
+            } catch {
+              // fine, it just won't be remembered
+            }
+          }}
+          className={`rounded-full px-3 py-1 text-xs font-medium ${
+            label === l
+              ? "border border-brand-yellow/60 text-brand-yellow"
+              : "border border-white/15 text-zinc-400 hover:text-zinc-200"
+          }`}
+        >
+          {l}
+        </button>
+      ))}
+      <input
+        value={OWNER_LABELS.includes(label) ? "" : label}
+        onChange={(e) => {
+          const v = e.target.value.slice(0, 20);
+          setLabel(v || "Author");
+          try {
+            window.localStorage.setItem(LABEL_KEY, v || "Author");
+          } catch {
+            // ignore
+          }
+        }}
+        placeholder="…"
+        className="w-28 rounded-full border border-white/15 bg-transparent px-3 py-1 text-xs text-zinc-200 outline-none focus:border-brand-yellow/60"
+      />
+    </div>
+  ) : null;
+
+  const errorLine = error && (
+    <p className="text-sm text-red-300">{t.errors[error] ?? t.errors.default}</p>
+  );
+
+  // Top-level posts: a "Leave a comment" fieldset, labels on the left and
+  // fields on the right, Send / Clear underneath — the guestbook layout.
+  if (parentId === null) {
+    const labelCls = "pt-2.5 text-sm font-semibold uppercase tracking-widest text-zinc-300";
+    const hint = "mt-0.5 block text-xs font-normal normal-case tracking-normal text-zinc-500";
+    return (
+      <fieldset className="mt-6 rounded-2xl border border-white/15 bg-card/60 px-6 pb-6 pt-2">
+        <legend className="px-2 text-sm font-semibold uppercase tracking-widest text-brand-blue-light">
+          {t.form.legend[kind]}
+        </legend>
+        <div className="mt-3 grid gap-x-6 gap-y-4 sm:grid-cols-[8.5rem_1fr]">
+          {owner && (
+            <>
+              <span className={labelCls}>{t.label}</span>
+              <div className="pt-1.5">{labelPicker}</div>
+            </>
+          )}
+          <label htmlFor={`name-${kind}`} className={labelCls}>
+            {t.form.name}
+            <span className={hint}>{t.form.optional}</span>
+          </label>
+          <input
+            id={`name-${kind}`}
+            value={name}
+            onChange={(e) => setName(e.target.value.slice(0, LIMITS.name))}
+            placeholder={owner ? "Richael" : t.anonymous}
+            className={field}
+          />
+          <label htmlFor={`body-${kind}`} className={labelCls}>
+            {t.form.content}
+            <span className={hint}>{t.form.required}</span>
+          </label>
+          <textarea
+            id={`body-${kind}`}
+            value={body}
+            onChange={(e) => setBody(e.target.value.slice(0, LIMITS.body))}
+            placeholder={t.bodyPlaceholder[kind]}
+            rows={7}
+            className={`${field} resize-y leading-relaxed`}
+          />
+          <div className="hidden sm:block" />
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => void submit()}
+              disabled={busy}
+              className="rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-light disabled:opacity-50"
+            >
+              {busy ? t.posting : t.form.send}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setName("");
+                setBody("");
+                setError("");
               }}
-              placeholder="…"
-              className="w-28 rounded-full border border-white/15 bg-transparent px-3 py-1 text-xs text-zinc-200 outline-none focus:border-brand-yellow/60"
-            />
+              className="rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-zinc-200 transition-colors hover:border-brand-blue-light hover:text-brand-blue-light"
+            >
+              {t.form.clear}
+            </button>
+            <span className="ml-auto text-xs text-zinc-500">
+              {body.length}/{LIMITS.body}
+            </span>
           </div>
-        ) : null}
+          {error && (
+            <>
+              <div className="hidden sm:block" />
+              {errorLine}
+            </>
+          )}
+        </div>
+      </fieldset>
+    );
+  }
+
+  return (
+    <div className="mt-4">
+      <div className="flex flex-col gap-3">
+        {labelPicker}
         <input
           value={name}
           onChange={(e) => setName(e.target.value.slice(0, LIMITS.name))}
@@ -453,26 +530,21 @@ function Composer({
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value.slice(0, LIMITS.body))}
-          placeholder={parentId === null ? t.bodyPlaceholder[kind] : ""}
-          rows={parentId === null ? 4 : 3}
+          rows={3}
           className={`${field} resize-y leading-relaxed`}
         />
         <div className="flex flex-wrap items-center gap-4">
           <button
+            type="button"
             onClick={() => void submit()}
             disabled={busy}
             className="rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-light disabled:opacity-50"
           >
-            {busy
-              ? t.posting
-              : parentId === null
-                ? t.post[kind]
-                : kind === "faq"
-                  ? t.answer
-                  : t.reply}
+            {busy ? t.posting : kind === "faq" ? t.answer : t.reply}
           </button>
           {onCancel && (
             <button
+              type="button"
               onClick={onCancel}
               className="text-sm font-medium text-zinc-400 hover:underline"
             >
@@ -483,9 +555,7 @@ function Composer({
             {body.length}/{LIMITS.body}
           </span>
         </div>
-        {error && (
-          <p className="text-sm text-red-300">{t.errors[error] ?? t.errors.default}</p>
-        )}
+        {errorLine}
       </div>
     </div>
   );

@@ -52,6 +52,15 @@ type Strings = {
   loading: string;
   postingAs: string;
   label: string;
+  form: {
+    legend: Record<CommentKind, string>;
+    name: string;
+    content: string;
+    optional: string;
+    required: string;
+    send: string;
+    clear: string;
+  };
   errors: Record<string, string>;
 };
 
@@ -85,6 +94,15 @@ export const discussUi: Record<Lang, Strings> = {
     loading: "Loading…",
     postingAs: "Posting as",
     label: "Label",
+    form: {
+      legend: { discussion: "Leave a comment", faq: "Ask a question" },
+      name: "Name",
+      content: "Content",
+      optional: "(optional)",
+      required: "(required)",
+      send: "Send",
+      clear: "Clear",
+    },
     errors: {
       slow_down: "You're posting quickly — try again in a few minutes.",
       empty: "Write something first.",
@@ -124,6 +142,15 @@ export const discussUi: Record<Lang, Strings> = {
     loading: "加载中……",
     postingAs: "署名",
     label: "标签",
+    form: {
+      legend: { discussion: "留言", faq: "提个问题" },
+      name: "名字",
+      content: "内容",
+      optional: "（可选）",
+      required: "（必填）",
+      send: "发送",
+      clear: "清空",
+    },
     errors: {
       slow_down: "发得有点快，过几分钟再试吧。",
       empty: "先写点内容吧。",
