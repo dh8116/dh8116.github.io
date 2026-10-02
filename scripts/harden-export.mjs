@@ -43,11 +43,17 @@ const CSP = [
   "upgrade-insecure-requests",
 ].join("; ");
 
-// Same policy, plus the one origin the admin pages need to reach.
+// The comments API (/discuss, and the admin hub's new-comment count).
+const COMMENTS_ORIGIN = "https://dh8116-auth.vercel.app";
+
+// Same policy, plus the origins the admin pages need to reach.
 const ADMIN_CSP = CSP.replace(
   "connect-src 'self'",
-  "connect-src 'self' https://api.github.com"
+  `connect-src 'self' https://api.github.com ${COMMENTS_ORIGIN}`
 );
+
+// /discuss reads and writes comments; nothing else on it is relaxed.
+const DISCUSS_CSP = CSP.replace("connect-src 'self'", `connect-src 'self' ${COMMENTS_ORIGIN}`);
 
 const meta = (policy) =>
   `<meta http-equiv="Content-Security-Policy" content="${policy}">`;
@@ -70,6 +76,7 @@ const isChinese = (file) => file === ZH_PAGE || file.startsWith(ZH_DIR);
 const ADMIN_PAGE = join("out", "admin.html");
 const ADMIN_DIR = join("out", "admin") + sep;
 const isAdmin = (file) => file === ADMIN_PAGE || file.startsWith(ADMIN_DIR);
+const DISCUSS_PAGES = new Set([join("out", "discuss.html"), join("out", "zh", "discuss.html")]);
 const HTML_LANG_EN = /<html([^>]*?)\slang="en"/i;
 
 let patched = 0;
@@ -85,7 +92,7 @@ for await (const file of htmlFiles("out")) {
   if (admin) relaxed += 1;
   let out = stripped.replace(
     "<head>",
-    `<head>${meta(admin ? ADMIN_CSP : CSP)}`
+    `<head>${meta(admin ? ADMIN_CSP : DISCUSS_PAGES.has(file) ? DISCUSS_CSP : CSP)}`
   );
 
   if (isChinese(file)) {

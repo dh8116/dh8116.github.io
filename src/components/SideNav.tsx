@@ -11,6 +11,7 @@ const links = [
   { path: "/#projects", id: "projects" },
   { path: "/#resume", id: "resume" },
   { path: "/blog", id: "blog" },
+  { path: "/discuss", id: "discuss" },
 ] as const;
 
 export default function SideNav() {
@@ -28,7 +29,9 @@ export default function SideNav() {
         ? "blog"
         : route.startsWith("/resume")
           ? "resume"
-          : null;
+          : route.startsWith("/discuss")
+            ? "discuss"
+            : null;
 
   useEffect(() => {
     if (route !== "/") return;

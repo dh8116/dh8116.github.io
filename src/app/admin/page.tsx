@@ -12,12 +12,49 @@ import { useAdminSession } from "@/components/admin/AdminGate";
 import { readJson } from "@/lib/github";
 import type { Post } from "@/data/posts";
 import type { PostCopy } from "@/data/posts.zh";
+import { COMMENTS_API, SEEN_KEY, type Comment } from "@/data/discuss";
 
 export default function AdminHome() {
   const { token } = useAdminSession();
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [zh, setZh] = useState<Record<string, PostCopy> | null>(null);
   const [loadError, setLoadError] = useState("");
+  // Visitor posts newer than the last time the owner opened /discuss — the
+  // "alert" half of publish-immediately moderation.
+  const [unseen, setUnseen] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const all = await Promise.all(
+          (["discussion", "faq"] as const).map(async (kind) => {
+            const res = await fetch(`${COMMENTS_API}?kind=${kind}`, {
+              headers: { Authorization: `Bearer ${token}` },
+              cache: "no-store",
+            });
+            if (!res.ok) throw new Error(String(res.status));
+            return ((await res.json()).comments ?? []) as Comment[];
+          })
+        );
+        let seen = "";
+        try {
+          seen = window.localStorage.getItem(SEEN_KEY) ?? "";
+        } catch {
+          // no storage: everything counts as new
+        }
+        const fresh = all
+          .flat()
+          .filter((c) => !c.isAuthor && (!seen || c.createdAt > seen)).length;
+        if (!cancelled) setUnseen(fresh);
+      } catch {
+        if (!cancelled) setUnseen(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
 
   useEffect(() => {
     let cancelled = false;
@@ -82,6 +119,20 @@ export default function AdminHome() {
         </div>
       )}
 
+      {unseen !== null && unseen > 0 && (
+        <div className="mb-6 rounded-xl border border-brand-blue/40 bg-brand-blue/10 p-4">
+          <p className="text-sm font-semibold text-brand-blue-light">
+            {unseen} new comment{unseen === 1 ? "" : "s"} on /discuss
+          </p>
+          <Link
+            href="/discuss"
+            className="mt-2 inline-block text-sm text-brand-blue-light underline"
+          >
+            Read and reply
+          </Link>
+        </div>
+      )}
+
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
         <Stat
           label="Posts"
@@ -119,6 +170,15 @@ export default function AdminHome() {
           href="/admin/home"
           name="Home page text"
           desc="Tagline, bio, projects, about cards, skills and what you're currently on."
+        />
+        <Tool
+          href="/discuss"
+          name="Discussion"
+          desc={
+            unseen
+              ? `${unseen} new since you last looked. Reply with a label, hide or delete.`
+              : "Visitor discussions and FAQ questions. Reply with a label, hide or delete."
+          }
         />
         <Tool
           href="/"

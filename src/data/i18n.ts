@@ -52,6 +52,7 @@ export type Ui = {
     projects: string;
     resume: string;
     blog: string;
+    discuss: string;
   };
   home: {
     greeting: string;
@@ -99,6 +100,7 @@ export const ui: Record<Lang, Ui> = {
       projects: "Projects",
       resume: "Resume",
       blog: "Blog",
+      discuss: "Discuss",
     },
     home: {
       greeting: "Hello, I'm",
@@ -144,6 +146,7 @@ export const ui: Record<Lang, Ui> = {
       projects: "项目",
       resume: "简历",
       blog: "博客",
+      discuss: "讨论",
     },
     home: {
       greeting: "你好，我是",
