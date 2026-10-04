@@ -11,7 +11,7 @@ Richael publishes one Triton kernel a week, each benchmarked against PyTorch wit
 
 ## Projects
 
-- [Soulor AI](https://soulor-ai.vercel.app/): Soulor AI is an AI companion app with persistent memory and five relationship stages, from Stranger to Soulmate, plus a Simulation Mode that gives a panel of five AI perspectives on any situation. Details: https://soulor-ai.vercel.app/llms.txt
+- [Soulor AI](https://soulor.app/): Soulor AI is an AI companion app with persistent memory and five relationship stages, from Stranger to Soulmate, plus a Simulation Mode that gives a panel of five AI perspectives on any situation. Details: https://soulor.app/llms.txt
 - [VNportal](https://vnportal.vercel.app/): VNportal is a browser-based vinyl and music platform: find a record in the MusicBrainz database, play it, mix it on two decks, and create with AI music tools — no install, no hardware, no Spotify Premium. Details: https://vnportal.vercel.app/llms.txt
 
 ## FAQ
@@ -26,7 +26,7 @@ Sources: [GitHub](https://github.com/dh8116) · [X](https://x.com/RicaV42)
 
 Soulor AI is an AI companion app with persistent memory and five relationship stages, from Stranger to Soulmate, plus a Simulation Mode that gives a panel of five AI perspectives on any situation. You can switch between the companion and the panel mid-conversation and the context carries over. Richael built it; it is in early access and free to start.
 
-Sources: [soulor-ai.vercel.app](https://soulor-ai.vercel.app/)
+Sources: [soulor.app](https://soulor.app/)
 
 ### What is VNportal?
 

@@ -23,7 +23,7 @@
         "Bias Adaptation",
         "Stateful Sampling"
       ],
-      "url": "https://soulor-ai.vercel.app/"
+      "url": "https://soulor.app/"
     },
     {
       "slug": "vnportal",
@@ -119,8 +119,8 @@
       "a": "Soulor AI is an AI companion app with persistent memory and five relationship stages, from Stranger to Soulmate, plus a Simulation Mode that gives a panel of five AI perspectives on any situation. You can switch between the companion and the panel mid-conversation and the context carries over. Richael built it; it is in early access and free to start.",
       "sources": [
         {
-          "label": "soulor-ai.vercel.app",
-          "url": "https://soulor-ai.vercel.app/"
+          "label": "soulor.app",
+          "url": "https://soulor.app/"
         }
       ]
     },
