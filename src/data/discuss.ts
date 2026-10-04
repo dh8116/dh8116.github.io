@@ -52,14 +52,16 @@ type Strings = {
   loading: string;
   postingAs: string;
   label: string;
+  preview: {
+    empty: string;
+    viewAll: string;
+    replies: (n: number) => string;
+  };
   form: {
     legend: Record<CommentKind, string>;
-    name: string;
-    content: string;
-    optional: string;
-    required: string;
-    send: string;
-    clear: string;
+    open: Record<CommentKind, string>;
+    submit: string;
+    posted: string;
   };
   errors: Record<string, string>;
 };
@@ -94,14 +96,16 @@ export const discussUi: Record<Lang, Strings> = {
     loading: "Loading…",
     postingAs: "Posting as",
     label: "Label",
+    preview: {
+      empty: "There's no discussion yet — go post the first one!",
+      viewAll: "All discussions",
+      replies: (n) => (n === 1 ? "1 reply" : `${n} replies`),
+    },
     form: {
-      legend: { discussion: "Leave a comment", faq: "Ask a question" },
-      name: "Name",
-      content: "Content",
-      optional: "(optional)",
-      required: "(required)",
-      send: "Send",
-      clear: "Clear",
+      legend: { discussion: "New post", faq: "Ask a question" },
+      open: { discussion: "Post", faq: "Ask a question" },
+      submit: "Submit",
+      posted: "Posted — thanks for joining in!",
     },
     errors: {
       slow_down: "You're posting quickly — try again in a few minutes.",
@@ -142,14 +146,16 @@ export const discussUi: Record<Lang, Strings> = {
     loading: "加载中……",
     postingAs: "署名",
     label: "标签",
+    preview: {
+      empty: "还没有讨论——快来发第一个吧！",
+      viewAll: "全部讨论",
+      replies: (n) => `${n} 条回复`,
+    },
     form: {
-      legend: { discussion: "留言", faq: "提个问题" },
-      name: "名字",
-      content: "内容",
-      optional: "（可选）",
-      required: "（必填）",
-      send: "发送",
-      clear: "清空",
+      legend: { discussion: "发帖", faq: "提个问题" },
+      open: { discussion: "发帖", faq: "提问" },
+      submit: "提交",
+      posted: "发布成功，谢谢参与！",
     },
     errors: {
       slow_down: "发得有点快，过几分钟再试吧。",

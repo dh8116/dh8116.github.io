@@ -7,49 +7,26 @@
 // can only ask them), and can hide or delete anything.
 
 import { useEffect, useMemo, useState } from "react";
-import { TOKEN_KEY } from "@/lib/github";
 import type { Lang } from "@/data/i18n";
 import {
   COMMENTS_API,
   LIMITS,
-  OWNER_LABELS,
   SEEN_KEY,
   discussUi,
   type Comment,
   type CommentKind,
 } from "@/data/discuss";
+import PostBox from "@/components/discuss/PostBox";
+import {
+  OwnerLabelPicker,
+  fieldClass,
+  formatDate,
+  headers,
+  storedToken,
+  useOwnerLabel,
+} from "@/components/discuss/shared";
 
-const LABEL_KEY = "discuss:owner-label";
 const MAX_DEPTH = 4; // deeper replies keep this indent rather than walking off-screen
-
-function storedToken(): string {
-  try {
-    return (
-      window.localStorage.getItem(TOKEN_KEY) ||
-      window.sessionStorage.getItem(TOKEN_KEY) ||
-      ""
-    );
-  } catch {
-    return "";
-  }
-}
-
-function headers(token: string): HeadersInit {
-  return {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-}
-
-function formatDate(iso: string, lang: Lang) {
-  return new Date(iso).toLocaleString(lang === "zh" ? "zh-CN" : "en-NZ", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
 
 export default function DiscussPage({ lang }: { lang: Lang }) {
   const t = discussUi[lang];
@@ -143,14 +120,9 @@ export default function DiscussPage({ lang }: { lang: Lang }) {
         ))}
       </div>
 
-      <Composer
-        lang={lang}
-        kind={kind}
-        parentId={null}
-        owner={owner}
-        token={token}
-        onPosted={reload}
-      />
+      <div className="mt-6">
+        <PostBox lang={lang} kind={kind} owner={owner} token={token} onPosted={reload} />
+      </div>
 
       {error && error !== "not_configured" && (
         <p className="mt-6 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
@@ -345,28 +317,21 @@ function Composer({
 }: {
   lang: Lang;
   kind: CommentKind;
-  parentId: number | null;
+  parentId: number;
   owner: boolean;
   token: string;
   onPosted: () => void;
-  onCancel?: () => void;
+  onCancel: () => void;
 }) {
   const t = discussUi[lang];
   const [name, setName] = useState("");
   const [body, setBody] = useState("");
-  const [label, setLabel] = useState(() => {
-    if (typeof window === "undefined") return "Author";
-    try {
-      return window.localStorage.getItem(LABEL_KEY) || "Author";
-    } catch {
-      return "Author";
-    }
-  });
+  const [label, setLabel] = useOwnerLabel();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
   // Visitors can only open FAQ threads, never reply inside one.
-  if (kind === "faq" && parentId !== null && !owner) return null;
+  if (kind === "faq" && !owner) return null;
 
   async function submit() {
     if (!body.trim()) return setError("empty");
@@ -393,145 +358,21 @@ function Composer({
     }
   }
 
-  const field =
-    "w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-zinc-200 outline-none transition-colors placeholder:text-zinc-500 focus:border-brand-blue";
-
-  const labelPicker = owner ? (
-    <div className="flex flex-wrap items-center gap-2 text-sm text-zinc-400">
-      {parentId !== null && <span>{t.label}</span>}
-      {OWNER_LABELS.map((l) => (
-        <button
-          key={l}
-          type="button"
-          onClick={() => {
-            setLabel(l);
-            try {
-              window.localStorage.setItem(LABEL_KEY, l);
-            } catch {
-              // fine, it just won't be remembered
-            }
-          }}
-          className={`rounded-full px-3 py-1 text-xs font-medium ${
-            label === l
-              ? "border border-brand-yellow/60 text-brand-yellow"
-              : "border border-white/15 text-zinc-400 hover:text-zinc-200"
-          }`}
-        >
-          {l}
-        </button>
-      ))}
-      <input
-        value={OWNER_LABELS.includes(label) ? "" : label}
-        onChange={(e) => {
-          const v = e.target.value.slice(0, 20);
-          setLabel(v || "Author");
-          try {
-            window.localStorage.setItem(LABEL_KEY, v || "Author");
-          } catch {
-            // ignore
-          }
-        }}
-        placeholder="…"
-        className="w-28 rounded-full border border-white/15 bg-transparent px-3 py-1 text-xs text-zinc-200 outline-none focus:border-brand-yellow/60"
-      />
-    </div>
-  ) : null;
-
-  const errorLine = error && (
-    <p className="text-sm text-red-300">{t.errors[error] ?? t.errors.default}</p>
-  );
-
-  // Top-level posts: a "Leave a comment" fieldset, labels on the left and
-  // fields on the right, Send / Clear underneath — the guestbook layout.
-  if (parentId === null) {
-    const labelCls = "pt-2.5 text-sm font-semibold uppercase tracking-widest text-zinc-300";
-    const hint = "mt-0.5 block text-xs font-normal normal-case tracking-normal text-zinc-500";
-    return (
-      <fieldset className="mt-6 rounded-2xl border border-white/15 bg-card/60 px-6 pb-6 pt-2">
-        <legend className="px-2 text-sm font-semibold uppercase tracking-widest text-brand-blue-light">
-          {t.form.legend[kind]}
-        </legend>
-        <div className="mt-3 grid gap-x-6 gap-y-4 sm:grid-cols-[8.5rem_1fr]">
-          {owner && (
-            <>
-              <span className={labelCls}>{t.label}</span>
-              <div className="pt-1.5">{labelPicker}</div>
-            </>
-          )}
-          <label htmlFor={`name-${kind}`} className={labelCls}>
-            {t.form.name}
-            <span className={hint}>{t.form.optional}</span>
-          </label>
-          <input
-            id={`name-${kind}`}
-            value={name}
-            onChange={(e) => setName(e.target.value.slice(0, LIMITS.name))}
-            placeholder={owner ? "Richael" : t.anonymous}
-            className={field}
-          />
-          <label htmlFor={`body-${kind}`} className={labelCls}>
-            {t.form.content}
-            <span className={hint}>{t.form.required}</span>
-          </label>
-          <textarea
-            id={`body-${kind}`}
-            value={body}
-            onChange={(e) => setBody(e.target.value.slice(0, LIMITS.body))}
-            placeholder={t.bodyPlaceholder[kind]}
-            rows={7}
-            className={`${field} resize-y leading-relaxed`}
-          />
-          <div className="hidden sm:block" />
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => void submit()}
-              disabled={busy}
-              className="rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-light disabled:opacity-50"
-            >
-              {busy ? t.posting : t.form.send}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setName("");
-                setBody("");
-                setError("");
-              }}
-              className="rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-zinc-200 transition-colors hover:border-brand-blue-light hover:text-brand-blue-light"
-            >
-              {t.form.clear}
-            </button>
-            <span className="ml-auto text-xs text-zinc-500">
-              {body.length}/{LIMITS.body}
-            </span>
-          </div>
-          {error && (
-            <>
-              <div className="hidden sm:block" />
-              {errorLine}
-            </>
-          )}
-        </div>
-      </fieldset>
-    );
-  }
-
   return (
     <div className="mt-4">
       <div className="flex flex-col gap-3">
-        {labelPicker}
+        {owner && <OwnerLabelPicker title={t.label} label={label} setLabel={setLabel} />}
         <input
           value={name}
           onChange={(e) => setName(e.target.value.slice(0, LIMITS.name))}
           placeholder={owner ? "Richael" : t.namePlaceholder}
-          className={field}
+          className={fieldClass}
         />
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value.slice(0, LIMITS.body))}
           rows={3}
-          className={`${field} resize-y leading-relaxed`}
+          className={`${fieldClass} resize-y leading-relaxed`}
         />
         <div className="flex flex-wrap items-center gap-4">
           <button
@@ -542,20 +383,18 @@ function Composer({
           >
             {busy ? t.posting : kind === "faq" ? t.answer : t.reply}
           </button>
-          {onCancel && (
-            <button
-              type="button"
-              onClick={onCancel}
-              className="text-sm font-medium text-zinc-400 hover:underline"
-            >
-              {t.cancel}
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={onCancel}
+            className="text-sm font-medium text-zinc-400 hover:underline"
+          >
+            {t.cancel}
+          </button>
           <span className="ml-auto text-xs text-zinc-500">
             {body.length}/{LIMITS.body}
           </span>
         </div>
-        {errorLine}
+        {error && <p className="text-sm text-red-300">{t.errors[error] ?? t.errors.default}</p>}
       </div>
     </div>
   );

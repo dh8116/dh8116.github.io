@@ -11,7 +11,7 @@ const links = [
   { path: "/#projects", id: "projects" },
   { path: "/#resume", id: "resume" },
   { path: "/blog", id: "blog" },
-  { path: "/discuss", id: "discuss" },
+  { path: "/#discuss", id: "discuss" },
 ] as const;
 
 export default function SideNav() {
@@ -36,7 +36,7 @@ export default function SideNav() {
   useEffect(() => {
     if (route !== "/") return;
 
-    const sections = ["about", "skills", "projects", "resume"]
+    const sections = ["about", "skills", "projects", "resume", "discuss"]
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
     if (sections.length === 0) return;

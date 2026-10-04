@@ -14,6 +14,8 @@ import { type Lang, localePath, ui } from "@/data/i18n";
 import PersonalDetailsCard from "@/components/PersonalDetailsCard";
 import FadeInSection from "@/components/FadeInSection";
 import SkillPills from "@/components/SkillPills";
+import DiscussPreview from "@/components/discuss/DiscussPreview";
+import { discussUi } from "@/data/discuss";
 import JsonLd, {
   ORIGIN,
   PERSON_ID,
@@ -281,6 +283,13 @@ export default function HomePage({ lang }: { lang: Lang }) {
               </Link>
             ))}
           </div>
+        </section>
+      </FadeInSection>
+
+      <FadeInSection>
+        <section id="discuss" className="scroll-mt-24 py-16">
+          <SectionHeading lang={lang} heading={discussUi[lang].heading} />
+          <DiscussPreview lang={lang} />
         </section>
       </FadeInSection>
 

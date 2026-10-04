@@ -52,7 +52,7 @@ const ADMIN_CSP = CSP.replace(
   `connect-src 'self' https://api.github.com ${COMMENTS_ORIGIN}`
 );
 
-// /discuss reads and writes comments; nothing else on it is relaxed.
+// /discuss and the homepage read and write comments; nothing else on it is relaxed.
 const DISCUSS_CSP = CSP.replace("connect-src 'self'", `connect-src 'self' ${COMMENTS_ORIGIN}`);
 
 const meta = (policy) =>
@@ -76,7 +76,14 @@ const isChinese = (file) => file === ZH_PAGE || file.startsWith(ZH_DIR);
 const ADMIN_PAGE = join("out", "admin.html");
 const ADMIN_DIR = join("out", "admin") + sep;
 const isAdmin = (file) => file === ADMIN_PAGE || file.startsWith(ADMIN_DIR);
-const DISCUSS_PAGES = new Set([join("out", "discuss.html"), join("out", "zh", "discuss.html")]);
+// The homepage carries the Discuss preview and its post box, so it reaches the
+// comments API too.
+const DISCUSS_PAGES = new Set([
+  join("out", "index.html"),
+  join("out", "zh.html"),
+  join("out", "discuss.html"),
+  join("out", "zh", "discuss.html"),
+]);
 const HTML_LANG_EN = /<html([^>]*?)\slang="en"/i;
 
 let patched = 0;
