@@ -1,6 +1,6 @@
 "use client";
 
-// Anonymous discussion + FAQ. Visitors post under any name they type (or none);
+// Anonymous discussion (/discuss) or visitor FAQ (/faq), one kind per page. Visitors post under any name they type (or none);
 // the site owner is recognised by the GitHub token the /admin sign-in already
 // stored in this browser, which the API checks against GitHub on every write.
 // The owner gets a label on their posts, can answer FAQ questions (visitors
@@ -28,14 +28,14 @@ import {
 
 const MAX_DEPTH = 4; // deeper replies keep this indent rather than walking off-screen
 
-export default function DiscussPage({ lang }: { lang: Lang }) {
+export default function DiscussPage({ lang, kind }: { lang: Lang; kind: CommentKind }) {
   const t = discussUi[lang];
-  const [kind, setKind] = useState<CommentKind>("discussion");
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [owner, setOwner] = useState(false);
   const [token, setToken] = useState("");
   const [error, setError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -92,35 +92,15 @@ export default function DiscussPage({ lang }: { lang: Lang }) {
   return (
     <div className="mx-auto max-w-3xl px-6 pb-24 pt-12">
       <h1 className="text-2xl font-semibold tracking-tight">
-        {t.heading.eyebrow}
+        {t.heading[kind].eyebrow}
         {lang === "en" ? " " : ""}
-        <span className="text-brand-blue-light">{t.heading.title}</span>
+        <span className="text-brand-blue-light">{t.heading[kind].title}</span>
       </h1>
       <div className="mt-3 h-1 w-12 rounded-full bg-brand-blue" />
-      <p className="mt-6 text-lg leading-relaxed text-zinc-300">{t.intro}</p>
+      <p className="mt-6 text-lg leading-relaxed text-zinc-300">{t.intro[kind]}</p>
 
-      <div className="mt-8 flex gap-3" role="tablist">
-        {(["discussion", "faq"] as const).map((k) => (
-          <button
-            key={k}
-            role="tab"
-            aria-selected={kind === k}
-            onClick={() => {
-              setKind(k);
-              setComments(null);
-            }}
-            className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
-              kind === k
-                ? "bg-brand-blue text-white"
-                : "border border-white/20 text-zinc-200 hover:border-brand-blue-light hover:text-brand-blue-light"
-            }`}
-          >
-            {t.tabs[k]}
-          </button>
-        ))}
-      </div>
 
-      <div className="mt-6">
+      <div className="mt-8">
         <PostBox lang={lang} kind={kind} owner={owner} token={token} onPosted={reload} />
       </div>
 

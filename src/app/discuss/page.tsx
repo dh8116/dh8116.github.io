@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function Discuss() {
-  return <DiscussPage lang="en" />;
+  return <DiscussPage lang="en" kind="discussion" />;
 }

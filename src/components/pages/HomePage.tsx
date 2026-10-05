@@ -8,7 +8,6 @@ import {
   getCurrentlyLearning,
   getPosts,
   getStatusLabel,
-  getFaq,
 } from "@/data/content";
 import { type Lang, localePath, ui } from "@/data/i18n";
 import PersonalDetailsCard from "@/components/PersonalDetailsCard";
@@ -19,7 +18,6 @@ import { discussUi } from "@/data/discuss";
 import JsonLd, {
   ORIGIN,
   PERSON_ID,
-  faqSchema,
   personSchema,
   projectSchemas,
 } from "@/components/JsonLd";
@@ -33,7 +31,6 @@ export default function HomePage({ lang }: { lang: Lang }) {
   const skills = getSkills(lang);
   const currentlyLearning = getCurrentlyLearning(lang);
   const latestPosts = getPosts(lang).slice(0, 2);
-  const faq = getFaq(lang);
 
   return (
     <div className="mx-auto max-w-5xl px-6 lg:pr-40">
@@ -51,7 +48,6 @@ export default function HomePage({ lang }: { lang: Lang }) {
             },
             personSchema(),
             ...projectSchemas(),
-            faqSchema(faq),
           ],
         }}
       />
@@ -288,40 +284,15 @@ export default function HomePage({ lang }: { lang: Lang }) {
 
       <FadeInSection>
         <section id="discuss" className="scroll-mt-24 py-16">
-          <SectionHeading lang={lang} heading={discussUi[lang].heading} />
-          <DiscussPreview lang={lang} />
+          <SectionHeading lang={lang} heading={discussUi[lang].heading.discussion} />
+          <DiscussPreview lang={lang} kind="discussion" />
         </section>
       </FadeInSection>
 
       <FadeInSection>
         <section id="faq" className="scroll-mt-24 py-16">
-          <SectionHeading lang={lang} heading={t.home.faq} />
-          <dl className="mt-8 flex flex-col gap-6">
-            {faq.map((item) => (
-              <div
-                key={item.q}
-                className="rounded-2xl border border-white/10 bg-card p-6"
-              >
-                <dt className="font-semibold">{item.q}</dt>
-                <dd className="mt-2 leading-relaxed text-zinc-400">{item.a}</dd>
-                {item.sources && (
-                  <dd className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                    {item.sources.map((src) => (
-                      <a
-                        key={src.url}
-                        href={src.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-brand-blue-light hover:underline"
-                      >
-                        {src.label} &rarr;
-                      </a>
-                    ))}
-                  </dd>
-                )}
-              </div>
-            ))}
-          </dl>
+          <SectionHeading lang={lang} heading={discussUi[lang].heading.faq} />
+          <DiscussPreview lang={lang} kind="faq" />
         </section>
       </FadeInSection>
     </div>

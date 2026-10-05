@@ -31,6 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry("/blog", newest),
     entry("/resume"),
     entry("/discuss"),
+    entry("/faq"),
     ...posts.map((post) => entry(`/blog/${post.slug}`, post.date)),
   ];
 }

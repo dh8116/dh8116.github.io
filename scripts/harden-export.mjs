@@ -52,7 +52,7 @@ const ADMIN_CSP = CSP.replace(
   `connect-src 'self' https://api.github.com ${COMMENTS_ORIGIN}`
 );
 
-// /discuss and the homepage read and write comments; nothing else on it is relaxed.
+// /discuss, /faq and the homepage read and write comments; nothing else on it is relaxed.
 const DISCUSS_CSP = CSP.replace("connect-src 'self'", `connect-src 'self' ${COMMENTS_ORIGIN}`);
 
 const meta = (policy) =>
@@ -83,6 +83,8 @@ const DISCUSS_PAGES = new Set([
   join("out", "zh.html"),
   join("out", "discuss.html"),
   join("out", "zh", "discuss.html"),
+  join("out", "faq.html"),
+  join("out", "zh", "faq.html"),
 ]);
 const HTML_LANG_EN = /<html([^>]*?)\slang="en"/i;
 

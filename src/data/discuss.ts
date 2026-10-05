@@ -1,4 +1,4 @@
-// /discuss: anonymous discussion threads and visitor FAQs, stored behind the
+// /discuss (anonymous discussion threads) and /faq (visitor questions), stored behind the
 // dh8116-auth Vercel project (api/comments). The site is a static export, so
 // the page talks to that API from the browser; harden-export.mjs widens
 // connect-src for exactly these pages.
@@ -31,9 +31,8 @@ export const LIMITS = { name: 40, body: 2000 };
 export const SEEN_KEY = "admin:discuss-seen";
 
 type Strings = {
-  heading: { eyebrow: string; title: string };
-  intro: string;
-  tabs: Record<CommentKind, string>;
+  heading: Record<CommentKind, { eyebrow: string; title: string }>;
+  intro: Record<CommentKind, string>;
   namePlaceholder: string;
   bodyPlaceholder: Record<CommentKind, string>;
   post: Record<CommentKind, string>;
@@ -53,9 +52,10 @@ type Strings = {
   postingAs: string;
   label: string;
   preview: {
-    empty: string;
-    viewAll: string;
+    empty: Record<CommentKind, string>;
+    viewAll: Record<CommentKind, string>;
     replies: (n: number) => string;
+    answered: string;
   };
   form: {
     legend: Record<CommentKind, string>;
@@ -68,10 +68,15 @@ type Strings = {
 
 export const discussUi: Record<Lang, Strings> = {
   en: {
-    heading: { eyebrow: "Open", title: "Discussion" },
-    intro:
-      "Say anything — no account, and you choose a name each time you post. Discussions are open for anyone to reply to; FAQ questions get answered by me.",
-    tabs: { discussion: "Discussion", faq: "FAQ" },
+    heading: {
+      discussion: { eyebrow: "Open", title: "Discussion" },
+      faq: { eyebrow: "Visitor", title: "FAQ" },
+    },
+    intro: {
+      discussion:
+        "Say anything — no account, and you choose a name each time you post. Anyone can reply.",
+      faq: "Ask me anything — no account needed. Anyone can ask; I answer.",
+    },
     namePlaceholder: "Name (optional)",
     bodyPlaceholder: {
       discussion: "Start a discussion…",
@@ -97,9 +102,13 @@ export const discussUi: Record<Lang, Strings> = {
     postingAs: "Posting as",
     label: "Label",
     preview: {
-      empty: "There's no discussion yet — go post the first one!",
-      viewAll: "All discussions",
+      empty: {
+        discussion: "There's no discussion yet — go post the first one!",
+        faq: "There are no questions yet — go ask the first one!",
+      },
+      viewAll: { discussion: "All discussions", faq: "All questions" },
       replies: (n) => (n === 1 ? "1 reply" : `${n} replies`),
+      answered: "Answered",
     },
     form: {
       legend: { discussion: "New post", faq: "Ask a question" },
@@ -118,10 +127,14 @@ export const discussUi: Record<Lang, Strings> = {
     },
   },
   zh: {
-    heading: { eyebrow: "一起", title: "讨论" },
-    intro:
-      "随便聊——不用注册，每次发言都可以自己取名字。讨论区任何人都可以回复；FAQ 的问题由我来回答。",
-    tabs: { discussion: "讨论", faq: "FAQ" },
+    heading: {
+      discussion: { eyebrow: "一起", title: "讨论" },
+      faq: { eyebrow: "访客", title: "问答" },
+    },
+    intro: {
+      discussion: "随便聊——不用注册，每次发言都可以自己取名字。任何人都可以回复。",
+      faq: "有什么想问的都可以问——不用注册。任何人都能提问，由我来回答。",
+    },
     namePlaceholder: "名字（可不填）",
     bodyPlaceholder: {
       discussion: "发起一个讨论……",
@@ -147,9 +160,13 @@ export const discussUi: Record<Lang, Strings> = {
     postingAs: "署名",
     label: "标签",
     preview: {
-      empty: "还没有讨论——快来发第一个吧！",
-      viewAll: "全部讨论",
+      empty: {
+        discussion: "还没有讨论——快来发第一个吧！",
+        faq: "还没有问题——快来问第一个吧！",
+      },
+      viewAll: { discussion: "全部讨论", faq: "全部问题" },
       replies: (n) => `${n} 条回复`,
+      answered: "已回答",
     },
     form: {
       legend: { discussion: "发帖", faq: "提个问题" },

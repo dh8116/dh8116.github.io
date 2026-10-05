@@ -4,10 +4,10 @@ import { site } from "@/data/site";
 import { alternates } from "@/data/i18n";
 
 export const metadata: Metadata = {
-  title: `讨论 — ${site.name}`,
-  alternates: alternates("/discuss", "zh"),
+  title: `问答 — ${site.name}`,
+  alternates: alternates("/faq", "zh"),
 };
 
-export default function DiscussZh() {
-  return <DiscussPage lang="zh" kind="discussion" />;
+export default function FaqZh() {
+  return <DiscussPage lang="zh" kind="faq" />;
 }

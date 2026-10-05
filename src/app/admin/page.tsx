@@ -122,14 +122,16 @@ export default function AdminHome() {
       {unseen !== null && unseen > 0 && (
         <div className="mb-6 rounded-xl border border-brand-blue/40 bg-brand-blue/10 p-4">
           <p className="text-sm font-semibold text-brand-blue-light">
-            {unseen} new comment{unseen === 1 ? "" : "s"} on /discuss
+            {unseen} new comment{unseen === 1 ? "" : "s"} on /discuss or /faq
           </p>
-          <Link
-            href="/discuss"
-            className="mt-2 inline-block text-sm text-brand-blue-light underline"
-          >
-            Read and reply
-          </Link>
+          <div className="mt-2 flex gap-4 text-sm text-brand-blue-light">
+            <Link href="/discuss" className="underline">
+              Discussion
+            </Link>
+            <Link href="/faq" className="underline">
+              FAQ
+            </Link>
+          </div>
         </div>
       )}
 
@@ -177,8 +179,13 @@ export default function AdminHome() {
           desc={
             unseen
               ? `${unseen} new since you last looked. Reply with a label, hide or delete.`
-              : "Visitor discussions and FAQ questions. Reply with a label, hide or delete."
+              : "Visitor discussions. Reply with a label, hide or delete."
           }
+        />
+        <Tool
+          href="/faq"
+          name="FAQ"
+          desc="Visitor questions. Only you can answer; hide or delete."
         />
         <Tool
           href="/"
