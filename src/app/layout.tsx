@@ -30,7 +30,7 @@ const orbitron = Orbitron({
 export const metadata: Metadata = {
   metadataBase: new URL("https://dh8116.github.io"),
   title: `${site.name} — ${site.tagline}`,
-  description: `${site.name} (dh8116) is a Year 11 student in Auckland, New Zealand, who writes GPU kernels in Triton, fine-tunes and serves language models, and builds two AI products: Soulor AI and VNportal.`,
+  description: `${site.name} (dh8116) is a Year 11 student in Auckland, New Zealand, who writes GPU kernels in Triton, fine-tunes and serves language models, and builds two AI products: Soulor and VNportal.`,
   referrer: "strict-origin-when-cross-origin",
   // AI crawlers are welcome — being known to assistants is the point (see
   // robots.txt). This used to carry "noai, noimageai".

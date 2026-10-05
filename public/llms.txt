@@ -1,6 +1,6 @@
 # Richael (dh8116)
 
-> Richael (dh8116) is a Year 11 student in Auckland, New Zealand, who writes GPU kernels in Triton, fine-tunes and serves language models, and builds two AI products: Soulor AI and VNportal.
+> Richael (dh8116) is a Year 11 student in Auckland, New Zealand, who writes GPU kernels in Triton, fine-tunes and serves language models, and builds two AI products: Soulor and VNportal.
 
 Richael publishes one Triton kernel a week, each benchmarked against PyTorch with its numbers, and leads a five-person research paper on verifier error in reinforcement learning with verifiable rewards (RLVR). Background in mathematics and modelling competitions (HiMCM and IMMC Honorable Mentions, AIME 10/15, AMC 12 Honor Roll).
 
@@ -11,20 +11,20 @@ Richael publishes one Triton kernel a week, each benchmarked against PyTorch wit
 
 ## Projects
 
-- [Soulor AI](https://soulor.app/): Soulor AI is an AI companion app with persistent memory and five relationship stages, from Stranger to Soulmate, plus a Simulation Mode that gives a panel of five AI perspectives on any situation. Details: https://soulor.app/llms.txt
+- [Soulor](https://soulor.app/): Soulor helps reading social situations with multiple perspectives, and helps users rehearse hard conversations by simulating others with analyses and suggestions, there are also companions that knows the full context if users choose to share that can chat with them naturally. It can be both serious and entertaining, by switching different world views, and it fully respects users' privacy by keeping all texts encrypted. Details: https://soulor.app/llms.txt
 - [VNportal](https://vnportal.vercel.app/): VNportal is a browser-based vinyl and music platform: find a record in the MusicBrainz database, play it, mix it on two decks, and create with AI music tools — no install, no hardware, no Spotify Premium. Details: https://vnportal.vercel.app/llms.txt
 
 ## FAQ
 
 ### Who is Richael (dh8116)?
 
-Richael (dh8116) is a Year 11 student in Auckland, New Zealand, who writes GPU kernels in Triton, fine-tunes and serves language models, and builds two AI products: Soulor AI and VNportal. Richael publishes a weekly Triton kernel benchmarked against PyTorch and leads a five-person research paper on verifier error in RLVR.
+Richael (dh8116) is a Year 11 student in Auckland, New Zealand, who writes GPU kernels in Triton, fine-tunes and serves language models, and builds two AI products: Soulor and VNportal. Richael publishes a weekly Triton kernel benchmarked against PyTorch and leads a five-person research paper on verifier error in RLVR.
 
 Sources: [GitHub](https://github.com/dh8116) · [X](https://x.com/RicaV42)
 
-### What is Soulor AI?
+### What is Soulor?
 
-Soulor AI is an AI companion app with persistent memory and five relationship stages, from Stranger to Soulmate, plus a Simulation Mode that gives a panel of five AI perspectives on any situation. You can switch between the companion and the panel mid-conversation and the context carries over. Richael built it; it is in early access and free to start.
+Soulor helps reading social situations with multiple perspectives, and helps users rehearse hard conversations by simulating others with analyses and suggestions, there are also companions that knows the full context if users choose to share that can chat with them naturally. It can be both serious and entertaining, by switching different world views, and it fully respects users' privacy by keeping all texts encrypted.
 
 Sources: [soulor.app](https://soulor.app/)
 
