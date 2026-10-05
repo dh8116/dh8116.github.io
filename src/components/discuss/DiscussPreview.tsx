@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { type Lang, localePath } from "@/data/i18n";
 import { COMMENTS_API, discussUi, type Comment, type CommentKind } from "@/data/discuss";
 import PostBox from "./PostBox";
-import { formatDate, headers, storedToken } from "./shared";
+import { Byline, formatDate, headers, storedToken, threadOrder } from "./shared";
 
 const SHOWN = 2;
 
@@ -50,7 +50,7 @@ export default function DiscussPreview({ lang, kind }: { lang: Lang; kind: Comme
 
   const href = localePath(kind === "faq" ? "/faq" : "/discuss", lang);
   const all = comments ?? [];
-  const roots = all.filter((c) => c.parentId === null).reverse();
+  const roots = all.filter((c) => c.parentId === null).sort(threadOrder);
   const replyCount = (id: number) => all.filter((c) => c.parentId === id).length;
 
   return (
@@ -72,12 +72,7 @@ export default function DiscussPreview({ lang, kind }: { lang: Lang; kind: Comme
               className="group block rounded-2xl border border-white/10 bg-card p-6 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:border-brand-blue/50 hover:shadow-xl hover:shadow-brand-blue/10"
             >
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span className="font-semibold text-foreground">{c.name || t.anonymous}</span>
-                {c.isAuthor && (
-                  <span className="rounded-full border border-brand-yellow/40 px-2.5 py-0.5 text-xs font-medium text-brand-yellow">
-                    {c.label || "Author"}
-                  </span>
-                )}
+                <Byline comment={c} lang={lang} />
                 <span className="text-xs uppercase tracking-widest text-zinc-500">
                   {formatDate(c.createdAt, lang)}
                 </span>

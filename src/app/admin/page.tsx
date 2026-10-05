@@ -124,14 +124,12 @@ export default function AdminHome() {
           <p className="text-sm font-semibold text-brand-blue-light">
             {unseen} new comment{unseen === 1 ? "" : "s"} on /discuss or /faq
           </p>
-          <div className="mt-2 flex gap-4 text-sm text-brand-blue-light">
-            <Link href="/discuss" className="underline">
-              Discussion
-            </Link>
-            <Link href="/faq" className="underline">
-              FAQ
-            </Link>
-          </div>
+          <Link
+            href="/admin/comments"
+            className="mt-2 inline-block text-sm text-brand-blue-light underline"
+          >
+            Review them
+          </Link>
         </div>
       )}
 
@@ -174,18 +172,13 @@ export default function AdminHome() {
           desc="Tagline, bio, projects, about cards, skills and what you're currently on."
         />
         <Tool
-          href="/discuss"
-          name="Discussion"
+          href="/admin/comments"
+          name="Discussion & FAQ"
           desc={
             unseen
-              ? `${unseen} new since you last looked. Reply with a label, hide or delete.`
-              : "Visitor discussions. Reply with a label, hide or delete."
+              ? `${unseen} new since you last looked. Reorder, hide or delete threads.`
+              : "Reorder, hide or delete discussions and FAQ questions."
           }
-        />
-        <Tool
-          href="/faq"
-          name="FAQ"
-          desc="Visitor questions. Only you can answer; hide or delete."
         />
         <Tool
           href="/"

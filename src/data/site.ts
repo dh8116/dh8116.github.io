@@ -51,14 +51,3 @@ export type CurrentlyItem = {
 
 export const currentlyLearning: CurrentlyItem[] = raw.currentlyLearning;
 
-// Short, self-contained answers, phrased the way someone would ask an AI
-// assistant about this site. The first answer of each is the canonical
-// definition of that entity — keep it word-for-word the same as llms.txt and
-// every bio elsewhere, because repetition is what makes a model learn it.
-export type FaqItem = {
-  q: string;
-  a: string;
-  sources?: { label: string; url: string }[];
-};
-
-export const faq: FaqItem[] = raw.faq;

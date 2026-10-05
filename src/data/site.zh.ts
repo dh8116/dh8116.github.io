@@ -22,6 +22,3 @@ export const skillsZh: string[] = raw.skillsZh;
 
 export const currentlyLearningZh: CurrentlyItem[] = raw.currentlyLearningZh;
 
-// Question and answer copy only; sources are language-neutral and come from
-// the English entry at the same index.
-export const faqZh: { q: string; a: string }[] = raw.faqZh;

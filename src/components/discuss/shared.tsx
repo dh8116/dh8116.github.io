@@ -6,9 +6,36 @@
 import { useState } from "react";
 import { TOKEN_KEY } from "@/lib/github";
 import type { Lang } from "@/data/i18n";
-import { OWNER_LABELS } from "@/data/discuss";
+import { OWNER_LABELS, discussUi, type Comment } from "@/data/discuss";
 
 const LABEL_KEY = "discuss:owner-label";
+
+// The site owner's name on every post they make; the API enforces it too.
+export const OWNER_NAME = "dh8116";
+
+// Threads in the order the owner set in /admin/comments (new ones on top).
+export function threadOrder(a: Comment, b: Comment) {
+  return b.sortKey - a.sortKey;
+}
+
+// Name + label. The owner shows as dh8116 in blue so their replies stand out.
+export function Byline({ comment, lang }: { comment: Comment; lang: Lang }) {
+  if (comment.isAuthor) {
+    return (
+      <>
+        <span className="font-semibold text-brand-blue-light">{OWNER_NAME}</span>
+        <span className="rounded-full border border-brand-blue/50 bg-brand-blue/10 px-2.5 py-0.5 text-xs font-medium text-brand-blue-light">
+          {comment.label || "Author"}
+        </span>
+      </>
+    );
+  }
+  return (
+    <span className="font-semibold text-foreground">
+      {comment.name || discussUi[lang].anonymous}
+    </span>
+  );
+}
 
 export const fieldClass =
   "w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-zinc-200 outline-none transition-colors placeholder:text-zinc-500 focus:border-brand-blue";

@@ -14,7 +14,7 @@ import {
   discussUi,
   type CommentKind,
 } from "@/data/discuss";
-import { OwnerLabelPicker, fieldClass, headers, useOwnerLabel } from "./shared";
+import { OWNER_NAME, OwnerLabelPicker, fieldClass, headers, useOwnerLabel } from "./shared";
 
 export default function PostBox({
   lang,
@@ -106,14 +106,19 @@ export default function PostBox({
                     setLabel={setLabel}
                   />
                 )}
-                <input
-                  value={name}
-                  onChange={(e) =>
-                    setName(e.target.value.slice(0, LIMITS.name))
-                  }
-                  placeholder={owner ? "Richael" : t.namePlaceholder}
-                  className={fieldClass}
-                />
+                {owner ? (
+                  <p className="text-sm text-zinc-400">
+                    {t.postingAs}{" "}
+                    <span className="font-semibold text-brand-blue-light">{OWNER_NAME}</span>
+                  </p>
+                ) : (
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value.slice(0, LIMITS.name))}
+                    placeholder={t.namePlaceholder}
+                    className={fieldClass}
+                  />
+                )}
                 <textarea
                   autoFocus
                   value={body}

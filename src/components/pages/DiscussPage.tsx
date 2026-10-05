@@ -18,11 +18,14 @@ import {
 } from "@/data/discuss";
 import PostBox from "@/components/discuss/PostBox";
 import {
+  Byline,
+  OWNER_NAME,
   OwnerLabelPicker,
   fieldClass,
   formatDate,
   headers,
   storedToken,
+  threadOrder,
   useOwnerLabel,
 } from "@/components/discuss/shared";
 
@@ -78,7 +81,7 @@ export default function DiscussPage({ lang, kind }: { lang: Lang; kind: CommentK
 
   const reload = () => setReloadKey((k) => k + 1);
 
-  // Threads newest first; replies under each in the order they were written.
+  // Threads in the owner's order, newest first by default; replies under each in the order they were written.
   const { roots, children } = useMemo(() => {
     const byParent = new Map<number, Comment[]>();
     const top: Comment[] = [];
@@ -86,7 +89,7 @@ export default function DiscussPage({ lang, kind }: { lang: Lang; kind: CommentK
       if (c.parentId === null) top.push(c);
       else byParent.set(c.parentId, [...(byParent.get(c.parentId) ?? []), c]);
     }
-    return { roots: top.reverse(), children: byParent };
+    return { roots: top.sort(threadOrder), children: byParent };
   }, [comments]);
 
   return (
@@ -177,14 +180,7 @@ function Thread({
   return (
     <div className={comment.hidden ? "opacity-50" : ""}>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <span className="font-semibold text-foreground">
-          {comment.name || t.anonymous}
-        </span>
-        {comment.isAuthor && (
-          <span className="rounded-full border border-brand-yellow/40 px-2.5 py-0.5 text-xs font-medium text-brand-yellow">
-            {comment.label || "Author"}
-          </span>
-        )}
+        <Byline comment={comment} lang={lang} />
         {comment.hidden && (
           <span className="rounded-full border border-white/20 px-2.5 py-0.5 text-xs text-zinc-400">
             {t.hidden}
@@ -342,12 +338,18 @@ function Composer({
     <div className="mt-4">
       <div className="flex flex-col gap-3">
         {owner && <OwnerLabelPicker title={t.label} label={label} setLabel={setLabel} />}
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value.slice(0, LIMITS.name))}
-          placeholder={owner ? "Richael" : t.namePlaceholder}
-          className={fieldClass}
-        />
+        {owner ? (
+          <p className="text-sm text-zinc-400">
+            {t.postingAs} <span className="font-semibold text-brand-blue-light">{OWNER_NAME}</span>
+          </p>
+        ) : (
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value.slice(0, LIMITS.name))}
+            placeholder={t.namePlaceholder}
+            className={fieldClass}
+          />
+        )}
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value.slice(0, LIMITS.body))}

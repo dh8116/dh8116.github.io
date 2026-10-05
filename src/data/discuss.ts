@@ -19,6 +19,7 @@ export type Comment = {
   isAuthor: boolean;
   label: string | null;
   hidden: boolean;
+  sortKey: number;
   createdAt: string;
 };
 

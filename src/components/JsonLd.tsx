@@ -5,7 +5,6 @@
 // The "<" escape stops a string inside the data from closing the script tag.
 
 import { site, projects } from "@/data/site";
-import type { FaqItem } from "@/data/site";
 
 export const ORIGIN = "https://dh8116.github.io";
 export const PERSON_ID = `${ORIGIN}/#person`;
@@ -65,15 +64,4 @@ export function projectSchemas() {
     operatingSystem: "Web browser",
     creator: { "@id": PERSON_ID },
   }));
-}
-
-export function faqSchema(items: FaqItem[]) {
-  return {
-    "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
-      "@type": "Question",
-      name: item.q,
-      acceptedAnswer: { "@type": "Answer", text: item.a },
-    })),
-  };
 }
