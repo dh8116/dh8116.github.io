@@ -91,7 +91,12 @@ const HTML_LANG_EN = /<html([^>]*?)\slang="en"/i;
 let patched = 0;
 let relabelled = 0;
 let relaxed = 0;
+// Search-engine ownership files (google<token>.html) are plain text with an
+// .html name; they must be served byte-for-byte, so they are not pages.
+const VERIFICATION_FILE = /(^|\/)google[0-9a-f]+\.html$/;
+
 for await (const file of htmlFiles("out")) {
+  if (VERIFICATION_FILE.test(file)) continue;
   const html = await readFile(file, "utf8");
   const stripped = html.replace(EXISTING, "");
   if (!stripped.includes("<head>")) {
