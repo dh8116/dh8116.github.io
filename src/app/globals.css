@@ -38,19 +38,6 @@ body {
   color: #050505;
 }
 
-.bg-grid {
-  background-image:
-    linear-gradient(to right, rgba(245, 245, 240, 0.12) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(245, 245, 240, 0.12) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 90% 90% at 50% 20%, black, transparent);
-  -webkit-mask-image: radial-gradient(
-    ellipse 90% 90% at 50% 20%,
-    black,
-    transparent
-  );
-}
-
 @keyframes drift-a {
   0%,
   100% {
