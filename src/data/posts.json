@@ -205,5 +205,23 @@
     ],
     "image": "/blog/triton-swiglu-benchmark.png",
     "imageAlt": "Two line charts comparing a Triton fused SwiGLU MLP against torch eager and torch.compile on a T4, N=2048 rows, hidden 1024, fp16, across intermediate sizes 1024 to 16384. Left panel, forward plus backward time: all three converge, with torch.compile and the fused version overlapping near 27ms at intermediate 16384 and eager slightly above at 28ms. Right panel, activations held from forward to backward: three clearly separated lines, eager climbing to 260MB, torch.compile to 196MB and the fused version to 132MB."
+  },
+  {
+    "slug": "what-is-a-unique-content-creator",
+    "title": "What Is a Unique Content Creator?",
+    "date": "2026-10-27",
+    "excerpt": "Using AI isn't the problem; letting it do the thinking is. Form your opinion before you ask the model, write in your own words, and look at more than one side before judging.",
+    "paragraphs": [
+      "It's been about a month since my last blog post. Since then I've shifted my app's focus and structure, its performance, and my campaign. Coming back to the social media filled with AI-generated content, it's hard to stay nonchalant. It's getting harder to keep our critical thinking, to stay diverse and unique from each other, and to speak out as human beings instead of copy-pasting like machines.",
+      "Nobody wants to be an influencer anymore. The world doesn’t need more “content creators”.",
+      "We need more original thinkers, more rebels, more counter culturalists, more people who can sit with something long enough to understand it before passing judgment.",
+      "That’s so rare these day and becoming more valuable by the hour.",
+      "–Benjamin Antoine",
+      "Whether you're a developer or just like using AI, most flops start the same way: we ask a model, take its answer, and post it directly. That answer is the average of what the internet was already full of: the same hooks, the same three-point structure, the same \"here's why this matters\" intro.",
+      "The problem isn't using AI; it can write most code better than anyone. The problem is letting it do the thinking too: deciding what you post, what you say, and even what you understand. Leave all of that to AI and everyone ends up sounding like a bot.",
+      "So if you're still after creativity, rebellion and accomplishment, here's what I'm trying to keep doing, and what I'd suggest to anyone. Form your opinion before you ask anything. Understand the underlying structures, and build the ability to refine any code yourself. Read the long newsletter before you look at its summary. Write in your own words, even when they feel clumsy. And when something happens, look at it from multiple sides before judging it on instinct.",
+      "That last one is also what I've been building into my app, Soulor, for the past five months. Soulor now puts Simulation first: it helps reading social situations with multiple perspectives, and helps users rehearse hard conversations by simulating others with analyses and suggestions. It doesn't decide for you. It shows you seven different readings of the same situation, and the judgement stays yours.",
+      "I'm Richael. If you're interested, check out my website or follow for more. Thanks for reading!"
+    ]
   }
 ]
