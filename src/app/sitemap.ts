@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { posts } from "@/data/posts";
+import { resumeVersions } from "@/data/resume";
 import { localePath } from "@/data/i18n";
 
 const ORIGIN = "https://dh8116.github.io";
@@ -30,6 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry("/", newest),
     entry("/blog", newest),
     entry("/resume"),
+    ...resumeVersions.map((v) => entry(`/resume/${v.slug}`)),
     entry("/discuss"),
     entry("/faq"),
     ...posts.map((post) => entry(`/blog/${post.slug}`, post.date)),

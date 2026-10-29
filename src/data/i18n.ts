@@ -65,7 +65,7 @@ export type Ui = {
     writing: SectionHeading;
     allPosts: string;
   };
-  resume: { view: string; download: string };
+  resume: { view: string; download: string; versions: string; general: string };
   details: {
     heading: string;
     name: string;
@@ -119,7 +119,7 @@ export const ui: Record<Lang, Ui> = {
       status: "Status",
       email: "Email",
     },
-    resume: { view: "View resume", download: "Download PDF" },
+    resume: { view: "View resume", download: "Download PDF", versions: "Versions", general: "General" },
     currently: "Currently Learning",
     projects: { visit: "Visit site", source: "Source" },
     blog: {
@@ -164,7 +164,7 @@ export const ui: Record<Lang, Ui> = {
       status: "方向",
       email: "邮箱",
     },
-    resume: { view: "查看简历", download: "下载 PDF" },
+    resume: { view: "查看简历", download: "下载 PDF", versions: "版本", general: "通用" },
     currently: "正在学习",
     projects: { visit: "访问网站", source: "源代码" },
     blog: {
