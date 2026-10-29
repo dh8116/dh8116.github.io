@@ -12,6 +12,7 @@
 // Inline links are [label](url).
 
 import raw from "./resume.json";
+import versionsRaw from "./resume-versions.json";
 
 export type ResumeBlock =
   | { kind: "line"; text: string }
@@ -60,3 +61,20 @@ export function parseResume(text: string) {
 }
 
 export const resume = parseResume(raw.text);
+
+// Tailored versions of the same resume for specific applications, each at
+// /resume/<slug> with its own PDF (scripts/resume-sync.py renders them).
+
+export type ResumeVersion = {
+  slug: string;
+  label: string;
+  labelZh: string;
+  resume: ReturnType<typeof parseResume>;
+};
+
+export const resumeVersions: ResumeVersion[] = versionsRaw.versions.map((v) => ({
+  slug: v.slug,
+  label: v.label,
+  labelZh: v.labelZh,
+  resume: parseResume(v.text),
+}));

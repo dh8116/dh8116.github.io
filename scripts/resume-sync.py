@@ -23,6 +23,7 @@ import pymupdf
 PDF = "public/resume.pdf"
 TEXT = "src/data/resume.json"
 PREVIEW = "public/resume-preview.png"
+VERSIONS = "src/data/resume-versions.json"  # tailored versions, text only
 PUBLIC_TEXT = "public/resume.json"  # what /admin/home loads, already synced
 
 ZW = "​"
@@ -317,6 +318,16 @@ def build(mode=None):
         print("  resume.pdf rendered from resume.json (build workspace only)")
     shutil.copy(TEXT, PUBLIC_TEXT)
     crop_preview()
+    build_versions()
+
+
+def build_versions():
+    """Each tailored version is text only; its PDF is always rendered."""
+    with open(VERSIONS) as f:
+        versions = json.load(f)["versions"]
+    for v in versions:
+        text_to_pdf(v["text"], f"public/resume-{v['slug']}.pdf")
+        print(f"  resume-{v['slug']}.pdf rendered")
 
 
 if __name__ == "__main__":
