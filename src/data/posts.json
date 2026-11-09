@@ -223,5 +223,19 @@
       "That last one is also what I've been building into my app, Soulor, for the past five months. Soulor now puts Simulation first: it helps reading social situations with multiple perspectives, and helps users rehearse hard conversations by simulating others with analyses and suggestions. It doesn't decide for you. It shows you seven different readings of the same situation, and the judgement stays yours.",
       "I'm Richael. If you're interested, check out my website or follow for more. Thanks for reading!"
     ]
+  },
+  {
+    "slug": "too-young-to-incorporate",
+    "title": "Too Young to Incorporate: Why My App Isn't a Company Yet",
+    "date": "2026-11-10",
+    "excerpt": "At 16 I can't be a company director, and a small app with no paying users has nothing to offer a parent company. So the order is: grow the app first, then build the company around it.",
+    "paragraphs": [
+      "Being a student founder is hard in three ways at once: time, experience and money. From June to October I put three months into Soulor, and the whole time I assumed that one day it would just become its own company.",
+      "Then I looked at what that actually takes. In New Zealand, a company needs at least one director, and anyone under 18 is disqualified from being one (Companies Act 1993, section 151). On top of that, I can't sign most contracts on my own, and things like legal structuring or a valuation aren't something I can do by myself at 16. So \"just register a company\" isn't really open to me yet.",
+      "The next idea was to borrow a bigger company's structure: become a subsidiary of a mid-sized app company, so they handle the legal side and I keep building. I looked at companies like Fabulous and Talkie.",
+      "What I found is that this almost never happens. Most apps are either independent companies or they get bought outright. Revenue-share deals or \"a small project living inside a bigger company\" exist, but only for a handful of small apps. A company that wants what you've built usually just buys it. It doesn't adopt it and let you keep most of it.",
+      "And then the honest question: what would I even bring them? Soulor has no paying users yet. There are niche apps and big apps in the same space. If a company wanted a niche app, it has no reason to choose mine over building or buying one. Right now I don't have anything they need.",
+      "So the order is clear. First, grow the app: real users, real value, something worth owning. When Soulor has that and I'm old enough to sign for it myself, I'll build my own company around it. Being a subsidiary always means your ceiling is someone else's plan, and I'd rather find out how high this can go on my own."
+    ]
   }
 ]
