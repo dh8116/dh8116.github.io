@@ -16,7 +16,7 @@
     {
       "slug": "soulor-ai",
       "name": "Soulor AI",
-      "description": "Soulor is a companion app that remembers you. Memory and relationship stage reach generation itself, so a companion's voice shifts across five stages from stranger to soulmate — and the same engine runs simulation modes, for rehearsing a hard conversation before having it for real.",
+      "description": "Soulor helps troubled individuals and businesses improve soft skills by multi-perspective social situation analysis, evidence-based judgments, conversation simulations with persona, analyses and scored reports, and coaches and companions with full context. Live in six languages with 15 users; billing and a team plan are live.",
       "tags": [
         "Cross-Mode Engine",
         "Relationship Staging",
@@ -96,7 +96,7 @@
     {
       "label": "Researching",
       "title": "RLVR verifier research",
-      "detail": "Leading a five-person paper on when a persistently wrong verifier actually harms GRPO training — holding error rate and asymmetry fixed and sweeping persistence. Targeting COLM / TMLR."
+      "detail": "Leading a five-person paper on when a persistently wrong verifier actually harms GRPO training — holding error rate and asymmetry fixed and sweeping persistence. Draft due by the end of 2026, targeting COLM / TMLR."
     }
   ]
 }
