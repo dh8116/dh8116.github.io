@@ -56,7 +56,8 @@
     "excerpt": "Correctness is solid, but it's ~25x slower than PyTorch on my T4 — turns out the T4 just lacks the pipelining hardware flash attention needs.",
     "paragraphs": [
       "3rd kernel: flash attention. Correctness is solid (max diff 0.000122 vs PyTorch), but it's ~25x slower on my T4.",
-      "Tried the exp2 trick thinking it was compute-bound - no change. T4 (Turing) lacks the pipelining hardware flash attention needs. Hardware limit, not a bug."
+      "Tried the exp2 trick thinking it was compute-bound - no change. T4 (Turing) lacks the pipelining hardware flash attention needs. Hardware limit, not a bug.",
+      "Correction, November 2026: the hardware explanation above is wrong. The same T4 runs a flash attention kernel at about 20 TFLOPs on Triton 3.1 and at this post's 0.5 on Triton 3.4 and later, so the slowdown follows the Triton version, not the card. https://dh8116.github.io/blog/flash-attention-revisited"
     ],
     "image": "/blog/triton-flash-attention-benchmark.png",
     "imageAlt": "Line chart comparing Triton and Torch SDPA throughput (TFLOPs/s) across sequence lengths from 512 to 8192. Torch SDPA climbs quickly to 13-14 TFLOPs/s, while Triton stays flat around 0.5 TFLOPs/s across all sequence lengths."
@@ -252,5 +253,20 @@
       "So how do you choose? If what you're building is an extension or an add-on to someone else's product, a subsidiary or a revenue share makes a lot of sense, because you need their users anyway. If it's a full app that's already working, getting real attention and talking to serious investors, aim for your own company.",
       "For Soulor, a revenue-share or subsidiary deal would honestly be good right now. But I'll decide based on traction, not on the shortcut. The question isn't which structure sounds better. It's what the app has earned so far."
     ]
+  },
+  {
+    "slug": "flash-attention-revisited",
+    "category": "kernel",
+    "title": "Flash Attention, Revisited: The Card Was Fine",
+    "date": "2026-11-22",
+    "excerpt": "10th kernel: flash attention again, now with a backward. On the same T4 that week 3 blamed, it runs at about 20 TFLOPs and beats torch SDPA on Triton 3.1, and at week 3's 0.5 TFLOPs on Triton 3.4 and later.",
+    "paragraphs": [
+      "10th kernel: flash attention again, this time with a backward, and a correction. Week 3 ran at about 0.5 TFLOPs on a T4, ~25x behind torch, and I blamed the card, because Turing has no cp.async. That was wrong. This version adds a backward in three kernels with no atomics, recomputing the probabilities from Q, K and the saved logsumexp instead of storing them. Output and all three gradients match SDPA to about 5e-4 relative, with essentially no exact zeros.",
+      "On a Colab T4 with Triton 3.1.0 and torch 2.5.1, two runs each: the forward does 9.5 TFLOPs at N=512, 1.69x SDPA, and 19.7-20.1 at N=4096, 1.47-1.49x. Forward plus backward beats SDPA at every size, from 1.57x at N=512 down to 1.39x at N=4096. The N=2048 forward came out 39% apart between runs, so I'm not quoting it. An Ampere comparison was single-run and isn't reported.",
+      "The catch is that Colab's default today is Triton 3.8.0 with torch 2.14, and on that the identical file does 0.41-0.56 TFLOPs. Week 3's number. Swapping only Triton on the same T4, N=4096: 3.1.0 gives 20.1, 3.2.0 gives 20.3, 3.3.1 fails to compile, 3.4.0 to 3.8.0 give 0.46-0.53. So the slowdown follows the Triton version, somewhere between 3.2.0 and 3.4.0 on sm_75. I never recorded week 3's Triton version, so its result is consistent with this, not proven by it, and why the newer compiler is slow on Turing I haven't established. Copy this kernel into a fresh Colab and you get the slow one.",
+      "Next is a fused backward, FlashAttention-2 style, one kernel instead of three: right now dK/dV and dQ each read Q, K and V again."
+    ],
+    "image": "/blog/triton-flash-attention-revisited-benchmark.png",
+    "imageAlt": "Two charts for one Triton flash attention kernel on a Tesla T4, B=4, H=8, D=64, fp16, forward only. Left, TFLOPs on a log scale against sequence length 512 to 4096: the kernel on Triton 3.1.0 sits at about 9.5 TFLOPs at 512, 11.4 at 1024 and 20 at 4096, above torch SDPA on torch 2.5.1 at about 5.7, 12.9 and 13.4, with points missing where two runs disagreed; the same kernel on Triton 3.8.0 is a flat line near 0.4 to 0.56 TFLOPs. Right, bars of TFLOPs at N=4096 by Triton version: 20.1 for 3.1.0 and 20.3 for 3.2.0, a compile error for 3.3.1, then 0.46, 0.53, 0.51, 0.52 and 0.50 for 3.4.0 through 3.8.0."
   }
 ]

@@ -91,7 +91,7 @@
     {
       "label": "Building",
       "title": "Triton GPU kernels",
-      "detail": "One kernel a week, each benchmarked against PyTorch and published with its numbers. Best so far: fused cross-entropy at 15.90 ms against PyTorch's 24.03 ms at vocab 131,072 (1.51x), with 1.67x less peak memory."
+      "detail": "One kernel a week, each benchmarked against PyTorch and published with its numbers. Latest: flash attention forward + backward beats torch SDPA 1.39-1.57x on a T4 with Triton 3.1, and a Triton-version bisect showed week 3's slowdown was the compiler version, not the card."
     },
     {
       "label": "Researching",

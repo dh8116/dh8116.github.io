@@ -82,7 +82,7 @@
     {
       "label": "在写",
       "title": "Triton GPU kernel",
-      "detail": "每周一个 kernel，每个都和 PyTorch 对比基准并公开数据。目前最好的结果：融合交叉熵在 vocab 131,072 下 15.90 ms，对比 PyTorch 的 24.03 ms（快 1.51 倍），峰值显存少 1.67 倍。"
+      "detail": "每周一个 kernel，每个都和 PyTorch 对比基准并公开数据。最新：flash attention 前向加反向在 T4 上用 Triton 3.1 比 torch SDPA 快 1.39-1.57 倍；按 Triton 版本二分后发现，第 3 周的慢是编译器版本造成的，不是卡。"
     },
     {
       "label": "在研究",

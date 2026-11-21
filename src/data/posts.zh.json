@@ -41,7 +41,8 @@
     "excerpt": "正确性很稳，但在我的 T4 上比 PyTorch 慢约 25 倍——结果发现是 T4 本身就缺少 flash attention 需要的流水线硬件。",
     "paragraphs": [
       "第三个 kernel：flash attention。正确性很稳（与 PyTorch 的最大差值 0.000122），但在我的 T4 上慢了约 25 倍。",
-      "以为是计算受限，试了 exp2 的技巧——没有变化。T4（Turing）缺少 flash attention 需要的流水线硬件。是硬件上限，不是 bug。"
+      "以为是计算受限，试了 exp2 的技巧——没有变化。T4（Turing）缺少 flash attention 需要的流水线硬件。是硬件上限，不是 bug。",
+      "更正（2026 年 11 月）：上面的硬件解释是错的。同一张 T4 上，一个 flash attention kernel 用 Triton 3.1 能跑到约 20 TFLOPs，用 Triton 3.4 及以后则是这篇里的 0.5，所以变慢跟着 Triton 版本走，不是卡的问题。https://dh8116.github.io/zh/blog/flash-attention-revisited"
     ],
     "imageAlt": "折线图，比较 Triton 与 Torch SDPA 在序列长度 512 到 8192 上的吞吐（TFLOPs/s）。Torch SDPA 很快爬到 13–14 TFLOPs/s，Triton 在所有序列长度上都平在 0.5 TFLOPs/s 附近。"
   },
@@ -196,5 +197,16 @@
       "那该怎么选？如果你做的是别人产品的扩展或插件，子公司或收入分成很合理，因为你反正需要他们的用户。如果它是一个完整的 app，已经在运转、得到真实的关注、在和认真的投资人接触，那就以自己的公司为目标。",
       "对 Soulor 来说，说实话，现在做收入分成或者成为子公司会是好事。但我会根据实际的增长来决定，而不是因为它是捷径。问题不在于哪种结构听起来更好，而在于这个 app 到目前为止赢得了什么。"
     ]
+  },
+  "flash-attention-revisited": {
+    "title": "Flash Attention 再看一次：卡没有问题",
+    "excerpt": "第十个 kernel：再写一次 flash attention，这次带反向。在第 3 周怪罪的同一张 T4 上，用 Triton 3.1 它跑到约 20 TFLOPs，比 torch SDPA 快；用 Triton 3.4 及以后，它回到第 3 周的 0.5 TFLOPs。",
+    "paragraphs": [
+      "第十个 kernel：再写一次 flash attention，这次带反向，也是一次更正。第 3 周它在 T4 上只有约 0.5 TFLOPs，比 torch 慢约 25 倍，我怪到了卡头上，因为 Turing 没有 cp.async。那是错的。这一版加了反向，分成三个 kernel，没有 atomic，概率不存下来，而是从 Q、K 和保存的 logsumexp 重算。输出和三个梯度与 SDPA 的相对误差都在 5e-4 左右，几乎没有恰好为零的值。",
+      "在 Colab 的 T4 上，Triton 3.1.0 加 torch 2.5.1，每项跑两次：前向在 N=512 时 9.5 TFLOPs，是 SDPA 的 1.69 倍；N=4096 时 19.7-20.1，是 1.47-1.49 倍。前向加反向在每个规模都比 SDPA 快，从 N=512 的 1.57 倍降到 N=4096 的 1.39 倍。N=2048 的前向两次结果差了 39%，所以不引用。Ampere 上的对比只跑了一次，不报告。",
+      "问题在于，Colab 现在默认的是 Triton 3.8.0 加 torch 2.14，在那上面同一个文件只有 0.41-0.56 TFLOPs。正是第 3 周的数字。同一张 T4、N=4096，只换 Triton：3.1.0 是 20.1，3.2.0 是 20.3，3.3.1 编译失败，3.4.0 到 3.8.0 是 0.46-0.53。所以变慢跟着 Triton 版本走，在 sm_75 上发生在 3.2.0 和 3.4.0 之间。第 3 周的 Triton 版本我当时没记下来，所以它的结果和这个一致，但没有被证明；新编译器为什么在 Turing 上慢，我也还没弄清楚。现在把这个 kernel 复制进一个新的 Colab，拿到的就是慢的那个。",
+      "下一个是融合的反向，FlashAttention-2 那样，三个 kernel 合成一个：现在 dK/dV 和 dQ 各自又把 Q、K、V 读一遍。"
+    ],
+    "imageAlt": "两张图，同一个 Triton flash attention kernel，Tesla T4，B=4、H=8、D=64、fp16，只看前向。左图是 TFLOPs（对数坐标）随序列长度 512 到 4096 的变化：Triton 3.1.0 下这个 kernel 在 512 约 9.5 TFLOPs、1024 约 11.4、4096 约 20，高于 torch 2.5.1 的 SDPA（约 5.7、12.9、13.4），两次运行不一致的点被去掉了；同一个 kernel 在 Triton 3.8.0 下是一条平线，约 0.4 到 0.56 TFLOPs。右图是 N=4096 时按 Triton 版本的柱状图：3.1.0 为 20.1，3.2.0 为 20.3，3.3.1 编译失败，3.4.0 到 3.8.0 依次为 0.46、0.53、0.51、0.52、0.50。"
   }
 }
